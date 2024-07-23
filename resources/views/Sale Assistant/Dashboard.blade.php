@@ -320,6 +320,7 @@
             };
 
             function updateTotal(total){
+                console.log(total);
                 let totalBill = document.getElementById("totalbill").value;
                 let discount = document.getElementById("discount").value;
                 let discountType = document.getElementById("discountType").value;
@@ -344,21 +345,15 @@
 
             function calculateChange() {
                 let totalBillStr = document.getElementById('totalbill').value;
-                let discountStr = document.getElementById('discount').value;
+                console.log(totalBillStr);
                 let totalBill = parseFloat(totalBillStr.replace('Rs', '').trim());
-                let discount = parseFloat(discountStr);
                 let receivedBill = parseFloat(document.getElementById('recievecash').value);
 
                 if (isNaN(totalBill) || isNaN(receivedBill)) {
                     return;
                 }
 
-                if (isNaN(discount)) {
-                    discount = 0.0;
-                }
-
-                totalBill = totalBill - discount;
-                let change = receivedBill - totalBill;
+               let change = receivedBill - totalBill;
 
                 if (change < 0) {
                     document.getElementById('proceed').disabled = true;

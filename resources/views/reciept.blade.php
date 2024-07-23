@@ -20,12 +20,10 @@
         background: #f1f1f1;
         padding: 20px 10px;
         font-size: 12px;
-        border: 1px solid #000;
     }
 
     .receipt {
         width: 300px;
-        min-height: 250px;
         background: #fff;
         margin: 0 auto;
         box-shadow: 5px 5px 19px #ccc;
@@ -57,10 +55,6 @@
         border-bottom: 1px solid #000;
         border-collapse: collapse;
         margin-bottom: 10px;
-    }
-
-    table thead tr {
-        border-bottom: 1px solid #000;
     }
 
     table thead tr th,
@@ -141,7 +135,6 @@
                 <img src="{{ asset('Images/image 1.png') }}" alt="Pizza Image">
             </div>
 
-
             <div class="address"> Address : {{ $orderData->salesman->branch->address }}</div>
             <div class="detail">Date : {{ $date }}</div>
             <div class="detail">Time : {{ $time }}</div>
@@ -193,9 +186,6 @@
             <div class="detail">DISCOUNT:
                 {{ $orderData->discount_type == '%' ? $orderData->discount . '%' : 'Rs ' . $orderData->discount }}
             </div>
-            {{-- <div class="detail">DISCOUNT
-                TYPE:{{ $orderData->discount_type == '%' ? 'Percentage' : ($orderData->discount_type == '-' ? 'Fixed Discount' : 'None') }}
-            </div> --}}
             <div class="detail">REASON: {{ $orderData->discount_reason }}</div>
             <div class="detail" style="font-size: 15px;">TOTAL:
                 {{ $orderData->discount_type == '%' ? $subtotal - ($orderData->discount / 100) * $subtotal + $orderData->taxes : $subtotal + $orderData->taxes - $orderData->discount }}

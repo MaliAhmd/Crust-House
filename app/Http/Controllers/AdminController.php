@@ -927,7 +927,7 @@ class AdminController extends Controller
         $dompdf = new Dompdf();
         $dompdf->loadHtml($html);
         $height = $dompdf->getCanvas()->get_height();
-        $dompdf->setPaper([0, 0, 300, $height], 'portrait');
+        $dompdf->setPaper([0, 0, 300, $height / 1], 'portrait');
         $dompdf->render();
         $dompdf->stream($order->order_number . '.pdf');
     }
