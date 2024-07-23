@@ -1,0 +1,385 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Just+Another+Hand&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:"Just Another Hand", cursive;
+    
+}
+a{
+    text-decoration: none;
+    color: black;
+    font-size: 2vw;
+}
+a:hover{
+    text-decoration: none;
+    color: #FFBB00;
+}
+li{
+    list-style: none;
+}
+html,body {
+    /* height: 100%; */
+    width:100%;
+}
+
+.header {
+    /* height: 100px; */
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1vw 8vw;
+    /* background-color: aqua; */
+}
+
+.header h1 {
+    font-size: 3vw;
+    font-weight: 800;
+}
+.header span {
+
+    color: #FFBB00;
+}
+
+.header img{
+    width: 5vw;
+}
+
+.main{
+    height: calc(100% - 100px);
+    width: 100%;
+}
+
+.content1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.left1{
+    height: 47vw;
+    width: 50%;
+    /* background-color: aqua; */
+    padding: 10vw 8vw;
+
+}
+
+.left1 h1 {
+
+    font-size: 8vw;
+    font-weight: 300;
+}
+
+.left1 span {
+    font-size: 8vw;
+    font-weight: 300;
+    color: #FFBB00;
+}
+
+.left1 p {
+
+    font-size: 3vw;
+    padding: 2vw 0vw;
+
+}
+
+.left1 a {
+
+    padding: 0.5vw 2vw;
+    border-radius: 3vw;
+    background-color: black;
+    color: #FFBB00;
+}
+.left1 a:hover{
+    background-color: #FFBB00;
+    color: black;
+}
+
+.right1{
+    height: 47vw;
+    width: 50%;
+    /* background-color: blue; */
+}
+
+.right1 img {
+    width: 90%;
+}
+
+.content2{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    /* background-color: aqua; */
+}
+
+.content2 h1{
+    font-size: 8vw;
+    font-weight: 300;
+}
+
+.content2 span{
+    font-size: 8vw;
+    font-weight: 300;
+    color: #FFBB00;
+}
+
+.content2 p{
+    font-size: 3vw;
+    padding: 2vw 0vw;
+}
+
+.content3{
+    display:flex;
+    justify-content: center;
+    gap:2vw;
+    align-items: center;
+    width: 100%;
+    /* height: 50vw; */
+    /* background-color: aqua; */
+}
+.card{
+    width: 20vw;
+    /* height: 32vw; */
+    border-radius: 15px;
+    /* background-color: #dadada; */
+    /* margin: 1vw; */
+    padding: 1vw 1vw;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card img{
+    width:70%;
+    
+}
+
+.cardImg{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.card h1{
+    font-size: 3vw;
+    font-weight: 300;
+    padding: 1vw 0vw;
+    
+}
+
+.card span{
+    font-size: 1vw;
+    font-weight: 300;
+    padding: 0.25vw 1vw;
+    background-color:#FFBB00;
+    border-radius: 3vw;
+    font-family: "IBM Plex Mono", monospace;
+    /* font-weight: 400; */
+    font-style: normal;
+}
+
+
+.card ul{
+    padding: 1vw 0vw;
+}
+
+.card li h2{
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1vw;
+}
+
+.card h3{
+    font-size: 2.5vw;
+    padding-top:1vw;
+    font-weight: 700;
+}
+
+.spacer{
+    height: 2vw;
+}
+.content4{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.left4{
+    height: 47vw;
+    width: 50%;
+    /* background-color: aqua; */
+    padding: 4vw 8vw;
+    margin-left: 10vw;
+}
+
+.left4 img{
+    width: 90%;
+    border-radius:4vw;
+}
+.right4{
+    height: 47vw;
+    width: 50%;
+    /* background-color: blue; */
+    padding: 10vw 0vw;
+    padding-right: 8vw;
+    
+}
+
+.right4 h1{
+    font-size: 8vw;
+    font-weight: 300;
+}
+
+.right4 span{
+    font-size: 8vw;
+    font-weight: 300;
+    color: #FFBB00;
+}
+
+.right4 p{
+    font-size: 2vw;
+    padding-bottom: 1vw;
+}
+
+.right4 a{
+    padding: 0.25vw 1vw;
+    border-radius: 2vw;
+    background-color: black;
+    color: #FFBB00;
+}
+
+
+.right4 a:hover{
+    background-color: #FFBB00;
+    color: black;
+}
+
+.content5{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* text-align: center; */
+    width: 100%;
+    gap: 1vw ;
+    padding:4vw 0vw;
+
+}
+.card2{
+    display: flex;
+    flex-direction: column;
+    width: 25vw;
+    height: 15vw;
+    border-radius: 15px;
+    /* background-color: #dadada; */
+    /* margin: 1vw; */
+    padding: 1vw 1vw;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card2 img{
+    width:2vw;
+}
+
+.card2 h1{
+    font-size: 3vw;
+    font-weight: 300;
+    padding: 0.5vw 0vw;
+}
+
+.card2 span{
+    font-size: 3vw;
+    font-weight: 300;
+    color: #FFBB00;
+}
+
+.card2 p{
+    font-size: 1vw;
+    /* padding-bottom: 1vw; */
+    font-family: "IBM Plex Mono", monospace;
+    /* font-weight: 400; */
+    font-style: normal;
+}
+.content6 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.left6{
+    height: 47vw;
+    width: 50%;
+    padding: 5vw 0vw;
+    padding-left: 8vw;
+    margin-left: 4vw;
+}
+
+.left6 h1{
+    font-size: 8vw;
+    font-weight: 300;
+    font-size: 8vw;
+}
+
+.left6 span{
+    font-size: 8vw;
+    font-weight: 300;
+    color: #FFBB00;
+}
+
+.left6 p{
+    font-size: 2vw;
+    /* padding: 2vw 0vw;  */
+
+}
+
+.left6 img{
+    width: 2vw;
+}
+
+.right6{
+    height: 47vw;
+    width: 50%;
+    padding:4vw 0vw;
+}
+
+.right6 img{
+    width: 70%;
+    border-radius:4vw;
+}
+
+.footer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* height: 80px; */
+    background: #FFBB00;
+    
+}
+
+.footer h1{
+    font-size: 2vw;
+    font-weight: 300;
+}
+
+.footer h2{
+    font-size: 1.5vw;
+    font-weight: 300;
+}
+
+.footer img{
+    width: 4.5vw;
+    padding: 0vw 0.5vw;
+    transition: transform 0.5s ease;
+}
+
+.footer img:hover{
+    transform: scale(1.2);
+}
