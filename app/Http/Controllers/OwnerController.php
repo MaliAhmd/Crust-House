@@ -274,6 +274,12 @@ class OwnerController extends Controller
         ]);
     }
 
+    public function viewSettings(){
+        if (!session()->has('owner')) {
+            return redirect()->route('viewLoginPage');
+        }
+        return view('Owner.Setting');
+    }
 
     public function totalBranches()
     {

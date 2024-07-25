@@ -11,20 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) { 
             $table->id();
             $table->string('order_number')->unique();
-            $table->unsignedBigInteger('salesman_id');
+            $table->unsignedBigInteger('salesman_id')->nullable();
             $table->unsignedBigInteger('branch_id')->nullable();
-            $table->string('total_bill'); 
+            $table->string('total_bill')->nullable(); 
             $table->decimal('taxes', 8, 2)->nullable()->default(0.0);
             $table->decimal('discount', 8, 2)->nullable()->default(0.0);
             $table->string('discount_reason')->nullable()->default('None');
             $table->string('discount_type')->nullable()->default('None');
-            $table->decimal('received_cash', 8, 2);
-            $table->decimal('return_change', 8, 2);
-            $table->string('ordertype')->nullable();
-            $table->integer('status')->default('2');
+            $table->string('payment_method')->nullable();
+            $table->decimal('received_cash', 8, 2)->nullable();
+            $table->decimal('return_change', 8, 2)->nullable();
+            $table->string('ordertype')->nullable()->nullable();
+            $table->integer('status')->default('2')->nullable();
             
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
             $table->foreign('salesman_id')->references('id')->on('users')->onDelete('cascade');

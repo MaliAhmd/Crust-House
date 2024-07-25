@@ -411,7 +411,7 @@ table tbody tr td:last-child a:last-child:hover {
     margin: 0 1vw;
     height: 75vh;
     overflow: scroll;
-    scrollbar-width: none;
+    scrollbar-width: thin;
 }
 
 .products .imgbox {

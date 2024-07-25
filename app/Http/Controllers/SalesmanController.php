@@ -8,6 +8,7 @@ use App\Models\Deal;
 use App\Models\Handler;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Tax;
@@ -32,7 +33,8 @@ class SalesmanController extends Controller
 
         $discounts = Discount::where('branch_id', $branch_id)->get();
         $taxes = Tax::where('branch_id', $branch_id)->get();
-        
+        $payment_methods = PaymentMethod::where('branch_id', $branch_id)->get();
+
         $deals = Handler::where(function ($query) use ($branch_id) {
             $query->whereHas('product', function ($query) use ($branch_id) {
                 $query->where('branch_id', $branch_id);
@@ -68,7 +70,8 @@ class SalesmanController extends Controller
             'branch_id' => $branch_id,
             'cartProducts' => $cartproducts,
             'taxes' => $taxes,
-            'discounts' => $discounts
+            'discounts' => $discounts,
+            'payment_methods' => $payment_methods
         ]);
     }
     public function salesmanCategoryDashboard($categoryName, $id, $branch_id)
@@ -84,7 +87,8 @@ class SalesmanController extends Controller
 
         $discounts = Discount::where('branch_id', $branch_id)->get();
         $taxes = Tax::where('branch_id', $branch_id)->get();
-        
+        $payment_methods = PaymentMethod::where('branch_id', $branch_id)->get();
+
         $filteredCategories = $categories->reject(function ($category) {
             return $category->categoryName === 'Addons';
         });
@@ -102,12 +106,13 @@ class SalesmanController extends Controller
                     'branch_id' => $branch_id,
                     'cartProducts' => $cartproducts,
                     'taxes' => $taxes,
-                    'discounts' => $discounts
+                    'discounts' => $discounts,
+                    'payment_methods' => $payment_methods
                 ]);
             } else {
                 $products = Product::where('category_name', $categoryName)->get();
                 return view('Sale Assistant.Dashboard')->with([
-                    'Products' => $products, 
+                    'Products' => $products,
                     'Deals' => $deals,
                     'Categories' => $filteredCategories,
                     'AllProducts' => $allProducts,
@@ -115,12 +120,13 @@ class SalesmanController extends Controller
                     'branch_id' => $branch_id,
                     'cartProducts' => $cartproducts,
                     'taxes' => $taxes,
-                    'discounts' => $discounts
+                    'discounts' => $discounts,
+                    'payment_methods' => $payment_methods
                 ]);
             }
         }
     }
-     public function deals($branch_id)
+    public function deals($branch_id)
     {
         $deals = Handler::where(function ($query) use ($branch_id) {
             $query->whereHas('product', function ($query) use ($branch_id) {
@@ -166,10 +172,11 @@ class SalesmanController extends Controller
             $order->salesman_id = $salesman_id;
             $order->branch_id = $user->branch_id;
             $order->total_bill = $totalBill;
-            $order->taxes =  $request->input('totaltaxes');
+            $order->taxes = $request->input('totaltaxes');
             $order->discount = $request->input('discount');
             $order->discount_reason = $request->input('discount_reason');
             $order->discount_type = $request->input('discount_type');
+            $order->payment_method = $request->input('payment_method');
             $order->received_cash = $request->input('recievecash');
             $order->return_change = $request->input('change');
             $order->ordertype = $request->input('orderType');
@@ -201,11 +208,10 @@ class SalesmanController extends Controller
 
             $discount = $request->input('discount');
             $discount_type = $request->input('discount_type');
-            if($discount_type == "%"){
-                $discountValue = (float)(($discount / 100) * $totalBill);
+            if ($discount_type == "%") {
+                $discountValue = (float) (($discount / 100) * $totalBill);
                 $totalBill = $totalBill - $discountValue;
-            }
-            else if($discount_type == "-"){
+            } else if ($discount_type == "-") {
                 $totalBill = $totalBill - $discount;
             }
             $totalBill += $request->input('totaltaxes');
@@ -234,7 +240,7 @@ class SalesmanController extends Controller
         } else {
             return redirect()->back()->with('error', 'Select Product First');
         }
-    } 
+    }
 
     public function saveToCart(Request $request)
     {
@@ -468,7 +474,8 @@ class SalesmanController extends Controller
         return redirect()->route('salesman_dashboard', ['id' => $salesman_id, 'branch_id' => $branch_id]);
     }
 
-    public function deleteReceiptPDF($file_name){
+    public function deleteReceiptPDF($file_name)
+    {
         $filePath = public_path('PDF/' . $file_name);
         File::delete($filePath);
         return redirect()->back();

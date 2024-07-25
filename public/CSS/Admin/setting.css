@@ -44,7 +44,7 @@ main {
 
 #options button {
     display: flex;
-    margin: 1.5vw;
+    margin: .51vw;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -67,7 +67,10 @@ main {
 
 #texOverlay,
 #discountOverlay,
+#discountTypeOverlay,
 #receiptOverlay,
+#orderTypeOverlay,
+#paymentMethodOverlay,
 #confirmDeletionOverlay {
     position: fixed;
     top: 0;
@@ -81,6 +84,9 @@ main {
 
 #newTax,
 #discount,
+#paymentMethod,
+#discountType,
+#orderType,
 #receipt,
 .confirmDeletion {
     display: none;
@@ -97,6 +103,9 @@ main {
 
 #newTax h3,
 #receipt h3,
+#paymentMethod h3,
+#discountType h3,
+#orderType h3,
 #discount h3 {
     margin: 0;
     padding: 1vw 2vw;
@@ -106,6 +115,9 @@ main {
 
 #newTax hr,
 #receipt hr,
+#discountType hr,
+#orderType hr,
+#paymentMethod hr,
 #discount hr {
     border: 1px solid #9b9b9b;
     width: 98%;
@@ -142,8 +154,8 @@ main {
     display: flex;
     background-color: #ffbb00;
     color: #fff;
-    width: 30%;
-    height: 90%;
+    width: 20%;
+    height: 70%;
     font-size: 1.2vw;
     border-radius: 10px;
     cursor: pointer;

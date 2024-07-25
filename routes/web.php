@@ -35,6 +35,7 @@ Route::get('/branchDashboard/{branch_id}', [OwnerController::class, 'branchDashb
 Route::get('/showReports', [OwnerController::class, 'viewReports'])->name('showReports');
 Route::get('/viewReportPage/{branch_id}', [OwnerController::class, 'viewReportPage'])->name('viewReportPage');
 
+Route::get('/settings', [OwnerController::class, 'viewSettings'])->name('settings');
 /*
 |---------------------------------------------------------------|
 |======================= Branch Routes =========================|
@@ -178,11 +179,23 @@ Route::post('/createReceipt', [AdminController::class,'createReceipt'])->name('c
 Route::post('/updateReceipt', [AdminController::class,'updateReceipt'])->name('updateReceipt');
 Route::get('/deleteReceipt/{id}', [AdminController::class,'deleteReceipt'])->name('deleteReceipt');
 
+Route::post('/createPaymentMethod', [AdminController::class,'createPaymentMethod'])->name('createPaymentMethod');
+Route::post('/updatePaymentMethod', [AdminController::class,'updatePaymentMethod'])->name('updatePaymentMethod');
+Route::get('/deletePaymentMethod/{id}', [AdminController::class,'deletePaymentMethod'])->name('deletePaymentMethod');
+
+Route::post('/createDiscountTypes', [AdminController::class,'createDiscountTypes'])->name('createDiscountTypes');
+Route::post('/updateDiscountTypes', [AdminController::class,'updateDiscountTypes'])->name('updateDiscountTypes');
+Route::get('/deleteDiscountTypes/{id}', [AdminController::class,'deleteDiscountTypes'])->name('deleteDiscountTypes');
+
+Route::post('/createOrderTypes', [AdminController::class,'createOrderTypes'])->name('createOrderTypes');
+Route::post('/updateOrderTypes', [AdminController::class,'updateOrderTypes'])->name('updateOrderTypes');
+Route::get('/deleteOrderTypes/{id}', [AdminController::class,'deleteOrderTypes'])->name('deleteOrderTypes');
+
 /*
 |---------------------------------------------------------------|
 |======================= Reports Routes ========================|
 |---------------------------------------------------------------|
-*/ 
+*/  
 
 Route::get('/report/{branch_id}', [AdminController::class,'viewReportPage'])->name('report');
 Route::get('/todayTotalSales/{branch_id}', [AdminController::class,'todayTotalSales'])->name('todayTotalSales');

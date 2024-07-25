@@ -260,8 +260,210 @@
                     </form>
                 @endif
             </div>
-        </div>
+            {{--  
+            |---------------------------------------------------------------|
+            |=================== Payment Methods Overlay ===================|
+            |---------------------------------------------------------------|
+            --}}
+            <button onclick="paymentMethodOverlay()">Payment Methods Settings</button>
+            <div id="paymentMethodOverlay"></div>
+            <div id="paymentMethod">
+                <h3>Add New Payment Method</h3>
+                <hr>
+                @if ($paymentMethods)
+                    <div class="container-fields">
+                        @foreach ($paymentMethods as $method)
+                            <form id="texFields" action="{{ route('updatePaymentMethod') }}"
+                                enctype="multipart/form-data" method="POST">
+                                @csrf
+                                <input type="hidden" name="payment_method_id" value="{{ $method->id }}">
+                                <div class="inputdivs">
+                                    <label for="paymentMethods">Payment Method</label>
+                                    <input type="text" id="paymentMethods" name="payment_method"
+                                        value="{{ $method->payment_method }}" placeholder="cash, jazzcash,..." required>
+                                </div>
 
+                                <div id="option_button">
+                                    <button type="submit">
+                                        <i class='bx bxs-edit-alt'></i>
+                                    </button>
+                                    <button class="deleteTax" type="button"
+                                        onclick="showConfirmDelete('{{ route('deletePaymentMethod', $method->id) }}')">
+                                        <i class='bx bxs-trash-alt'></i>
+                                    </button>
+                                </div>
+                            </form>
+                        @endforeach
+                    </div>
+                    <form action="{{ route('createPaymentMethod') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="admin_id" value="{{ $id }}">
+                        <input type="hidden" name="branch_id" value="{{ $branch_id }}">
+                        <hr>
+                        <div style="width: 50%; margin:auto" class="inputdivs">
+                            <label for="paymentMethods">Payment Method</label>
+                            <input type="text" id="paymentMethods" name="payment_method"
+                                placeholder="cash , jazzcash ,etc..." required>
+                        </div>
+
+                        <div class="forms-btns">
+                            <button id="cancel" onclick="closePaymentMethodOverlay()">Cancel</button>
+                            <input class="add" type="submit" value="Add">
+                        </div>
+                    </form>
+                @else
+                    <form action="{{ route('createPaymentMethod') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="admin_id" value="{{ $id }}">
+                        <input type="hidden" name="branch_id" value="{{ $branch_id }}">
+                        <hr>
+                        <div style="width: 50%; margin:auto;" class="inputdivs">
+                            <label for="paymentMethods">Payment Method</label>
+                            <input type="text" id="paymentMethods" name="payment_method"
+                                placeholder="cash , jazzcash ,etc..." required>
+                        </div>
+
+                        <div class="forms-btns">
+                            <button id="cancel" onclick="closePaymentMethodOverlay()">Cancel</button>
+                            <input class="add" type="submit" value="Add">
+                        </div>
+                    </form>
+                @endif
+            </div>
+            {{--  
+            |---------------------------------------------------------------|
+            |================= Discount & Order Type Overlay ===============|
+            |---------------------------------------------------------------|
+            --}}
+            <button onclick="showDiscountTypeOverlay()">Discount Type Settings</button>
+            <div id="discountTypeOverlay"></div>
+            <div id="discountType">
+                <h3>Add Discount Type</h3>
+                <hr>
+                @if ($discountTypes)
+                    <div class="container-fields">
+                        @foreach ($discountTypes as $type)
+                            <form id="texFields" action="{{ route('updateDiscountTypes') }}" enctype="multipart/form-data" method="POST">
+                                @csrf
+                                <input type="hidden" name="discount_type_id" value="{{ $type->id }}">
+                                <div class="inputdivs">
+                                    <label for="discountTypes">Discount Types</label>
+                                    <input type="text" id="discountTypes" name="discount_type"
+                                        value="{{ $type->discount_type }}" placeholder="dine-in, takeaway..." required>
+                                </div>
+
+                                <div id="option_button">
+                                    <button type="submit">
+                                        <i class='bx bxs-edit-alt'></i>
+                                    </button>
+                                    <button class="deleteTax" type="button"
+                                        onclick="showConfirmDelete('{{ route('deleteDiscountTypes', $type->id) }}')">
+                                        <i class='bx bxs-trash-alt'></i>
+                                    </button>
+                                </div>
+                            </form>
+                        @endforeach
+                    </div>
+                    <form action="{{ route('createDiscountTypes') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="admin_id" value="{{ $id }}">
+                        <input type="hidden" name="branch_id" value="{{ $branch_id }}">
+                        <hr>
+                        <div style="width: 50%; margin:auto" class="inputdivs">
+                            <label for="discountTypes">Discount Type</label>
+                            <input type="text" id="discountTypes" name="discount_type"
+                                placeholder="dine-in, takeaway..." required>
+                        </div>
+
+                        <div class="forms-btns">
+                            <button id="cancel" type="button" onclick="closeDiscountTypeOverlay()">Cancel</button>
+                            <input class="add" type="submit" value="Add">
+                        </div>
+                    </form>
+                @else
+                    <form action="{{ route('createDiscountTypes') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="admin_id" value="{{ $id }}">
+                        <input type="hidden" name="branch_id" value="{{ $branch_id }}">
+                        <hr>
+                        <div style="width: 50%; margin:auto;" class="inputdivs">
+                            <label for="discountTypes">Discount Type</label>
+                            <input type="text" id="discountTypes" name="discount_type"
+                                placeholder="dine-in , takeaway ,etc..." required>
+                        </div>
+
+                        <div class="forms-btns">
+                            <button id="cancel" type="button" onclick="closeDiscountTypeOverlay()">Cancel</button>
+                            <input class="add" type="submit" value="Add">
+                        </div>
+                    </form>
+                @endif
+            </div>
+
+            <button onclick="showOrderTypeOverlay()">Order Type Settings</button>
+            <div id="orderTypeOverlay"></div>
+            <div id="orderType">
+                <h3>Add Order Type</h3>
+                <hr>
+                @if ($orderTypes)
+                    <div class="container-fields">
+                        @foreach ($orderTypes as $oType)
+                            <form id="texFields" action="{{ route('updateOrderTypes') }}" enctype="multipart/form-data" method="POST">
+                                @csrf
+                                <input type="hidden" name="order_type_id" value="{{ $oType->id }}">
+                                <div class="inputdivs">
+                                    <label for="orderTypes">Order Types</label>
+                                    <input type="text" id="orderTypes" name="order_type"
+                                        value="{{ $oType->order_type }}" placeholder="fixed, percentage..." required>
+                                </div>
+
+                                <div id="option_button">
+                                    <button type="submit">
+                                        <i class='bx bxs-edit-alt'></i>
+                                    </button>
+                                    <button class="deleteTax" type="button"
+                                        onclick="showConfirmDelete('{{ route('deleteOrderTypes', $oType->id) }}')">
+                                        <i class='bx bxs-trash-alt'></i>
+                                    </button>
+                                </div>
+                            </form>
+                        @endforeach
+                    </div>
+                    <form action="{{ route('createOrderTypes') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="admin_id" value="{{ $id }}">
+                        <input type="hidden" name="branch_id" value="{{ $branch_id }}">
+                        <hr>
+                        <div style="width: 50%; margin:auto" class="inputdivs">
+                            <label for="orderTypes">Order Type</label>
+                            <input type="text" id="orderTypes" name="order_type" placeholder="fixed, percentage..."
+                                required>
+                        </div>
+
+                        <div class="forms-btns">
+                            <button id="cancel" onclick="closeOrderTypeOverlay()">Cancel</button>
+                            <input class="add" type="submit" value="Add">
+                        </div>
+                    </form>
+                @else
+                    <form action="{{ route('createOrderTypes') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="admin_id" value="{{ $id }}">
+                        <input type="hidden" name="branch_id" value="{{ $branch_id }}">
+                        <hr>
+                        <div style="width: 50%; margin:auto" class="inputdivs">
+                            <label for="orderTypes">Order Type</label>
+                            <input type="text" id="orderTypes" name="order_type" placeholder="fixed, percentage..."
+                                required>
+                        </div>
+                        <div class="forms-btns">
+                            <button id="cancel" onclick="closeOrderTypeOverlay()">Cancel</button>
+                            <input class="add" type="submit" value="Add">
+                        </div>
+                    </form>
+                @endif
+            </div>
+        </div>
         {{--      
             |---------------------------------------------------------------|
             |==================== Confirm Delete Overlay ===================|
@@ -308,6 +510,46 @@
         function closeReceiptOverlay() {
             document.getElementById('receiptOverlay').style.display = 'none';
             document.getElementById('receipt').style.display = 'none';
+        }
+
+        function paymentMethodOverlay() {
+            document.getElementById('paymentMethodOverlay').style.display = 'block';
+            document.getElementById('paymentMethod').style.display = 'flex';
+        }
+
+        function closePaymentMethodOverlay() {
+            document.getElementById('paymentMethodOverlay').style.display = 'none';
+            document.getElementById('paymentMethod').style.display = 'none';
+        }
+
+        function showDiscountTypeOverlay() {
+            document.getElementById('discountTypeOverlay').style.display = 'block';
+            document.getElementById('discountType').style.display = 'flex';
+        }
+
+        function closePaymentMethodOverlay() {
+            document.getElementById('paymentMethodOverlay').style.display = 'none';
+            document.getElementById('paymentMethod').style.display = 'none';
+        }
+
+        function showDiscountTypeOverlay() {
+            document.getElementById('discountTypeOverlay').style.display = 'block';
+            document.getElementById('discountType').style.display = 'flex';
+        }
+
+        function closeDiscountTypeOverlay() {
+            document.getElementById('discountTypeOverlay').style.display = 'none';
+            document.getElementById('discountType').style.display = 'none';
+        }
+
+        function showOrderTypeOverlay() {
+            document.getElementById('orderTypeOverlay').style.display = 'block';
+            document.getElementById('orderType').style.display = 'flex';
+        }
+
+        function closeOrderTypeOverlay() {
+            document.getElementById('orderTypeOverlay').style.display = 'none';
+            document.getElementById('orderType').style.display = 'none';
         }
 
         function showConfirmDelete(deleteUrl) {

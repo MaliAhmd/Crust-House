@@ -11,6 +11,7 @@ use App\Models\Handler;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\Recipe;
 use App\Models\Stock;
@@ -927,7 +928,7 @@ class AdminController extends Controller
         $dompdf = new Dompdf();
         $dompdf->loadHtml($html);
         $height = $dompdf->getCanvas()->get_height();
-        $dompdf->setPaper([0, 0, 300, $height / 1], 'portrait');
+        $dompdf->setPaper([0, 0, 300, $height / 2], 'portrait');
         $dompdf->render();
         $dompdf->stream($order->order_number . '.pdf');
     }
@@ -1111,7 +1112,10 @@ class AdminController extends Controller
         $taxes = Tax::where('branch_id', $branch_id)->get();
         $discounts = Discount::where('branch_id', $branch_id)->get();
         $receipts = Branch::where('id', $branch_id)->first();
-        return view('Admin.Setting')->with(['taxes' => $taxes, 'discounts' => $discounts, 'receipt' => $receipts]);
+        $paymentMethods = PaymentMethod::where('branch_id', $branch_id)->whereNotNull('payment_method')->get();
+        $orderTypes = PaymentMethod::where('branch_id', $branch_id)->whereNotNull('order_type')->get();
+        $discountTypes = PaymentMethod::where('branch_id', $branch_id)->whereNotNull('discount_type')->get();
+        return view('Admin.Setting')->with(['taxes' => $taxes, 'discounts' => $discounts, 'receipt' => $receipts, 'paymentMethods' => $paymentMethods,'orderTypes'=>$orderTypes,'discountTypes'=>$discountTypes]);
     }
 
     public function createTax(Request $request)
@@ -1214,6 +1218,100 @@ class AdminController extends Controller
         }
     }
 
+    public function createPaymentMethod(Request $request){
+        $branch_id = $request->input('branch_id');
+        $newPaymentMethod = new PaymentMethod();
+        $newPaymentMethod->payment_method = $request->payment_method;
+        $newPaymentMethod->branch_id = $branch_id;
+        $newPaymentMethod->save();
+
+        return redirect()->back()->with('success', 'Payment Method added successfully');
+    }
+    public function updatePaymentMethod(Request $request){
+        $payment_method_id = $request->input('payment_method_id');
+        $payment_methods = PaymentMethod::find($payment_method_id);
+        if ($payment_methods) {
+            $payment_methods->payment_method = $request->payment_method;
+            $payment_methods->save();
+            return redirect()->back()->with('success', 'Payment Method update successfully');
+        } else {
+            return redirect()->back()->with('error', 'Payment Method not update');
+        }
+    }
+
+    public function deletePaymentMethod($id)
+    {
+        $payment_methods = PaymentMethod::find($id);
+        if ($payment_methods) {
+            $payment_methods->delete();
+            return redirect()->back()->with('success', 'Payment Method delete successfully');
+        } else {
+            return redirect()->back()->with('error', 'Payment Method not delete');
+        }
+    }
+     public function createDiscountTypes(Request $request){
+        $branch_id = $request->input('branch_id');
+        $newDiscountType = new PaymentMethod();
+        $newDiscountType->discount_type = $request->discount_type;
+        $newDiscountType->branch_id = $branch_id;
+        $newDiscountType->save();
+
+        return redirect()->back()->with('success', 'Discount Type added successfully');
+    }
+    public function updateDiscountTypes(Request $request){
+        $discount_type_id = $request->input('discount_type_id');
+        $discountType = PaymentMethod::find($discount_type_id);
+        if ($discountType) {
+            $discountType->discount_type = $request->discount_type;
+            $discountType->save();
+            return redirect()->back()->with('success', 'Discount Type update successfully');
+        } else {
+            return redirect()->back()->with('error', 'Discount type not update');
+        }
+    }
+
+    public function deleteDiscountTypes($id)
+    {
+        $discountType = PaymentMethod::find($id);
+        if ($discountType) {
+            $discountType->delete();
+            return redirect()->back()->with('success', 'Discount Type delete successfully');
+        } else {
+            return redirect()->back()->with('error', 'Discount Type not delete');
+        }
+    }
+
+    public function createOrderTypes(Request $request){
+        $branch_id = $request->input('branch_id');
+        $newOrderType = new PaymentMethod();
+        $newOrderType->order_type = $request->order_type;
+        $newOrderType->branch_id = $branch_id;
+        $newOrderType->save();
+
+        return redirect()->back()->with('success', 'Order Type added successfully');
+    }
+    public function updateOrderTypes(Request $request){
+        $order_type_id = $request->input('order_type_id');
+        $orderType = PaymentMethod::find($order_type_id);
+        if ($orderType) {
+            $orderType->order_type = $request->order_type;
+            $orderType->save();
+            return redirect()->back()->with('success', 'Order Type update successfully');
+        } else {
+            return redirect()->back()->with('error', 'Order Type not update');
+        }
+    }
+
+    public function deleteOrderTypes($id)
+    {
+        $orderType = PaymentMethod::find($id);
+        if ($orderType) {
+            $orderType->delete();
+            return redirect()->back()->with('success', 'Order Type delete successfully');
+        } else {
+            return redirect()->back()->with('error', 'Order Type not delete');
+        }
+    }
     /*
     |---------------------------------------------------------------|
     |====================== Reports Functions ======================|

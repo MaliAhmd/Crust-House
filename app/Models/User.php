@@ -56,4 +56,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Branch::class);
     }
+    public function ownerSettings()
+    {
+        return $this->belongsTo(OwnerSetting::class);
+    }
 }

@@ -6,6 +6,8 @@ function showAddToCart(product, deals, allProducts) {
 
     const drinkFlavour = document.getElementById("drinkFlavour");
     const prodName = document.getElementById("prodName");
+    const headTitle = document.getElementById("headTitle");
+    const prodPriceSpan = document.getElementById("prodPrice");
     const productId = document.getElementById("product_id");
     const price = document.getElementById("price");
     const totalPrice = document.getElementById("totalprice");
@@ -19,6 +21,8 @@ function showAddToCart(product, deals, allProducts) {
         if (productId) productId.value = product.id;
         if (prodName)
             prodName.value = `${product.productVariation} ${product.productName}`;
+        headTitle.textContent = `${product.productName}`;
+        prodPriceSpan.textContent = `${product.productVariation}`;
         if (price) price.value = `Rs. ${product.productPrice}`;
         if (totalPrice) totalPrice.value = `Rs. ${product.productPrice}`;
 
@@ -35,6 +39,7 @@ function showAddToCart(product, deals, allProducts) {
         }
     } else {
         if (prodName) prodName.value = product.deal.dealTitle;
+        headTitle.textContent = product.deal.dealTitle;
         if (productId) productId.value = product.deal_id;
         if (price) price.value = `Rs. ${product.deal.dealDiscountedPrice}`;
         if (totalPrice)
@@ -183,6 +188,7 @@ function PizzaFlavourDropdown(optionsArray, dropdown, name) {
 
 function DrinkFlavourDropdown(optionsArray, dropdown, name) {
     if (!dropdown) return;
+    dropdown.innerHTML = "";
     const label = document.getElementById("drinkFlavourLabel");
 
     if (dropdown) dropdown.style.display = "block";
@@ -299,24 +305,22 @@ function handlePizzaCategory(
     productVariationDropdown,
     drinkFlavourDropdown
 ) {
+    product.value;
     let productVariations = [];
     let addOnsArray = [];
 
     document.getElementById("prodVariationLabel").style.display = "block";
 
-    allProducts.forEach((element) => {
+    allProducts.forEach((element, key) => {
         if (
             element.category_name.toLowerCase() === "addons" &&
             element.productName.includes("Topping")
         ) {
             addOnsArray.push(
-                `${element.productName} ${element.productVariation} (Rs. ${element.productPrice})`
+                `${element.productName}  (Rs. ${element.productPrice})`
             );
         }
-        if (
-            element.productName.toLowerCase() ===
-            product.productName.toLowerCase()
-        ) {
+        if (element.productName.toLowerCase() === product.productName.toLowerCase()) {
             productVariations.push(
                 `${element.id}-${element.productVariation} (Rs. ${element.productPrice})`
             );
@@ -411,12 +415,13 @@ function addOptionsToDropdown(optionsArray, dropdown) {
     label.textContent = "Select Variation";
     let productId = document.getElementById("product_id");
     let parts, variation, product_names;
-
     let prodName = document.getElementById("prodName");
-    let defaultOption = document.createElement("option");
-    defaultOption.text = "Default";
-    defaultOption.value = optionsArray[0];
-    dropdown.add(defaultOption);
+    let product_names_array = prodName.value.split(" ");
+
+    // let defaultOption = document.createElement("option");
+    // defaultOption.text = product_names_array[0];
+    // defaultOption.value = optionsArray[1];
+    // dropdown.add(defaultOption);
 
     for (let i = 0; i < optionsArray.length; i++) {
         let option = document.createElement("option");
@@ -432,15 +437,17 @@ function addOptionsToDropdown(optionsArray, dropdown) {
         let selectedOption = dropdown.options[dropdown.selectedIndex];
         let selectedOptionParts = selectedOption.value.split("-");
         let selectedvariation = selectedOptionParts[1].split(" ")[0];
-        let product_names_array = prodName.value.split(" ");
+
         product_names_array[0] = product_names_array[0].replace(
             product_names_array[0].split(" ")[0],
             selectedvariation
         );
+
         product_names = product_names_array.join(" ");
         prodName.value = product_names;
         productId.value = selectedOptionParts[0];
-
+        document.getElementById("prodPrice").textContent =
+            product_names_array[0];
         let totalPriceElement = document.getElementById("totalprice");
         let match = selectedOption.value.match(/Rs\. (\d+)/);
         let price = match ? match[1] : 0;
@@ -479,19 +486,15 @@ function addOnsDropdown(optionsArray, dropdown, labeltext) {
         dropdown.add(option);
     }
 
-    dropdown.addEventListener("change", () => {
+    dropdown.addEventListener("click", () => {
         document.getElementById("prodQuantity").value = "1";
         let totalPriceElement = document.getElementById("totalprice");
-
         let selectedOption = dropdown.options[dropdown.selectedIndex];
-
         let match = selectedOption.value.match(/Rs\. (\d+)/);
         let price = match ? match[1] : 0;
-
         if (selectedOption.value == "") {
             price = 0;
         }
-
         let variationprice = document.getElementById("prodVariation");
         let match1 = variationprice.value.match(/Rs\. (\d+)/);
         let price1 = match1 ? match1[1] : 0;

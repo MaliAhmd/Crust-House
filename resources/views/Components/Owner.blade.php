@@ -49,7 +49,7 @@
                     </div>
                     <div class="menuItems" id="menu8">
                         <i class='bx bxs-cog'></i>
-                        <a href="{{ route('staff') }}" onclick="setActiveMenu('menu8')" style="text-decoration: none;">
+                        <a href="{{ route('settings') }}" onclick="setActiveMenu('menu8')" style="text-decoration: none;">
                             <p class="link">Settings</p>
                         </a>
                     </div>
