@@ -49,7 +49,7 @@
             $totalbill = 0;
             $taxes = $taxes;
             $discounts = $discounts;
-
+            $maximum_discount_percentage_value = $branch_data->max_discount_percentage;
             $orderTypeArray = [];
             $discountTypeArray = [];
             foreach ($payment_methods as $value) {
@@ -67,8 +67,7 @@
                     <a id="all_category" class="category_link">All</a>
                 </div>
                 @foreach ($Categories as $category)
-                    <div
-                        onclick="selectCategory('{{ route('salesman_dash', [$category->categoryName, $id, $branch_id]) }}', this)">
+                    <div onclick="selectCategory('{{ route('salesman_dash', [$category->categoryName, $id, $branch_id]) }}', this)">
                         <a class="category_link">{{ $category->categoryName }}</a>
                     </div>
                 @endforeach
@@ -91,7 +90,7 @@
                                 $displayedProductNames[] = $product->productName;
                             @endphp
 
-                            <div class="imgbox"
+                            <div id="imageBox" class="imgbox"
                                 onclick="showAddToCart({{ json_encode($product) }} ,null, {{ json_encode($allProducts) }})">
                                 <img src="{{ asset('Images/ProductImages/' . $product->productImage) }}" alt="Product">
                                 <p class="product_name">{{ $product->productName }}</p>
@@ -106,7 +105,7 @@
                                 $displayedDealTitles[] = $deal->deal->dealTitle;
                             @endphp
                             @if ($deal->deal->dealStatus != 'not active')
-                                <div class="imgbox"
+                                <div id='imageBox' class="imgbox"
                                     onclick="showAddToCart({{ json_encode($deal) }}, {{ json_encode($Deals) }}, {{ json_encode($allProducts) }})">
                                     <img src="{{ asset('Images/DealImages/' . $deal->deal->dealImage) }}" alt="Product">
                                     <p class="product_name">{{ $deal->deal->dealTitle }}</p>
@@ -225,8 +224,8 @@
                             </div>
 
                             <div class="paymentfields"
-                                style="flex-direction: row; justify-content:center; align-items:center;">
-                                <span id="false-option">{{ $orderTypeArray[0] }}</span><label class="switch">
+                                style="flex-direction: row; justify-content:space-between; align-items:center;">
+                                <span id="false-option">{{ $orderTypeArray[0] }}&nbsp;&nbsp;</span><label class="switch">
                                     <input id="order_type" type="checkbox">
                                     <span class="slider round"></span>
                                 </label><span id="true-option">{{ $orderTypeArray[1] }}</span>
@@ -235,7 +234,7 @@
 
                             <div class="paymentfields">
                                 <label for="paymentMethod">Payment Method:</label>
-                                <div class="paymentfields" style="flex-direction: row; align-items: center;">
+                                <div class="paymentfields" style="flex-direction: row; align-items: center; justify-content:space-between;">
                                     <span id="false-option0">Cash</span>
                                     <label class="switch">
                                         <input id="paymentmethod" type="checkbox">
@@ -302,7 +301,7 @@
                                     <span id="false-option2">{{ $discountTypeArray[1] }}</span>
                                     <label class="switch">
                                         <input id="discounttype" type="checkbox" value="%"
-                                            onclick="updateTotal({{ json_encode($totalbill) }})">
+                                            onclick="updateTotalONSwitch({{ json_encode($totalbill) }})">
                                         <span class="slider round"></span>
                                     </label>
                                     <span id="true-option2">{{ $discountTypeArray[0] }}</span>
@@ -313,7 +312,8 @@
                             <div class="paymentfields" id="discountFieldDiv" style="display: none">
                                 <label for="discount">Discount Applied</label>
                                 <input style="background-color: #fff" type="number" name="discount" id="discount"
-                                    min="0" placeholder="Rupees" disabled value="0">
+                                    min="0" placeholder="Rupees" disabled value="0"
+                                    oninput="updateTotalONInput({{ json_encode($totalbill) }},{{ json_encode($maximum_discount_percentage_value) }})">
                             </div>
 
                             <div class="paymentfields" id="discountReasonDiv" style="display: none">
@@ -381,187 +381,218 @@
                 <input id="addbtn" type="submit" value="Add">
             </div>
         </form>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                let toggle = document.getElementById('order_type');
-                const falsetext = document.getElementById('false-option').textContent;
-                const truetext = document.getElementById('true-option').textContent;
-                let orderTypeHidden = document.getElementById('orderTypeHidden');
-
-                function updateHiddenInput() {
-                    orderTypeHidden.value = toggle.checked ? truetext : falsetext;
-                }
-
-                updateHiddenInput();
-
-                toggle.addEventListener('change', function() {
-                    updateHiddenInput();
-                });
-            });
-            let discountTypeInput = document.getElementById('discountType');
-            let toggleDiscountType = document.getElementById('discounttype');
-
-            function updateDiscountTypeInput(total) {
-                discountTypeInput.value = toggleDiscountType.checked ? '-' : '%';
-                let totalBill = parseFloat(document.getElementById("totalbill").value);
-                let discount = parseFloat(document.getElementById("discount").value);
-                let discountType = document.getElementById("discountType").value;
-                if (isNaN(discount)) {
-                    alert("Enter Discount Value First");
-                    return;
-                }
-
-                let discountValue;
-                if (discountType === "%") {
-                    discountValue = (discount / 100) * total;
-                    total -= discountValue;
-                } else {
-                    total -= discount;
-                }
-
-                total = total.toFixed(2);
-                document.getElementById("totalbill").value = `Rs ${total}`;
-            }
-
-            function updateTotal(total) {
-                updateDiscountTypeInput(total);
-
-            };
-
-            document.addEventListener('DOMContentLoaded', function() {
-                let togglePaymentMethod = document.getElementById('paymentmethod');
-                const falsetext1 = document.getElementById('false-option0').textContent;
-                const truetext1 = document.getElementById('true-option0').textContent;
-                let paymentMethodSelect = document.getElementById('paymentMethod');
-                let removedCashOption = null;
-
-                function updatePaymentMethod() {
-                    if (togglePaymentMethod.checked) {
-                        paymentMethodSelect.style.display = 'flex';
-                        for (let i = paymentMethodSelect.options.length - 1; i >= 0; i--) {
-                            if (paymentMethodSelect.options[i].value.toLowerCase() === 'cash') {
-                                removedCashOption = paymentMethodSelect.options[i];
-                                paymentMethodSelect.remove(i);
-                            }
-                        }
-                        paymentMethodSelect.value = truetext1;
-                        if (!paymentMethodSelect.value) {
-                            paymentMethodSelect.selectedIndex = 0;
-                        }
-
-                    } else {
-                        paymentMethodSelect.style.display = 'none';
-                        paymentMethodSelect.value = falsetext1;
-                        if (removedCashOption) {
-                            let cashOption = document.createElement('option');
-                            cashOption.value = removedCashOption.value;
-                            cashOption.textContent = removedCashOption.textContent;
-                            paymentMethodSelect.add(cashOption, paymentMethodSelect.options[
-                                0]);
-                            removedCashOption = null;
-                        }
-                    }
-                }
-
-
-                updatePaymentMethod();
-
-                togglePaymentMethod.addEventListener('change', function() {
-                    updatePaymentMethod();
-                });
-            });
-
-            document.getElementById('deals_seperate_section_imgDiv').addEventListener('wheel', function(event) {
-                event.preventDefault();
-                this.scrollLeft += event.deltaY;
-            });
-
-            function selectCategory(route, element) {
-                let categoryLinks = document.getElementsByClassName('category_link');
-                for (let i = 0; i < categoryLinks.length; i++) {
-                    categoryLinks[i].classList.remove('selected');
-                }
-                let link = element.getElementsByTagName('a')[0];
-                link.classList.add('selected');
-                document.cookie = "selected_category=" + link.textContent.trim() + "; path=/";
-                window.location = route;
-            }
-
-            function getCookie(name) {
-                let value = "; " + document.cookie;
-                let parts = value.split("; " + name + "=");
-                if (parts.length == 2) return parts.pop().split(" ;").shift();
-            }
-            window.onload = function() {
-                let
-                    selectedCategory = getCookie("selected_category");
-                let
-                    categoryLinks = document.getElementsByClassName(
-                        'category_link');
-                if (!selectedCategory) {
-                    categoryLinks[0].classList.add('selected');
-                    return;
-                }
-                for (let i = 0; i < categoryLinks.length; i++) {
-                    if (categoryLinks[i].textContent.trim() === selectedCategory) {
-                        categoryLinks[i].classList.add('selected');
-                        break;
-                    }
-                }
-            };
-
-            function getCookie(name) {
-                let value = "; " + document.cookie;
-                let parts = value.split("; " + name + "=");
-                if (parts.length === 2) {
-                    return parts.pop().split(" ;").shift();
-                }
-            }
-
-            // function updateTotal(total) {
-            //     let totalBill = parseFloat(document.getElementById("totalbill").value);
-            //     let discount = parseFloat(document.getElementById("discount").value);
-            //     // let discountType = document.getElementById("discountType").value;
-            //     console.log(discountType.value);
-            //     if (isNaN(discount)) {
-            //         alert("Enter Discount Value First");
-            //         return;
-            //     }
-
-            //     let discountValue;
-            //     if (discountType.value === "%") {
-            //         discountValue = (discount / 100) * total;
-            //         total -= discountValue;
-            //         updateDiscountTypeInput();
-            //     } else {
-            //         total -= discount;
-            //         // updateDiscountTypeInput();
-            //     }
-
-            //     total = total.toFixed(2);
-            //     document.getElementById("totalbill").value = `Rs ${total}`;
-            // }
-
-            function calculateChange() {
-                let totalBillStr = document.getElementById('totalbill').value;
-                let
-                    totalBill = parseFloat(totalBillStr.replace('Rs', '').trim());
-                let
-                    receivedBill = parseFloat(document.getElementById('recievecash').value);
-                if (isNaN(totalBill) ||
-                    isNaN(receivedBill)) {
-                    return;
-                }
-                let change = receivedBill - totalBill;
-                if (change < 0) {
-                    document.getElementById('proceed').disabled = true;
-                } else {
-                    document.getElementById('proceed').disabled = false;
-                }
-                document.getElementById('change').value = change.toFixed(2);
-            }
-        </script>
-
     </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let toggle = document.getElementById('order_type');
+            const falsetext = document.getElementById('false-option').textContent;
+            const truetext = document.getElementById('true-option').textContent;
+            let orderTypeHidden = document.getElementById('orderTypeHidden');
+
+            function updateHiddenInput() {
+                orderTypeHidden.value = toggle.checked ? truetext : falsetext;
+            }
+
+            updateHiddenInput();
+
+            toggle.addEventListener('change', function() {
+                updateHiddenInput();
+            });
+        });
+        let discountTypeInput = document.getElementById('discountType');
+        let toggleDiscountType = document.getElementById('discounttype');
+
+        function updateDiscountTypeInput(total) {
+            discountTypeInput.value = toggleDiscountType.checked ? '-' : '%';
+            let totalBill = parseFloat(document.getElementById("totalbill").value);
+            let discount = parseFloat(document.getElementById("discount").value);
+            let discountType = document.getElementById("discountType").value;
+            if (isNaN(discount)) {
+                alert("Enter Discount Value First");
+                return;
+            }
+
+            let discountValue;
+            if (discountType === "%") {
+                discountValue = (discount / 100) * total;
+                total -= discountValue;
+            } else {
+                total -= discount;
+            }
+
+            total = total.toFixed(2);
+            document.getElementById("totalbill").value = `Rs ${total}`;
+        }
+
+        function updateTotalONSwitch(total) {
+            updateDiscountTypeInput(total);
+
+        };
+
+        function updateTotalONInput(total, discountLimit) {
+            let discount = parseFloat(document.getElementById("discount").value);
+            let discountType = document.getElementById("discountType").value;
+            if (isNaN(discount)) {
+                alert("Enter Discount Value First");
+                document.getElementById("discount").focus();
+                return;
+            }
+
+            let discountValue;
+            if (discountType === "%") {
+                if (discount > parseFloat(discountLimit)) {
+                    alert(`Discount in Percentage should be less then ${discountLimit}.`)
+                    document.getElementById("discount").focus();
+                    return;
+                }
+                discountValue = (discount / 100) * total;
+                total -= discountValue;
+            } else {
+                total -= discount;
+            }
+
+            total = total.toFixed(2);
+            document.getElementById("totalbill").value = `Rs ${total}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let togglePaymentMethod = document.getElementById('paymentmethod');
+            const falsetext1 = document.getElementById('false-option0').textContent;
+            const truetext1 = document.getElementById('true-option0').textContent;
+            let paymentMethodSelect = document.getElementById('paymentMethod');
+            let removedCashOption = null;
+
+            function updatePaymentMethod() {
+                if (togglePaymentMethod.checked) {
+                    paymentMethodSelect.style.display = 'flex';
+                    for (let i = paymentMethodSelect.options.length - 1; i >= 0; i--) {
+                        if (paymentMethodSelect.options[i].value.toLowerCase() === 'cash') {
+                            removedCashOption = paymentMethodSelect.options[i];
+                            paymentMethodSelect.remove(i);
+                        }
+                    }
+                    paymentMethodSelect.value = truetext1;
+                    if (!paymentMethodSelect.value) {
+                        paymentMethodSelect.selectedIndex = 0;
+                    }
+
+                } else {
+                    paymentMethodSelect.style.display = 'none';
+                    paymentMethodSelect.value = falsetext1;
+                    if (removedCashOption) {
+                        let cashOption = document.createElement('option');
+                        cashOption.value = removedCashOption.value;
+                        cashOption.textContent = removedCashOption.textContent;
+                        paymentMethodSelect.add(cashOption, paymentMethodSelect.options[
+                            0]);
+                        removedCashOption = null;
+                    }
+                }
+            }
+
+
+            updatePaymentMethod();
+
+            togglePaymentMethod.addEventListener('change', function() {
+                updatePaymentMethod();
+            });
+        });
+
+        document.getElementById('deals_seperate_section_imgDiv').addEventListener('wheel', function(event) {
+            event.preventDefault();
+            this.scrollLeft += event.deltaY;
+        });
+
+        function selectCategory(route, element) {
+        let categoryLinks = document.getElementsByClassName('category_link');
+        for (let i = 0; i < categoryLinks.length; i++) {
+            categoryLinks[i].classList.remove('selected');
+        }
+        let link = element.getElementsByTagName('a')[0];
+        link.classList.add('selected');
+        document.cookie = "selected_category=" + link.textContent.trim() + "; path=/";
+        window.location = route;
+    }
+
+    function getCookie(name) {
+        let value = "; " + document.cookie;
+        let parts = value.split("; " + name + "=");
+        if (parts.length == 2) return parts.pop().split(";").shift();
+    }
+
+    window.onload = function() {
+        let selectedCategory = getCookie("selected_category");
+        let categoryLinks = document.getElementsByClassName('category_link');
+        if (!selectedCategory) {
+            categoryLinks[0].classList.add('selected');
+            return;
+        }
+        for (let i = 0; i < categoryLinks.length; i++) {
+            if (categoryLinks[i].textContent.trim() === selectedCategory) {
+                categoryLinks[i].classList.add('selected');
+                break;
+            }
+        }
+    };
+
+        // function updateTotal(total) {
+        //     let totalBill = parseFloat(document.getElementById("totalbill").value);
+        //     let discount = parseFloat(document.getElementById("discount").value);
+        //     // let discountType = document.getElementById("discountType").value;
+        //     console.log(discountType.value);
+        //     if (isNaN(discount)) {
+        //         alert("Enter Discount Value First");
+        //         return;
+        //     }
+
+        //     let discountValue;
+        //     if (discountType.value === "%") {
+        //         discountValue = (discount / 100) * total;
+        //         total -= discountValue;
+        //         updateDiscountTypeInput();
+        //     } else {
+        //         total -= discount;
+        //         // updateDiscountTypeInput();
+        //     }
+
+        //     total = total.toFixed(2);
+        //     document.getElementById("totalbill").value = `Rs ${total}`;
+        // }
+
+        function calculateChange() {
+            let totalBillStr = document.getElementById('totalbill').value;
+            let
+                totalBill = parseFloat(totalBillStr.replace('Rs', '').trim());
+            let
+                receivedBill = parseFloat(document.getElementById('recievecash').value);
+            if (isNaN(totalBill) ||
+                isNaN(receivedBill)) {
+                return;
+            }
+            let change = receivedBill - totalBill;
+            if (change < 0) {
+                document.getElementById('proceed').disabled = true;
+            } else {
+                document.getElementById('proceed').disabled = false;
+            }
+            document.getElementById('change').value = change.toFixed(2);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search_bar');
+        const productDivs = document.querySelectorAll('#imageBox');
+
+        searchInput.addEventListener('input', function() {
+            const filter = searchInput.value.toLowerCase();
+            productDivs.forEach(function(div) {
+                const productName = div.querySelector('.product_name').textContent.toLowerCase();
+                if (productName.includes(filter)) {
+                    div.style.display = 'flex';
+                } else {
+                    div.style.display = 'none';
+                }
+            });
+        });
+    });
+    </script>
 @endsection

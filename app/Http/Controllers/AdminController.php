@@ -1191,6 +1191,9 @@ class AdminController extends Controller
         $branch_id = $request->input('branch_id');
         $newReceipt = Branch::find($branch_id);
         $newReceipt->receipt_message = $request->receipt_message;
+        $newReceipt->branch_web_address = $request->branch_web_address;
+        $newReceipt->feedback = $request->feedback;
+        $newReceipt->receipt_tagline = $request->receipt_tagline;
         $newReceipt->save();
 
         return redirect()->back()->with('success', 'Message added successfully');
@@ -1201,6 +1204,9 @@ class AdminController extends Controller
         $receipt = Branch::find($receipt_id);
         if ($receipt) {
             $receipt->receipt_message = $request->receipt_message;
+            $receipt->branch_web_address = $request->branch_web_address;
+            $receipt->feedback = $request->feedback;
+            $receipt->receipt_tagline = $request->receipt_tagline;
             $receipt->save();
             return redirect()->back()->with('success', 'Message update successfully');
         } else {
@@ -1211,7 +1217,11 @@ class AdminController extends Controller
     {
         $receipt = Branch::find($id);
         if ($receipt) {
-            $receipt->delete();
+            $receipt->receipt_message = null;
+            $receipt->branch_web_address = null;
+            $receipt->feedback = null;
+            $receipt->receipt_tagline = null;
+            $receipt->save();
             return redirect()->back()->with('success', 'Message delete successfully');
         } else {
             return redirect()->back()->with('error', 'Message not delete');
@@ -1281,6 +1291,38 @@ class AdminController extends Controller
         }
     }
 
+    public function createDiscountValue(Request $request){
+        $branch_id = $request->input('branch_id');
+        $newDiscountValue = Branch::find($branch_id);
+        $newDiscountValue->max_discount_percentage = $request->max_discount_percentage;
+        $newDiscountValue->save();
+
+        return redirect()->back()->with('success', 'Value added successfully');
+    }
+    public function updateDiscountValue(Request $request){
+        $discount_value_id = $request->input('discount_value_id');
+        $discountValue = Branch::find($discount_value_id);
+        if ($discountValue) {
+            $discountValue->max_discount_percentage = $request->max_discount_percentage;
+            $discountValue->save();
+            return redirect()->back()->with('success', 'Value update successfully');
+        } else {
+            return redirect()->back()->with('error', 'Value not update');
+        }
+    }
+
+    public function deleteDiscountValue($id)
+    {
+        $discountValue = Branch::find($id);
+        if ($discountValue) {
+            $discountValue->max_discount_percentage = 20;
+            $discountValue->save();
+            return redirect()->back()->with('success', 'Value delete successfully');
+        } else {
+            return redirect()->back()->with('error', 'Value not delete');
+        }
+    }
+
     public function createOrderTypes(Request $request){
         $branch_id = $request->input('branch_id');
         $newOrderType = new PaymentMethod();
@@ -1301,7 +1343,6 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Order Type not update');
         }
     }
-
     public function deleteOrderTypes($id)
     {
         $orderType = PaymentMethod::find($id);
@@ -1312,6 +1353,8 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Order Type not delete');
         }
     }
+
+
     /*
     |---------------------------------------------------------------|
     |====================== Reports Functions ======================|

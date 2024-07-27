@@ -8,6 +8,7 @@ use App\Models\Deal;
 use App\Models\Handler;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Branch;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\User;
@@ -30,6 +31,7 @@ class SalesmanController extends Controller
 
         $products = Product::where('branch_id', $branch_id)->get();
         $categories = Category::where('branch_id', $branch_id)->get();
+        $branch = Branch::find($branch_id);
 
         $discounts = Discount::where('branch_id', $branch_id)->get();
         $taxes = Tax::where('branch_id', $branch_id)->get();
@@ -71,7 +73,8 @@ class SalesmanController extends Controller
             'cartProducts' => $cartproducts,
             'taxes' => $taxes,
             'discounts' => $discounts,
-            'payment_methods' => $payment_methods
+            'payment_methods' => $payment_methods,
+            'branch_data' => $branch
         ]);
     }
     public function salesmanCategoryDashboard($categoryName, $id, $branch_id)
@@ -84,6 +87,7 @@ class SalesmanController extends Controller
         $categories = Category::where('branch_id', $branch_id)->get();
 
         $cartproducts = Cart::where('salesman_id', $id)->get();
+        $branch = Branch::find($branch_id);
 
         $discounts = Discount::where('branch_id', $branch_id)->get();
         $taxes = Tax::where('branch_id', $branch_id)->get();
@@ -107,7 +111,8 @@ class SalesmanController extends Controller
                     'cartProducts' => $cartproducts,
                     'taxes' => $taxes,
                     'discounts' => $discounts,
-                    'payment_methods' => $payment_methods
+                    'payment_methods' => $payment_methods,
+                    'branch_data' => $branch
                 ]);
             } else {
                 $products = Product::where('category_name', $categoryName)->get();
@@ -121,7 +126,8 @@ class SalesmanController extends Controller
                     'cartProducts' => $cartproducts,
                     'taxes' => $taxes,
                     'discounts' => $discounts,
-                    'payment_methods' => $payment_methods
+                    'payment_methods' => $payment_methods,
+                    'branch_data' => $branch
                 ]);
             }
         }
@@ -227,7 +233,7 @@ class SalesmanController extends Controller
             $dompdf = new Dompdf();
             $dompdf->loadHtml($customerRecipt);
             $height = $dompdf->getCanvas()->get_height();
-            $dompdf->setPaper([0, 0, 300, $height / 1.5], 'portrait');
+            $dompdf->setPaper([0, 0, 300, $height / 2], 'portrait');
             $dompdf->render();
             $output = $dompdf->output();
             $pdfFileName = $order->order_number . '.pdf';

@@ -39,7 +39,9 @@
                 {{ session('error') }}
             </div>
         @endif
-
+        @php
+            $owner_id = session('owner_id');
+        @endphp
         <div class="newBranch">
             <button type="button" onclick="addNewBranch()">Add New Branch</button>
         </div>
@@ -83,6 +85,7 @@
             <h3>Add New Branch</h3>
             <hr>
             <!-- Add this to your addNewBranch form -->
+            <input type="hidden" name="owner_id" value="{{$owner_id}}">
             <div class="states-cities inputdivs">
                 <div class="states">
                     <label for="branchstate">Select State</label>

@@ -10,8 +10,7 @@
 @section('main')
 
     @php
-        $id = session('id');
-        $branch_id = session('branch_id');
+        $owner_id = session('owner_id');
     @endphp
 
     <main id="settings">
@@ -38,25 +37,26 @@
 
             <button onclick="UpdateOwnerOverlay()">Update Logo/Color</button>
             <div id="updateOwnerSettingOverlay"></div>
-            <form action="" class="updateOwnerSetting" id="updateOwnerSetting" method="post"
-                enctype="multipart/form-data">
+            <form action="{{ route('UpdateColorAndLogo') }}" class="updateOwnerSetting" id="updateOwnerSetting"
+                method="post" enctype="multipart/form-data">
                 @csrf
+                <input type="hidden" name="owner_id" value="{{$owner_id}}">
                 <h3>Update Logo and Theme</h3>
                 <hr>
                 <div class="inputdivs">
                     <div id="logoDiv">
                         <div class="image" id="imagePreview">
-                            <img src="{{ asset('Images/fbrLogo.jpg') }}">
+                            <img src="{{ asset('Images/Logos/{{$settingsData}}) }}">
                         </div>
                         <label id="addImg" for="logoPic">Update Logo</label>
                         <input style="display: none;" type="file" id="logoPic" name="logoPic" accept="image/*"
-                        onchange="displayImage()">
+                            onchange="displayImage()">
                     </div>
                 </div>
-                
+
                 <div class="inputdivs">
                     <label for="primaryColor">Primery Color</label>
-                    <input type="color" name="primery_color" id="primaryColor">
+                    <input type="color" name="primary_color" id="primaryColor">
                 </div>
 
                 <div class="inputdivs">
@@ -64,9 +64,9 @@
                     <input type="color" name="secondary_color" id="secondaryColor">
                 </div>
 
-                <div class="form_btns">
-                    <button >Close</button>
-                    <button >Update</button>
+                <div id="form_btns">
+                    <button type="button" id="form_btns-close" onclick="closeUpdateOwnerSetting()">Close</button>
+                    <button id="form_btns-update">Update</button>
                 </div>
             </form>
         </div>
@@ -119,15 +119,16 @@
         }
 
         function displayImage() {
-            const input = document.getElementById('logoPic');
+            let input = document.getElementById('logoPic');
             const preview = document.getElementById('imagePreview');
 
-            if (input.files && input.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
+            if (input.files?.[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
                     preview.innerHTML = '<img src="' + e.target.result + '" alt="Logo Picture">';
                 };
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(file);
             }
         }
     </script>

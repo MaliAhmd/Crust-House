@@ -20,10 +20,9 @@
                 <img src="{{ asset('Images/image 1.png') }}" alt="Logo Here">
             </div>
 
-            {{-- <div class="searchbar">
-                <i class='bx bx-search'></i>
-                <input type="text" id="search" placeholder="Search">
-            </div> --}}
+            <div class="search_bar_div">
+                <input type="text" id="search_bar" name="search" placeholder="Search.." style="background-image: url('{{ asset('Images/search.png') }}');">
+            </div>
 
             <div class="profilepanel">
                 <div class="profile">

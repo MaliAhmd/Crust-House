@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('owner_settings', function (Blueprint $table) {
             $table->id();
             $table->string('pos_logo');
-            $table->string('pos_color');
+            $table->string('pos_primary_color');
+            $table->string('pos_secondary_color');
 
             $table->unsignedBigInteger('owner_id')->nullable();
             $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');

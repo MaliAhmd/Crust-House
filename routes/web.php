@@ -36,6 +36,7 @@ Route::get('/showReports', [OwnerController::class, 'viewReports'])->name('showR
 Route::get('/viewReportPage/{branch_id}', [OwnerController::class, 'viewReportPage'])->name('viewReportPage');
 
 Route::get('/settings', [OwnerController::class, 'viewSettings'])->name('settings');
+Route::post('/UpdateColorAndLogo', [OwnerController::class, 'UpdateColorAndLogo'])->name('UpdateColorAndLogo');
 /*
 |---------------------------------------------------------------|
 |======================= Branch Routes =========================|
@@ -190,6 +191,10 @@ Route::get('/deleteDiscountTypes/{id}', [AdminController::class,'deleteDiscountT
 Route::post('/createOrderTypes', [AdminController::class,'createOrderTypes'])->name('createOrderTypes');
 Route::post('/updateOrderTypes', [AdminController::class,'updateOrderTypes'])->name('updateOrderTypes');
 Route::get('/deleteOrderTypes/{id}', [AdminController::class,'deleteOrderTypes'])->name('deleteOrderTypes');
+
+Route::post('/createDiscountValue', [AdminController::class,'createDiscountValue'])->name('createDiscountValue');
+Route::post('/updateDiscountValue', [AdminController::class,'updateDiscountValue'])->name('updateDiscountValue');
+Route::get('/deleteDiscountValue/{id}', [AdminController::class,'deleteDiscountValue'])->name('deleteDiscountValue');
 
 /*
 |---------------------------------------------------------------|

@@ -70,6 +70,7 @@ main {
 #discountTypeOverlay,
 #receiptOverlay,
 #orderTypeOverlay,
+#discountValueOverlay,
 #paymentMethodOverlay,
 #confirmDeletionOverlay {
     position: fixed;
@@ -86,6 +87,7 @@ main {
 #discount,
 #paymentMethod,
 #discountType,
+#discountValue,
 #orderType,
 #receipt,
 .confirmDeletion {
@@ -106,6 +108,7 @@ main {
 #paymentMethod h3,
 #discountType h3,
 #orderType h3,
+#discountValue h3,
 #discount h3 {
     margin: 0;
     padding: 1vw 2vw;
@@ -117,6 +120,7 @@ main {
 #receipt hr,
 #discountType hr,
 #orderType hr,
+#discountValue hr,
 #paymentMethod hr,
 #discount hr {
     border: 1px solid #9b9b9b;

@@ -53,7 +53,7 @@
                 $todayTotalSales = 0.0;
                 foreach ($totalOrders as $order) {
                     $orderDate = $order->created_at->format('m/d/y');
-                    if ($orderDate == $todayDate) {
+                    if ($orderDate == $todayDate && $order->status == 1) {
                         $order_bill = (float) str_replace('Rs. ', '', $order->total_bill);
                         $todayTotalSales += $order_bill;
                     }

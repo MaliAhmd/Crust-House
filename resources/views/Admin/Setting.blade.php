@@ -212,21 +212,39 @@
             <div id="receipt">
                 <h3>Receipt Settings</h3>
                 <hr>
-                @if ($receipt->receipt_message !== null)
+                @if (
+                    $receipt->receipt_message != null ||
+                        $receipt->branch_web_address != null ||
+                        $receipt->feedback != null ||
+                        $receipt->receipt_tagline != null)
                     <div class="container-fields">
                         @php
                             $message = $receipt->receipt_message;
+                            $branch_web_address = $receipt->branch_web_address;
+                            $feedback = $receipt->feedback;
+                            $receipt_tagline = $receipt->receipt_tagline;
                         @endphp
                         <form action="{{ route('updateReceipt') }}" enctype="multipart/form-data" method="POST">
                             @csrf
                             <input type="hidden" name="receipt_id" value="{{ $receipt->id }}">
 
-                            <div style="width: 95%; margin:auto;" class="inputdivs">
+                            <div style="width: 50%; margin:auto;" class="inputdivs">
                                 <label for="receipt_message">Update Receipt Message</label>
-                                <textarea name="receipt_message" id="receipt_message" style="resize: none; text-align: left;" cols="30"
-                                    rows="10" required>
-                                    {{ $message }}
-                                </textarea>
+                                <input name="receipt_message" id="receipt_message" required value="{{ $message }}">
+                            </div>
+                            <div style="width: 50%; margin:auto;" class="inputdivs">
+                                <label for="branch_web_address">Update Branch Web Address</label>
+                                <input type="text" name="branch_web_address" id="branch_web_address"
+                                    value="{{ $branch_web_address }}">
+                            </div>
+                            <div style="width: 50%; margin:auto;" class="inputdivs">
+                                <label for="feedback">Update Feedback Message</label>
+                                <input type="text" name="feedback" id="feedback" value="{{ $feedback }}">
+                            </div>
+                            <div style="width: 50%; margin:auto;" class="inputdivs">
+                                <label for="receipt_tagline">Update Receipt Tag Line</label>
+                                <input type="text" name="receipt_tagline" id="receipt_tagline"
+                                    value="{{ $receipt_tagline }}">
                             </div>
 
                             <div class="forms-btns">
@@ -247,10 +265,25 @@
                         <input type="hidden" name="admin_id" value="{{ $id }}">
                         <input type="hidden" name="branch_id" value="{{ $branch_id }}">
 
-                        <div style="width: 95%; margin:auto; justify-content:center;" class="inputdivs">
+                        <div style="width: 50%; margin:auto; justify-content:center;" class="inputdivs">
                             <label for="new_receipt_message">Add Receipt Message</label>
-                            <textarea name="receipt_message" id="new_receipt_message" style="resize: none;" cols="10" rows="10"
-                                required placeholder="Add Message to Receipt"></textarea>
+                            <textarea name="receipt_message" id="new_receipt_message" style="resize: none;"
+                                placeholder="Add Message to Receipt"></textarea>
+                        </div>
+
+                        <div style="width: 50%; margin:auto; justify-content:center;" class="inputdivs">
+                            <label for="branch_web_address">Add Branch Web Address</label>
+                            <input type="text" name="branch_web_address" id="branch_web_address">
+                        </div>
+
+                        <div style="width: 50%; margin:auto; justify-content:center;" class="inputdivs">
+                            <label for="feedback">Add Feedback Message</label>
+                            <input type="text" name="feedback" id="feedback">
+                        </div>
+
+                        <div style="width: 50%; margin:auto; justify-content:center;" class="inputdivs">
+                            <label for="receipt_tagline">Add Receipt Tag Line</label>
+                            <input type="text" name="receipt_tagline" id="receipt_tagline">
                         </div>
 
                         <div class="forms-btns">
@@ -332,7 +365,7 @@
             </div>
             {{--  
             |---------------------------------------------------------------|
-            |================= Discount & Order Type Overlay ===============|
+            |==================== Discount Type Overlay ====================|
             |---------------------------------------------------------------|
             --}}
             <button onclick="showDiscountTypeOverlay()">Discount Type Settings</button>
@@ -343,7 +376,8 @@
                 @if ($discountTypes)
                     <div class="container-fields">
                         @foreach ($discountTypes as $type)
-                            <form id="texFields" action="{{ route('updateDiscountTypes') }}" enctype="multipart/form-data" method="POST">
+                            <form id="texFields" action="{{ route('updateDiscountTypes') }}"
+                                enctype="multipart/form-data" method="POST">
                                 @csrf
                                 <input type="hidden" name="discount_type_id" value="{{ $type->id }}">
                                 <div class="inputdivs">
@@ -399,7 +433,11 @@
                     </form>
                 @endif
             </div>
-
+            {{--  
+            |---------------------------------------------------------------|
+            |====================  Order Type Overlay ======================|
+            |---------------------------------------------------------------|
+            --}}
             <button onclick="showOrderTypeOverlay()">Order Type Settings</button>
             <div id="orderTypeOverlay"></div>
             <div id="orderType">
@@ -408,7 +446,8 @@
                 @if ($orderTypes)
                     <div class="container-fields">
                         @foreach ($orderTypes as $oType)
-                            <form id="texFields" action="{{ route('updateOrderTypes') }}" enctype="multipart/form-data" method="POST">
+                            <form id="texFields" action="{{ route('updateOrderTypes') }}" enctype="multipart/form-data"
+                                method="POST">
                                 @csrf
                                 <input type="hidden" name="order_type_id" value="{{ $oType->id }}">
                                 <div class="inputdivs">
@@ -463,7 +502,67 @@
                     </form>
                 @endif
             </div>
+
+            {{--  
+            |---------------------------------------------------------------|
+            |==================== Discount Value Overlay ===================|
+            |---------------------------------------------------------------|
+            --}}
+
+            <button onclick="showDiscountValueOverlay()">Discount Value Settings</button>
+            <div id="discountValueOverlay"></div>
+            <div id="discountValue">
+                <h3>Discount Value Settings</h3>
+                <hr>
+                @if ($receipt->max_discount_percentage != 20.0)
+                    <div class="container-fields">
+                        @php
+                            $discount_percentage = $receipt->max_discount_percentage;
+                        @endphp
+                        <form action="{{ route('updateDiscountValue') }}" enctype="multipart/form-data" method="POST">
+                            @csrf
+                            <input type="hidden" name="discount_value_id" value="{{ $receipt->id }}">
+
+                            <div style="width: 50%; margin:auto;" class="inputdivs">
+                                <label for="discount_percentage_value">Update Discount Percentage Value</label>
+                                <input type="number" name="max_discount_percentage" id="discount_percentage_value"
+                                    value="{{ $discount_percentage }}" min="0" step="any" required>
+                            </div>
+
+                            <div class="forms-btns">
+                                <button type="button" id="cancel"
+                                    onclick="closeDiscountValueOverlay()">Cancel</button>
+                                <button style="height: 3.5vw;" class="add" type="submit">
+                                    Update
+                                </button>
+                                <button style="height: 3.5vw;" class="deleteTax" type="button"
+                                    onclick="showConfirmDelete('{{ route('deleteDiscountValue', $receipt->id) }}')">
+                                    Delete
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                @else
+                    <form method="POST" action="{{ route('createDiscountValue') }}" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="admin_id" value="{{ $id }}">
+                        <input type="hidden" name="branch_id" value="{{ $branch_id }}">
+
+                        <div style="width: 50%; margin:auto; justify-content:center;" class="inputdivs">
+                            <label for="discount_percentage_values">Add Discount Percentage Value</label>
+                            <input type="number" name="max_discount_percentage" id="discount_percentage_values"
+                                min="0" step="any" required>
+                        </div>
+
+                        <div class="forms-btns">
+                            <button type="button" id="cancel" onclick="closeDiscountValueOverlay()">Cancel</button>
+                            <input class="add" type="submit" value="Add">
+                        </div>
+                    </form>
+                @endif
+            </div>
         </div>
+
         {{--      
             |---------------------------------------------------------------|
             |==================== Confirm Delete Overlay ===================|
@@ -550,6 +649,16 @@
         function closeOrderTypeOverlay() {
             document.getElementById('orderTypeOverlay').style.display = 'none';
             document.getElementById('orderType').style.display = 'none';
+        }
+
+        function showDiscountValueOverlay() {
+            document.getElementById('discountValueOverlay').style.display = 'block';
+            document.getElementById('discountValue').style.display = 'flex';
+        }
+
+        function closeDiscountValueOverlay() {
+            document.getElementById('discountValueOverlay').style.display = 'none';
+            document.getElementById('discountValue').style.display = 'none';
         }
 
         function showConfirmDelete(deleteUrl) {

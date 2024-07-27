@@ -121,7 +121,7 @@
         date_default_timezone_set('Asia/Karachi');
         $orderData = $orderData;
         $date_time = $orderData->created_at;
-        $date = date('F d, Y', strtotime($date_time));
+        $date = date('M d, Y', strtotime($date_time));
         $time = date('g:i A', strtotime($date_time));
 
         $subtotal = 0.0;
@@ -138,33 +138,36 @@
             <div class="address">Address :{{ $orderData->salesman->branch->address }}</div>
             <br>
             <div class="detail">
-                <p style="display:inline-block; width:66%;">
-                    Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : {{ $date }}</p><p style="display:inline-block; width:32%;">Time : {{ $time }}</p>
+                <p style="display:inline-block; width:62%;">
+                    Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : {{ $date }}</p>
+                <p style="display:inline-block; width:33%;">Time : {{ $time }}</p>
             </div>
             {{-- <div class="detail"> Time : {{ $time }}</div> --}}
             <div class="detail">
-                <p style="display:inline-block; width:66%;;">ORDER TYPE &nbsp;:
-                    {{ $orderData->ordertype }}</p><p style="display:inline-block; width:32%;">Order:
+                <p style="display:inline-block; width:62%;;">ORDER TYPE &nbsp;:
+                    {{ $orderData->ordertype }}</p>
+                <p style="display:inline-block; width:33%;">Order:
                     {{ $orderData->order_number }}</p>
             </div>
 
             {{-- <div class="detail"> ORDER TYPE: {{ $orderData->ordertype }}</div> --}}
             <div class="detail cashier">ASSISTED BY&nbsp;: {{ $orderData->salesman->name }}</div>
+            <div class="detail ">PAYMENT MTD&nbsp;: {{ $orderData->payment_method }}</div>
 
             {{-- <div class="detail ordernumber">Order #:{{ $orderData->order_number }} </div> --}}
             <div class="detail" style="text-align: center; margin-top:10px;">Free Delivery</div>
 
-            <div class="transactionDetails" >
+            <div class="transactionDetails">
                 <table>
                     <thead>
                         <tr>
-                            <th>Sr#</th>
+                            <th>Sr.#</th>
                             <th style="width: 180px;">ITEM NAME</th>
                             <th>QTY</th>
-                            <th>PRICE<span style="font-size:8px">(RS)</span></th>
+                            <th>PRICE(Rs)</th>
                         </tr>
                     </thead>
-                    
+
                     <tbody>
                         @foreach ($products as $i => $item)
                             @php
@@ -174,7 +177,7 @@
 
                             @endphp
                             <tr>
-                                <td style="text-align: left">{{ $i + 1 }}</td>
+                                <td style="text-align: left">{{ $i + 1 }}.</td>
                                 @if ($item->addons)
                                     <td style="text-align: left">{{ $item->product_name }} with {{ $item->addons }}</td>
                                 @else
@@ -191,13 +194,16 @@
             {{-- <div class="detail" style="text-align: center; margin-bottom:15px;"> Recipt #
                 {{ $orderData->order_number }} </div> --}}
             <div class="detail">
-                <p style="display:inline-block; width:45%;">ORIGINAL AMOUNT &nbsp;&nbsp;:</p> <p style="display:inline-block;">Rs. {{ $subtotal }}</p>
+                <p style="display:inline-block; width:45%;">ORIGINAL AMOUNT &nbsp;&nbsp;:</p>
+                <p style="display:inline-block;">Rs. {{ $subtotal }}</p>
             </div>
             {{-- <div class="detail">TAXES: {{ $orderData->taxes }}</div> --}}
             @if ($orderData->discount != 0)
                 <div class="detail">
                     <p style="display:inline-block; width:45%;">DISCOUNT APPLIED &nbsp;:</p>
-                    <p style="display:inline-block;">{{ $orderData->discount_type == '%' ? $orderData->discount . '%' : 'Rs ' . $orderData->discount }}</p>
+                    <p style="display:inline-block;">
+                        {{ $orderData->discount_type == '%' ? $orderData->discount . '%' : 'Rs ' . $orderData->discount }}
+                    </p>
                 </div>
             @endif
             <div class="detail" style=" display: block; width:100%;">
@@ -209,9 +215,13 @@
             <div class="detail">
                 <p style="display:inline-block; width:45%;">CASH TENDERED
                     &nbsp;&nbsp;&nbsp;&nbsp;:</p>
-                <p style="display:inline-block;">RS. {{ $orderData->received_cash }}</p>
+                <p style="display:inline-block;">Rs. {{ $orderData->received_cash }}</p>
             </div>
-            <div class="detail"><p style="display:inline-block; width:45%;">BALANCE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</p> <p style="display:inline-block;">Rs. {{ $orderData->return_change }}</p> </div>
+            <div class="detail">
+                <p style="display:inline-block; width:45%;">BALANCE
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</p>
+                <p style="display:inline-block;">Rs. {{ $orderData->return_change }}</p>
+            </div>
             {{-- <div class="returnPolicy bold">
                             Returns with receipt, subject to CVS Return Policy, thru 08/30/2024
                             Refund amount is based on the price after all coupons and discounts.
@@ -229,11 +239,20 @@
                     @endif
                 </p>
 
-                <h3 class="clickBait">Share Your Feedback</h3>
-                <h4 class="web">www.Crusthouse.com.pk</h4>
-                {{-- <p class="center">
-                    Enjoy your Meal.!
-                </p> --}}
+                <h3 class="clickBait">
+                    @if ($orderData->salesman->branch->branch_web_address !== null)
+                        {{ $orderData->salesman->branch->branch_web_address }}@endif
+                </h3>
+
+                <h4 class="web">
+                    @if ($orderData->salesman->branch->feedback !== null)
+                        {{ $orderData->salesman->branch->feedback }}@endif
+                </h4>
+
+                <p class="center">
+                    @if ($orderData->salesman->branch->receipt_tagline !== null)
+                        {{ $orderData->salesman->branch->receipt_tagline }}@endif
+                </p>
                 <div class="break">
                     **************************
                 </div>
@@ -255,4 +274,3 @@
 </body>
 
 </html>
-

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Branch;
 use App\Models\Order;
+use App\Models\OwnerSetting;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -121,6 +122,8 @@ class OwnerController extends Controller
         $newBranch->riderOption = $riderOption;
         $newBranch->onlineDeliveryOption = $onlineDeliveryOption;
         $newBranch->diningTableOption = $diningTableOption;
+
+        $newBranch->owner_id = $req->owner_id;
 
         $newBranch->save();
 
@@ -248,7 +251,7 @@ class OwnerController extends Controller
             'salesman' => $user,
             'dailyOrders' => null,
             'branches' => $branch,
-            'branch_id'=> 0,
+            'branch_id' => 0,
             'branches_name' => 'All',
         ]);
     }
@@ -274,11 +277,36 @@ class OwnerController extends Controller
         ]);
     }
 
-    public function viewSettings(){
+    public function viewSettings()
+    {
         if (!session()->has('owner')) {
             return redirect()->route('viewLoginPage');
         }
-        return view('Owner.Setting');
+        $settingsData = OwnerSetting::first();
+        return view('Owner.Setting')->with(['settingsData'=>$settingsData]);
+    }
+
+    public function UpdateColorAndLogo(Request $request)
+    {
+        if (!session()->has('owner')) {
+            return redirect()->route('viewLoginPage');
+        }
+
+        $newSettings = new OwnerSetting();
+        if ($request->hasFile('logoPic')) {
+            $uploadedFile = $request->file('logoPic');
+            $extension = $uploadedFile->getClientOriginalExtension();
+            $imageName = time() . '.' . $extension;
+            $uploadedFile->move(public_path('Images/Logos'), $imageName);
+
+            $newSettings->pos_logo = $imageName;
+        }
+
+        $newSettings->pos_primary_color = $request->primary_color;
+        $newSettings->pos_secondary_color = $request->secondary_color;
+        $newSettings->owner_id = $request->owner_id;
+        $newSettings->save();
+        return redirect()->back()->with('success','Settings Updated');
     }
 
     public function totalBranches()
@@ -484,4 +512,4 @@ class OwnerController extends Controller
         }
         return view('Owner.AddNewBranch');
     }
-} 
+}

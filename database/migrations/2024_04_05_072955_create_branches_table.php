@@ -18,10 +18,16 @@ return new class extends Migration
             $table->string('branchName');
             $table->string('branchCode')->unique();
             $table->string('address');
+            $table->string('branch_web_address')->nullable();
+            $table->decimal('max_discount_percentage', 8, 2)->nullable()->default(20);
             $table->string('receipt_message')->nullable();
+            $table->string('feedback')->nullable();
+            $table->string('receipt_tagline')->nullable();
             $table->boolean('riderOption')->nullable();
             $table->boolean('onlineDeliveryOption')->nullable();
             $table->boolean('DiningTableOption')->nullable();
+            $table->unsignedBigInteger('owner_id')->nullable();
+            $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         }); 
     }
