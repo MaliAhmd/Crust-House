@@ -30,20 +30,24 @@ Route::get('/logout',[AuthController::class, 'logout'])->name('logout');
 |---------------------------------------------------------------|
 */ 
 
-Route::get('/dashboard', [OwnerController::class, 'viewOwnerDashboard'])->name('dashboard');
+Route::get('/dashboard/{owner_id}', [OwnerController::class, 'viewOwnerDashboard'])->name('dashboard');
 Route::get('/branchDashboard/{branch_id}', [OwnerController::class, 'branchDashboard'])->name('branchDashboard');
-Route::get('/showReports', [OwnerController::class, 'viewReports'])->name('showReports');
+Route::get('/showReports/{owner_id}', [OwnerController::class, 'viewReports'])->name('showReports');
+
 Route::get('/viewReportPage/{branch_id}', [OwnerController::class, 'viewReportPage'])->name('viewReportPage');
 
-Route::get('/settings', [OwnerController::class, 'viewSettings'])->name('settings');
-Route::post('/UpdateColorAndLogo', [OwnerController::class, 'UpdateColorAndLogo'])->name('UpdateColorAndLogo');
+Route::get('/settings/{owner_id}', [OwnerController::class, 'viewSettings'])->name('settings');
+
+Route::post('/createThemeSettings', [OwnerController::class, 'createThemeSettings'])->name('createThemeSettings');
+Route::post('/updateThemeSettings', [OwnerController::class, 'updateThemeSettings'])->name('updateThemeSettings');
+Route::get('/deleteThemeSettings/{id}', [OwnerController::class, 'deleteThemeSettings'])->name('deleteThemeSettings');
 /*
 |---------------------------------------------------------------|
 |======================= Branch Routes =========================|
 |---------------------------------------------------------------|
 */ 
 
-Route::get('/branches', [OwnerController::class, 'viewBranches'])->name('branches');
+Route::get('/branches/{owner_id}', [OwnerController::class, 'viewBranches'])->name('branches');
 Route::post('/storeNewBranchData',[OwnerController::class,'newBranch'])->name('storeNewBranchData'); 
 Route::get('/deleteBranch/{branch_id}', [OwnerController::class, 'deleteBranch'])->name('deleteBranch');
 Route::post('/updateBranches', [OwnerController::class, 'updateBranches'])->name('updateBranches');
@@ -54,11 +58,9 @@ Route::post('/updateBranches', [OwnerController::class, 'updateBranches'])->name
 |---------------------------------------------------------------|
 */ 
 
-Route::get('/mystaff', [OwnerController::class, 'viewAddStaff'])->name('staff');
+Route::get('/myStaff/{owner_id}', [OwnerController::class, 'viewAddStaff'])->name('staff');
 Route::post('/updateStaffData', [OwnerController::class,'updateStaffData'])->name('updateStaffData');
 Route::get('/deleteStaffData/{id}', [OwnerController::class,'deleteStaffData'])->name('deleteStaffData');
-
-
 
 Route::post('/addNewUser',[OwnerController::class,'newUser'])->name('addNewUser'); 
 Route::get('/addnewbranch', [OwnerController ::class, 'addNewBranchIndex'])->name('addNewBranch');

@@ -200,11 +200,11 @@ uploadUpdatedFile.addEventListener("change", function(e) {
     filenamSpan.textContent = fileNam ? fileNam : "No file chosen";
 });
 
-const uploadFile = document.getElementById("upload-file");
-const filenameSpan = document.getElementById("filename");
-const message = document.getElementById("message");
+// const uploadFile = document.getElementById("upload-file");
+// const filenameSpan = document.getElementById("filename");
+// const message = document.getElementById("message");
 
-uploadFile.addEventListener("change", function(e) {
-    const fileName = this.value.split("\\").pop();
-    filenameSpan.textContent = fileName ? fileName : "No file chosen";
-});
+// uploadFile.addEventListener("change", function(e) {
+//     const fileName = this.value.split("\\").pop();
+//     filenameSpan.textContent = fileName ? fileName : "No file chosen";
+// });

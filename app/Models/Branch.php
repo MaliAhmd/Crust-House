@@ -11,6 +11,10 @@ class Branch extends Model
     {
         return $this->hasMany(User::class);
     }
+    public function Owner()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function paymentMethod()
     {

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OwnerSetting;
 use Dompdf\Dompdf;
-use Illuminate\Http\Request;
 
 class KitchenController extends Controller
 {
@@ -14,6 +15,10 @@ class KitchenController extends Controller
         if (!session()->has('chef')) {
             return redirect()->route('viewLoginPage');
         }
+
+        $branch = Branch::find($branch_id);
+        $settings =  OwnerSetting::where('owner_id', $branch->owner_id)->first();
+        session()->put('OwnerSettings', $settings);
     
         $newOrders = Order::with('items')->where('status', 2)->where('branch_id',$branch_id)->get();
         $completeOrders = Order::with('items')->where('status', 1)->where('branch_id',$branch_id)->get();

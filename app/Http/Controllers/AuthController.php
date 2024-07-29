@@ -67,7 +67,7 @@ class AuthController extends Controller
             if ($user->role === 'owner') {
                 session()->put('owner', true);
                 session()->put('owner_id', $user->id);
-                return redirect()->route('dashboard');
+                return redirect()->route('dashboard', ['owner_id' => $user->id]);
             } else if ($user->role === 'admin') {
                 session()->put('admin', true);
                 session()->put('id', $user->id);
@@ -87,7 +87,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        session()->forget(['username','owner','owner_id','admin', 'salesman','chef' ,'id', 'branch_id']);
+        session()->forget(['username','owner','OwnerSettings','owner_id','admin', 'salesman','chef' ,'id', 'branch_id']);
         return redirect()->route('viewLoginPage');
     }
 }

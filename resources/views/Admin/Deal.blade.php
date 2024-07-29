@@ -115,7 +115,118 @@
                     <p id="filename"></p>
                 </label>
             </div>
-
+            <script>
+                function getDominantColor(imageData) {
+                    const { data, width, height } = imageData;
+                    const colorCounts = {};
+                    let maxCount = 0;
+                    let dominantColor = '#ffffff';
+            
+                    for (let i = 0; i < data.length; i += 4) {
+                        const r = data[i];
+                        const g = data[i + 1];
+                        const b = data[i + 2];
+                        const alpha = data[i + 3];
+                        
+                        if (alpha === 0) continue; // Skip transparent pixels
+                        
+                        const color = `rgb(${r},${g},${b})`;
+                        colorCounts[color] = (colorCounts[color] || 0) + 1;
+                        
+                        if (colorCounts[color] > maxCount) {
+                            maxCount = colorCounts[color];
+                            dominantColor = color;
+                        }
+                    }
+            
+                    return dominantColor;
+                }
+            
+                document.getElementById('upload-file').addEventListener('change', function() {
+                    const fileInput = this;
+                    const maxSizeInBytes = 1 * 1024 * 1024; // 1MB
+                    const targetRatio = 3 / 2;
+            
+                    if (fileInput.files.length > 0) {
+                        const file = fileInput.files[0];
+            
+                        if (file.size > maxSizeInBytes) {
+                            alert('File size exceeds the limit of 1MB. Please choose a smaller file.');
+                            fileInput.value = '';
+                            document.getElementById('filename').textContent = '';
+                            return;
+                        }
+            
+                        const img = new Image();
+                        img.src = URL.createObjectURL(file);
+            
+                        img.onload = function() {
+                            const imgWidth = img.width;
+                            const imgHeight = img.height;
+                            const imgRatio = imgWidth / imgHeight;
+            
+                            let canvasWidth, canvasHeight;
+                            let offsetX = 0, offsetY = 0;
+            
+                            if (imgRatio > targetRatio) {
+                                // Image is wider than the target ratio, add padding to the top and bottom
+                                canvasWidth = imgWidth;
+                                canvasHeight = imgWidth / targetRatio;
+                                offsetY = (canvasHeight - imgHeight) / 2;
+                            } else if (imgRatio < targetRatio) {
+                                // Image is taller or square (1:1), add padding to the sides
+                                canvasHeight = imgHeight;
+                                canvasWidth = imgHeight * targetRatio;
+                                offsetX = (canvasWidth - imgWidth) / 2;
+                            } else {
+                                // Image has the exact target ratio
+                                canvasWidth = imgWidth;
+                                canvasHeight = imgHeight;
+                            }
+            
+                            const canvas = document.createElement('canvas');
+                            const tempCanvas = document.createElement('canvas');
+                            const ctx = canvas.getContext('2d');
+                            const tempCtx = tempCanvas.getContext('2d');
+            
+                            canvas.width = canvasWidth;
+                            canvas.height = canvasHeight;
+            
+                            tempCanvas.width = imgWidth;
+                            tempCanvas.height = imgHeight;
+            
+                            // Draw the image on a temporary canvas to get image data
+                            tempCtx.drawImage(img, 0, 0);
+                            const imageData = tempCtx.getImageData(0, 0, imgWidth, imgHeight);
+                            const dominantColor = getDominantColor(imageData);
+            
+                            // Fill the canvas with the dominant color
+                            ctx.fillStyle = dominantColor;
+                            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            
+                            // Draw the image in the center of the canvas
+                            ctx.drawImage(img, offsetX, offsetY, imgWidth, imgHeight);
+            
+                            canvas.toBlob(function(blob) {
+                                const paddedFile = new File([blob], file.name, { type: file.type });
+                                const dataTransfer = new DataTransfer();
+                                dataTransfer.items.add(paddedFile);
+            
+                                // Replace the file input files with the new padded file
+                                fileInput.files = dataTransfer.files;
+            
+                                document.getElementById('filename').textContent = paddedFile.name;
+                            }, file.type);
+                        };
+            
+                        img.onerror = function() {
+                            alert('Failed to load the image. Please try another file.');
+                            fileInput.value = '';
+                            document.getElementById('filename').textContent = '';
+                        };
+                    }
+                });
+            </script>
             <div class="inputdivs">
                 <label for="dealTitle">Deal Title</label>
                 <input type="text" id="dealTitle" name="dealTitle" placeholder="Deal title" required>
@@ -182,7 +293,118 @@
                         <p id="namefile"></p>
                     </label>
                 </div>
-
+                <script>
+                    function getDominantColor(imageData) {
+                        const { data, width, height } = imageData;
+                        const colorCounts = {};
+                        let maxCount = 0;
+                        let dominantColor = '#ffffff';
+                
+                        for (let i = 0; i < data.length; i += 4) {
+                            const r = data[i];
+                            const g = data[i + 1];
+                            const b = data[i + 2];
+                            const alpha = data[i + 3];
+                            
+                            if (alpha === 0) continue; // Skip transparent pixels
+                            
+                            const color = `rgb(${r},${g},${b})`;
+                            colorCounts[color] = (colorCounts[color] || 0) + 1;
+                            
+                            if (colorCounts[color] > maxCount) {
+                                maxCount = colorCounts[color];
+                                dominantColor = color;
+                            }
+                        }
+                
+                        return dominantColor;
+                    }
+                
+                    document.getElementById('upload-update-file').addEventListener('change', function() {
+                        const fileInput = this;
+                        const maxSizeInBytes = 1 * 1024 * 1024; // 1MB
+                        const targetRatio = 3 / 2;
+                
+                        if (fileInput.files.length > 0) {
+                            const file = fileInput.files[0];
+                
+                            if (file.size > maxSizeInBytes) {
+                                alert('File size exceeds the limit of 1MB. Please choose a smaller file.');
+                                fileInput.value = '';
+                                document.getElementById('filename').textContent = '';
+                                return;
+                            }
+                
+                            const img = new Image();
+                            img.src = URL.createObjectURL(file);
+                
+                            img.onload = function() {
+                                const imgWidth = img.width;
+                                const imgHeight = img.height;
+                                const imgRatio = imgWidth / imgHeight;
+                
+                                let canvasWidth, canvasHeight;
+                                let offsetX = 0, offsetY = 0;
+                
+                                if (imgRatio > targetRatio) {
+                                    // Image is wider than the target ratio, add padding to the top and bottom
+                                    canvasWidth = imgWidth;
+                                    canvasHeight = imgWidth / targetRatio;
+                                    offsetY = (canvasHeight - imgHeight) / 2;
+                                } else if (imgRatio < targetRatio) {
+                                    // Image is taller or square (1:1), add padding to the sides
+                                    canvasHeight = imgHeight;
+                                    canvasWidth = imgHeight * targetRatio;
+                                    offsetX = (canvasWidth - imgWidth) / 2;
+                                } else {
+                                    // Image has the exact target ratio
+                                    canvasWidth = imgWidth;
+                                    canvasHeight = imgHeight;
+                                }
+                
+                                const canvas = document.createElement('canvas');
+                                const tempCanvas = document.createElement('canvas');
+                                const ctx = canvas.getContext('2d');
+                                const tempCtx = tempCanvas.getContext('2d');
+                
+                                canvas.width = canvasWidth;
+                                canvas.height = canvasHeight;
+                
+                                tempCanvas.width = imgWidth;
+                                tempCanvas.height = imgHeight;
+                
+                                // Draw the image on a temporary canvas to get image data
+                                tempCtx.drawImage(img, 0, 0);
+                                const imageData = tempCtx.getImageData(0, 0, imgWidth, imgHeight);
+                                const dominantColor = getDominantColor(imageData);
+                
+                                // Fill the canvas with the dominant color
+                                ctx.fillStyle = dominantColor;
+                                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+                
+                                // Draw the image in the center of the canvas
+                                ctx.drawImage(img, offsetX, offsetY, imgWidth, imgHeight);
+                
+                                canvas.toBlob(function(blob) {
+                                    const paddedFile = new File([blob], file.name, { type: file.type });
+                                    const dataTransfer = new DataTransfer();
+                                    dataTransfer.items.add(paddedFile);
+                
+                                    // Replace the file input files with the new padded file
+                                    fileInput.files = dataTransfer.files;
+                
+                                    document.getElementById('filename').textContent = paddedFile.name;
+                                }, file.type);
+                            };
+                
+                            img.onerror = function() {
+                                alert('Failed to load the image. Please try another file.');
+                                fileInput.value = '';
+                                document.getElementById('filename').textContent = '';
+                            };
+                        }
+                    });
+                </script>
                 <div class="inputdivs">
                     <label for="deal-Title">Deal Title</label>
                     <input type="text" id="deal-Title" name="dealTitle" required>

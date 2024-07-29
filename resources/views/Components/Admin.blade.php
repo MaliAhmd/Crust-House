@@ -8,22 +8,31 @@
     <title>@yield('title')</title>
     <link rel="stylesheet" href="{{ asset('CSS/Admin/admin.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="icon" href="{{ asset('Images/Web_Images/chlogo.png')}}" type="image">
+    <link rel="icon" href="{{ asset('Images/Web_Images/chlogo.png') }}" type="image">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     @stack('styles')
 </head>
 
-<body> 
+<body>
 
     <div class="container">
         @php
             $id = session('id');
             $branch_id = session('branch_id');
+            $posLogo = false;
+            if (session()->has('OwnerSettings')) {
+                $OwnerSettings = session('OwnerSettings');
+                $posLogo = $OwnerSettings->pos_logo;
+            }
         @endphp
         <nav>
             <div class="logo">
-                <img src="{{ asset('Images/image 1.png') }}" alt="Logo Here">
+                @if ($posLogo)
+                    <img src="{{ asset('Images/Logos/' . $posLogo) }}" alt="Logo Here">
+                @else
+                    <img src="{{ asset('Images/image-1.png') }}" alt="Logo Here">
+                @endif
             </div>
 
             <div class="menuList">
@@ -147,8 +156,6 @@
                                 <img src="{{ asset('Images/Rectangle 3463281.png') }}" alt="Profile Picture">
                             @endif
                         </div>
-
-
                         @if (session('username'))
                             <p class="profilename">{{ session('username') }}</p>
                         @endif

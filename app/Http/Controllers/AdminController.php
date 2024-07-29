@@ -7,7 +7,8 @@ use App\Models\BranchCategory;
 use App\Models\Category;
 use App\Models\Deal;
 use App\Models\Discount;
-use App\Models\Handler;
+use App\Models\handler;
+use App\Models\OwnerSetting;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -25,6 +26,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+
 class AdminController extends Controller
 {
     public function viewAdminDashboard($id, $branch_id)
@@ -34,6 +36,9 @@ class AdminController extends Controller
         }
 
         $branch = Branch::find($branch_id);
+        $settings = OwnerSetting::where('owner_id', $branch->owner_id)->first();
+        session()->put('OwnerSettings',$settings);
+        
         $branch_Name = null;
 
         if ($branch) {
@@ -54,7 +59,7 @@ class AdminController extends Controller
         $totalRevenue = $totalBranchRevenueData['totalRevenue'];
 
         return view('Admin.AdminDashboard')->with([
-            'totalCategories' => $totalCategories, 
+            'totalCategories' => $totalCategories,
             'totalProducts' => $totalProducts,
             'totalStocks' => $totalstocks,
             'annualRevenueArray' => $annualRevenueArray,
@@ -274,49 +279,54 @@ class AdminController extends Controller
         }
 
         $products = Product::where('productName', $request->productName)->get();
-        if ($products) {
-            foreach ($products as $key => $product) {
-                if ($request->hasFile('productImage')) {
-                    $existingImagePath = public_path('Images/ProductImages') . '/' . $product->productImage;
-                    if (File::exists($existingImagePath)) {
-                        File::delete($existingImagePath);
-                    }
 
-                    $image = $request->file('productImage');
-                    $imageName = time() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('Images/ProductImages'), $imageName);
+        // Check if a file is uploaded
+        if ($request->hasFile('productImage')) {
+            $image = $request->file('productImage');
+            $imageName = time() . mt_rand(1, 10) . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('Images/ProductImages/'), $imageName);
+        } else {
+            $imageName = null; // Handle case where no new image is uploaded
+        }
 
-                    $product->productImage = $imageName;
+        foreach ($products as $key => $product) {
+            // Update product image if a new image was uploaded
+            if ($request->hasFile('productImage')) {
+                // Delete existing image if needed
+                $existingImagePath = public_path('Images/ProductImages/') . $product->productImage;
+                if (File::exists($existingImagePath)) {
+                    File::delete($existingImagePath);
                 }
 
-                switch ($key + 1) {
-                    case 1:
-                        $product->productVariation = $request->productVariation1;
-                        $product->productPrice = $request->price1;
-                        break;
-                    case 2:
-                        $product->productVariation = $request->productVariation2;
-                        $product->productPrice = $request->price2;
-                        break;
-                    case 3:
-                        $product->productVariation = $request->productVariation3;
-                        $product->productPrice = $request->price3;
-                        break;
-                    case 4:
-                        $product->productVariation = $request->productVariation4;
-                        $product->productPrice = $request->price4;
-                        break;
-                    default:
-                        break;
-                }
-
-                $product->save();
+                // Assign new image name to the product
+                $product->productImage = $imageName;
             }
 
-            return redirect()->back()->with('success', 'Products updated successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Product not updated');
+            switch ($key + 1) {
+                case 1:
+                    $product->productVariation = $request->productVariation1;
+                    $product->productPrice = $request->price1;
+                    break;
+                case 2:
+                    $product->productVariation = $request->productVariation2;
+                    $product->productPrice = $request->price2;
+                    break;
+                case 3:
+                    $product->productVariation = $request->productVariation3;
+                    $product->productPrice = $request->price3;
+                    break;
+                case 4:
+                    $product->productVariation = $request->productVariation4;
+                    $product->productPrice = $request->price4;
+                    break;
+                default:
+                    break;
+            }
+
+            $product->save();
         }
+
+        return redirect()->back()->with('success', 'Products updated successfully.');
     }
     public function deleteProduct($id)
     {
@@ -360,13 +370,13 @@ class AdminController extends Controller
             }
         }
 
-        $handlers = Handler::whereHas('deal', function ($query) use ($branch_id) {
+        $handlers = handler::whereHas('deal', function ($query) use ($branch_id) {
             $query->where('branch_id', $branch_id);
         })->with('deal')->get();
 
         $deals = $handlers->pluck('deal')->unique();
 
-        $handlersAndProducts = Handler::join('products', 'handlers.product_id', '=', 'products.id')
+        $handlersAndProducts = handler::join('products', 'handlers.product_id', '=', 'products.id')
             ->select('handlers.id as handler_id', 'handlers.*', 'products.*')
             ->get();
 
@@ -547,10 +557,10 @@ class AdminController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
-        $handler = Handler::find($id);
-        $deals = Handler::with(['deal', 'product'])->get();
+        $handler = handler::find($id);
+        $deals = handler::with(['deal', 'product'])->get();
 
-        // $deals = Handler::where(function ($query) use ($branch_id) {
+        // $deals = handler::where(function ($query) use ($branch_id) {
         //     $query->whereHas('product', function ($query) use ($branch_id) {
         //         $query->where('branch_id', $branch_id);
         //     })
@@ -568,7 +578,7 @@ class AdminController extends Controller
 
 
         if (!$handler) {
-            return redirect()->route('viewDealPage', [$user_id, $branch_id])->with('error', 'Handler not found.');
+            return redirect()->route('viewDealPage', [$user_id, $branch_id])->with('error', 'handler not found.');
         }
 
         $deal = $handler->deal;
@@ -1009,30 +1019,30 @@ class AdminController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'updated_profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif', // Check for image file
         ]);
-        
+
         $auth = User::find($req->input('staffId'));
         if ($req->hasFile('updated_profile_picture')) {
             $imageName = null;
             $existingImagePath = public_path('Images/UsersImages') . '/' . $auth->profile_picture;
             File::delete($existingImagePath);
-            
+
             $image = $req->file('updated_profile_picture');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('Images/UsersImages'), $imageName);
             $auth->profile_picture = $imageName;
         }
-        
+
         $auth->name = $req->input('name');
         $auth->email = $req->input('email');
         $auth->role = $req->input('role');
         $auth->branch_id = $req->input('branch');
-        
+
         if ($req->filled('password')) {
             $auth->password = Hash::make($req->input('password'));
         }
-        
+
         $auth->save();
-        
+
         return redirect()->back();
     }
     public function deleteStaff($id)
@@ -1050,7 +1060,7 @@ class AdminController extends Controller
             if (File::exists($imagePath)) {
                 File::delete($imagePath);
             }
-            return redirect()->back()->with('success','Staff Deleted ');
+            return redirect()->back()->with('success', 'Staff Deleted ');
         } else {
             return redirect()->back()->with('error', 'Staff not found');
         }
@@ -1115,7 +1125,7 @@ class AdminController extends Controller
         $paymentMethods = PaymentMethod::where('branch_id', $branch_id)->whereNotNull('payment_method')->get();
         $orderTypes = PaymentMethod::where('branch_id', $branch_id)->whereNotNull('order_type')->get();
         $discountTypes = PaymentMethod::where('branch_id', $branch_id)->whereNotNull('discount_type')->get();
-        return view('Admin.Setting')->with(['taxes' => $taxes, 'discounts' => $discounts, 'receipt' => $receipts, 'paymentMethods' => $paymentMethods,'orderTypes'=>$orderTypes,'discountTypes'=>$discountTypes]);
+        return view('Admin.Setting')->with(['taxes' => $taxes, 'discounts' => $discounts, 'receipt' => $receipts, 'paymentMethods' => $paymentMethods, 'orderTypes' => $orderTypes, 'discountTypes' => $discountTypes]);
     }
 
     public function createTax(Request $request)
@@ -1228,7 +1238,8 @@ class AdminController extends Controller
         }
     }
 
-    public function createPaymentMethod(Request $request){
+    public function createPaymentMethod(Request $request)
+    {
         $branch_id = $request->input('branch_id');
         $newPaymentMethod = new PaymentMethod();
         $newPaymentMethod->payment_method = $request->payment_method;
@@ -1237,7 +1248,8 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Payment Method added successfully');
     }
-    public function updatePaymentMethod(Request $request){
+    public function updatePaymentMethod(Request $request)
+    {
         $payment_method_id = $request->input('payment_method_id');
         $payment_methods = PaymentMethod::find($payment_method_id);
         if ($payment_methods) {
@@ -1259,7 +1271,8 @@ class AdminController extends Controller
             return redirect()->back()->with('error', 'Payment Method not delete');
         }
     }
-     public function createDiscountTypes(Request $request){
+    public function createDiscountTypes(Request $request)
+    {
         $branch_id = $request->input('branch_id');
         $newDiscountType = new PaymentMethod();
         $newDiscountType->discount_type = $request->discount_type;
@@ -1268,7 +1281,8 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Discount Type added successfully');
     }
-    public function updateDiscountTypes(Request $request){
+    public function updateDiscountTypes(Request $request)
+    {
         $discount_type_id = $request->input('discount_type_id');
         $discountType = PaymentMethod::find($discount_type_id);
         if ($discountType) {
@@ -1291,7 +1305,8 @@ class AdminController extends Controller
         }
     }
 
-    public function createDiscountValue(Request $request){
+    public function createDiscountValue(Request $request)
+    {
         $branch_id = $request->input('branch_id');
         $newDiscountValue = Branch::find($branch_id);
         $newDiscountValue->max_discount_percentage = $request->max_discount_percentage;
@@ -1299,7 +1314,8 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Value added successfully');
     }
-    public function updateDiscountValue(Request $request){
+    public function updateDiscountValue(Request $request)
+    {
         $discount_value_id = $request->input('discount_value_id');
         $discountValue = Branch::find($discount_value_id);
         if ($discountValue) {
@@ -1323,7 +1339,8 @@ class AdminController extends Controller
         }
     }
 
-    public function createOrderTypes(Request $request){
+    public function createOrderTypes(Request $request)
+    {
         $branch_id = $request->input('branch_id');
         $newOrderType = new PaymentMethod();
         $newOrderType->order_type = $request->order_type;
@@ -1332,7 +1349,8 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Order Type added successfully');
     }
-    public function updateOrderTypes(Request $request){
+    public function updateOrderTypes(Request $request)
+    {
         $order_type_id = $request->input('order_type_id');
         $orderType = PaymentMethod::find($order_type_id);
         if ($orderType) {
@@ -1392,7 +1410,7 @@ class AdminController extends Controller
             ->where('salesman_id', $salesman_id)
             ->where('status', 1)
             ->with('items')
-            ->get() 
+            ->get()
             ->transform(function ($order) use ($selectedDate) {
                 $order->selected_date = $selectedDate;
                 return $order;
@@ -1733,10 +1751,10 @@ class AdminController extends Controller
                 return $order;
             });
 
-            if($salesRefund->isEmpty()) {
-                return redirect()->back()->with('error', "Record not found again " . $start_date ." & " . $end_date);
-            }
-            return redirect()->back()->with('salesRefund', $salesRefund);
+        if ($salesRefund->isEmpty()) {
+            return redirect()->back()->with('error', "Record not found again " . $start_date . " & " . $end_date);
+        }
+        return redirect()->back()->with('salesRefund', $salesRefund);
     }
     public function printProductsRefundReport($branch_id, $start_date, $end_date)
     {

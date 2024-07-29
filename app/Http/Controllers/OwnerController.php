@@ -15,13 +15,15 @@ use Illuminate\Support\Facades\Hash;
 class OwnerController extends Controller
 {
 
-    public function viewOwnerDashboard()
+    public function viewOwnerDashboard($owner_id)
     {
         if (!session()->has('owner')) {
             return redirect()->route('viewLoginPage');
         }
 
         $branches = Branch::all();
+        $settings = OwnerSetting::where('owner_id', $owner_id)->first();
+        session()->put('OwnerSettings', $settings);
 
         $totalBranches = $this->totalBranches();
         $totalStaff = $this->totalStaff();
@@ -93,7 +95,7 @@ class OwnerController extends Controller
     |---------------------------------------------------------------|
     */
 
-    public function viewBranches()
+    public function viewBranches($owner_id)
     {
         if (!session()->has('owner')) {
             return redirect()->route('viewLoginPage');
@@ -181,7 +183,7 @@ class OwnerController extends Controller
     |---------------------------------------------------------------|
     */
 
-    public function viewAddStaff()
+    public function viewAddStaff($owner_id)
     {
         if (!session()->has('owner')) {
             return redirect()->route('viewLoginPage');
@@ -238,7 +240,7 @@ class OwnerController extends Controller
         }
     }
 
-    public function viewReports()
+    public function viewReports($owner_id)
     {
         if (!session()->has('owner')) {
             return redirect()->route('viewLoginPage');
@@ -277,27 +279,26 @@ class OwnerController extends Controller
         ]);
     }
 
-    public function viewSettings()
+    public function viewSettings($owner_id)
     {
         if (!session()->has('owner')) {
             return redirect()->route('viewLoginPage');
         }
-        $settingsData = OwnerSetting::first();
-        return view('Owner.Setting')->with(['settingsData'=>$settingsData]);
+        $settingsData = OwnerSetting::where('owner_id', $owner_id)->first();
+        return view('Owner.Setting')->with(['settingsData' => $settingsData]);
     }
 
-    public function UpdateColorAndLogo(Request $request)
+    public function createThemeSettings(Request $request)
     {
         if (!session()->has('owner')) {
             return redirect()->route('viewLoginPage');
         }
-
         $newSettings = new OwnerSetting();
         if ($request->hasFile('logoPic')) {
             $uploadedFile = $request->file('logoPic');
             $extension = $uploadedFile->getClientOriginalExtension();
             $imageName = time() . '.' . $extension;
-            $uploadedFile->move(public_path('Images/Logos'), $imageName);
+            $uploadedFile->move(public_path('Images/Logos/'), $imageName);
 
             $newSettings->pos_logo = $imageName;
         }
@@ -306,9 +307,51 @@ class OwnerController extends Controller
         $newSettings->pos_secondary_color = $request->secondary_color;
         $newSettings->owner_id = $request->owner_id;
         $newSettings->save();
-        return redirect()->back()->with('success','Settings Updated');
+        if ($newSettings->save())
+            return redirect()->back()->with('success', 'Settings Updated');
+        else
+            return redirect()->back()->with('success', 'Settings not Update');
     }
+    public function updateThemeSettings(Request $request)
+    {
+        if (!session()->has('owner')) {
+            return redirect()->route('viewLoginPage');
+        }
 
+        $owner_id = $request->input('owner_id');
+        $setting_id = $request->input('setting_id');
+
+        $setting = OwnerSetting::find($setting_id);
+        if ($request->hasFile('logoPic')) {
+            $existingImage = public_path("Images/Logos/$setting->pos_logo");
+            File::delete($existingImage);
+
+            $newImage = $request->file("logoPic");
+            $extension = $newImage->getClientOriginalExtension();
+            $newImageName = time() . "." . $extension;
+            $newImage->move(public_path("Images/Logos"), $newImageName);
+            $setting->pos_logo = $newImageName;
+        }
+
+        $setting->pos_primary_color = $request->primary_color;
+        $setting->pos_secondary_color = $request->secondary_color;
+        $setting->save();
+        if ($setting->save())
+            return redirect()->back()->with('success', 'Settings Updated');
+        else
+            return redirect()->back()->with('success', 'Settings not Update');
+    }
+    public function deleteThemeSettings($id)
+    {
+        $setting = OwnerSetting::find($id);
+        if ($setting->delete()){
+            $image =  public_path("Images/Logos/$setting->pos_logo");
+            File::delete($image);
+            return redirect()->back()->with('success', 'Setting Delete');
+        }
+        else
+            return redirect()->back()->with('error', 'Settings Not Delete');
+    }
     public function totalBranches()
     {
         $totalBranches = Branch::count();

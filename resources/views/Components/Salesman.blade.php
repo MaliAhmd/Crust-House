@@ -7,21 +7,33 @@
     <title>Crust - House | Salesman - Dashboard</title>
     <link rel="stylesheet" href="{{ asset('CSS/Salesman/salesman.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="icon" href="{{ asset('Images/Web_Images/chlogo.png')}}" type="image/png">
+    <link rel="icon" href="{{ asset('Images/Web_Images/chlogo.png') }}" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     @stack('styles')
 </head>
 
 <body>
+    @php
+        $posLogo = false;
+        if (session()->has('OwnerSettings')) {
+            $OwnerSettings = session('OwnerSettings');
+            $posLogo = $OwnerSettings->pos_logo;
+        }
+    @endphp
     <div class="container">
         <header id="header">
             <div class="logo">
-                <img src="{{ asset('Images/image 1.png') }}" alt="Logo Here">
+                @if ($posLogo)
+                    <img src="{{ asset('Images/Logos/' . $posLogo) }}" alt="Logo Here">
+                @else
+                    <img src="{{ asset('Images/image-1.png') }}" alt="Logo Here">
+                @endif
             </div>
 
             <div class="search_bar_div">
-                <input type="text" id="search_bar" name="search" placeholder="Search.." style="background-image: url('{{ asset('Images/search.png') }}');">
+                <input type="text" id="search_bar" name="search" placeholder="Search.."
+                    style="background-image: url('{{ asset('Images/search.png') }}');">
             </div>
 
             <div class="profilepanel">

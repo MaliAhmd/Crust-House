@@ -14,10 +14,21 @@
 </head>
 
 <body>
+    @php
+        $owner_id = session('owner_id');
+        if (session()->has('OwnerSettings')) {
+            $OwnerSettings = session('OwnerSettings');
+            $posLogo = $OwnerSettings->pos_logo;
+        }$posLogo = false;
+    @endphp
     <div class="container">
         <nav>
             <div class="logo">
-                <img src="{{ asset('Images/image 1.png') }}" alt="Logo Here">
+                @if ($posLogo)
+                    <img src="{{ asset('Images/Logos/' . $posLogo) }}" alt="Logo Here">
+                @else
+                    <img src="{{ asset('Images/image-1.png') }}" alt="Logo Here">
+                @endif
             </div>
 
             <div class="menuList">
@@ -25,37 +36,42 @@
                 <div class="menu" id="menu">
                     <div class="menuItems" id="menu1">
                         <i class='bx bxs-dashboard'></i>
-                        <a href="{{ route('dashboard') }}" onclick="setActiveMenu('menu1')" style="text-decoration: none;">
+                        <a href="{{ route('dashboard', $owner_id) }}" onclick="setActiveMenu('menu1')"
+                            style="text-decoration: none;">
                             <p class="link">Dashboard</p>
                         </a>
                     </div>
                     <div class="menuItems" id="menu2">
                         <i class='bx bx-package'></i>
-                        <a href="{{ route('branches') }}" onclick="setActiveMenu('menu2')" style="text-decoration: none;">
+                        <a href="{{ route('branches', $owner_id) }}" onclick="setActiveMenu('menu2')"
+                            style="text-decoration: none;">
                             <p class="link">My Branch</p>
                         </a>
                     </div>
                     <div class="menuItems" id="menu5">
                         <i class='bx bxs-group'></i>
-                        <a href="{{ route('staff') }}" onclick="setActiveMenu('menu5')" style="text-decoration: none;">
+                        <a href="{{ route('staff', $owner_id) }}" onclick="setActiveMenu('menu5')"
+                            style="text-decoration: none;">
                             <p class="link">My Staff</p>
                         </a>
                     </div>
                     <div class="menuItems" id="menu7">
                         <i class='bx bxs-report'></i>
-                        <a href="{{ route('showReports') }}" onclick="setActiveMenu('menu7')" style="text-decoration: none;">
+                        <a href="{{ route('showReports', $owner_id) }}" onclick="setActiveMenu('menu7')"
+                            style="text-decoration: none;">
                             <p class="link">Reports</p>
                         </a>
                     </div>
                     <div class="menuItems" id="menu8">
                         <i class='bx bxs-cog'></i>
-                        <a href="{{ route('settings') }}" onclick="setActiveMenu('menu8')" style="text-decoration: none;">
+                        <a href="{{ route('settings', $owner_id) }}" onclick="setActiveMenu('menu8')"
+                            style="text-decoration: none;">
                             <p class="link">Settings</p>
                         </a>
                     </div>
                 </div>
             </div>
-            
+
             <script>
                 function setActiveMenu(menuId) {
                     document.cookie = "activeMenu=" + menuId + "; path=/";
@@ -65,7 +81,7 @@
                     });
                     document.getElementById(menuId).classList.add('active');
                 }
-            
+
                 document.addEventListener('DOMContentLoaded', (event) => {
                     const activeMenu = getActiveMenu();
                     console.log("Active menu from cookie: " + activeMenu);
@@ -76,7 +92,7 @@
                         document.getElementById(activeMenu).classList.add('active');
                     }
                 });
-            
+
                 function getActiveMenu() {
                     const value = `; ${document.cookie}`;
                     const parts = value.split(`; activeMenu=`);
@@ -88,7 +104,7 @@
                     return null;
                 }
             </script>
-            
+
         </nav>
         <div class="rgtpnl">
             <header id="header">
