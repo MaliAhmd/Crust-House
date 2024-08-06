@@ -10,7 +10,6 @@
 
 @section('main')
 
-    {{-- PDF Download Code --}}
     @if (session('pdf_filename'))
         <input type="hidden" value="{{ session('pdf_filename') }}" id="pdf_link">
         <a id="orderRecipt" href="{{ asset('PDF/' . session('pdf_filename')) }}" download>Download PDF</a>
@@ -28,15 +27,33 @@
     @endif
 
     @if (session('success'))
-        <div class="alert alert-success">
+        <div id="success" class="alert alert-success">
             {{ session('success') }}
         </div>
+        <script>
+            setTimeout(() => {
+                document.getElementById('success').classList.add('alert-hide');
+            }, 2000);
+
+            setTimeout(() => {
+                document.getElementById('success').style.display = 'none';
+            }, 3000);
+        </script>
     @endif
 
     @if (session('error'))
-        <div class="alert alert-danger">
+        <div id="error" class="alert alert-danger">
             {{ session('error') }}
         </div>
+        <script>
+            setTimeout(() => {
+                document.getElementById('error').classList.add('alert-hide');
+            }, 2000);
+
+            setTimeout(() => {
+                document.getElementById('error').style.display = 'none';
+            }, 3000);
+        </script>
     @endif
 
     <input id="orderNo" type="hidden" value="1">
@@ -67,7 +84,8 @@
                     <a id="all_category" class="category_link">All</a>
                 </div>
                 @foreach ($Categories as $category)
-                    <div onclick="selectCategory('{{ route('salesman_dash', [$category->categoryName, $id, $branch_id]) }}', this)">
+                    <div
+                        onclick="selectCategory('{{ route('salesman_dash', [$category->categoryName, $id, $branch_id]) }}', this)">
                         <a class="category_link">{{ $category->categoryName }}</a>
                     </div>
                 @endforeach
@@ -196,9 +214,9 @@
                     foreach ($taxes as $tax) {
                         $totalTaxes += $totalbill * ((float) $tax->tax_value / 100);
                     }
-                    $totalbill += $totalTaxes;
+                    $totalbill  += $totalTaxes;
                 @endphp
-
+ 
                 <form action="{{ route('placeOrder', $id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="payment-div">
@@ -225,16 +243,29 @@
 
                             <div class="paymentfields"
                                 style="flex-direction: row; justify-content:space-between; align-items:center;">
-                                <span id="false-option">{{ $orderTypeArray[0] }}&nbsp;&nbsp;</span><label class="switch">
+                                <span id="false-option">
+                                    @if ($orderTypeArray)
+                                        {{ $orderTypeArray[0] }}
+                                    @else
+                                        Dine-In
+                                    @endif &nbsp;&nbsp;
+                                </span><label class="switch">
                                     <input id="order_type" type="checkbox">
                                     <span class="slider round"></span>
-                                </label><span id="true-option">{{ $orderTypeArray[1] }}</span>
+                                </label><span id="true-option">
+                                    @if ($orderTypeArray)
+                                        {{ $orderTypeArray[1] }}
+                                    @else
+                                        Takeaway
+                                    @endif
+                                </span>
                             </div>
                             <input type="hidden" name="orderType" id="orderTypeHidden">
 
                             <div class="paymentfields">
                                 <label for="paymentMethod">Payment Method:</label>
-                                <div class="paymentfields" style="flex-direction: row; align-items: center; justify-content:space-between;">
+                                <div class="paymentfields"
+                                    style="flex-direction: row; align-items: center; justify-content:space-between;">
                                     <span id="false-option0">Cash</span>
                                     <label class="switch">
                                         <input id="paymentmethod" type="checkbox">
@@ -298,13 +329,25 @@
                                 <label for="discountType">Type of Discount</label>
                                 <div id="discountTypeDiv"
                                     style="flex-direction: row; display:none; justify-content:center; align-items:center;">
-                                    <span id="false-option2">{{ $discountTypeArray[1] }}</span>
+                                    <span id="false-option2">
+                                        @if ($discountTypeArray)
+                                            {{ $discountTypeArray[1] }}
+                                        @else
+                                            Percentage
+                                        @endif
+                                    </span>
                                     <label class="switch">
                                         <input id="discounttype" type="checkbox" value="%"
                                             onclick="updateTotalONSwitch({{ json_encode($totalbill) }})">
                                         <span class="slider round"></span>
                                     </label>
-                                    <span id="true-option2">{{ $discountTypeArray[0] }}</span>
+                                    <span id="true-option2">
+                                        @if ($discountTypeArray)
+                                            {{ $discountTypeArray[0] }}
+                                        @else
+                                            Fixed
+                                        @endif
+                                    </span>
                                 </div>
                             </div>
                             <input type="hidden" name="discount_type" id="discountType" value="%">
@@ -312,7 +355,7 @@
                             <div class="paymentfields" id="discountFieldDiv" style="display: none">
                                 <label for="discount">Discount Applied</label>
                                 <input style="background-color: #fff" type="number" name="discount" id="discount"
-                                    min="0" placeholder="Rupees" disabled value="0"
+                                    min="0" placeholder="Rupees" disabled value="0" step="any"
                                     oninput="updateTotalONInput({{ json_encode($totalbill) }},{{ json_encode($maximum_discount_percentage_value) }})">
                             </div>
 
@@ -504,36 +547,36 @@
         });
 
         function selectCategory(route, element) {
-        let categoryLinks = document.getElementsByClassName('category_link');
-        for (let i = 0; i < categoryLinks.length; i++) {
-            categoryLinks[i].classList.remove('selected');
-        }
-        let link = element.getElementsByTagName('a')[0];
-        link.classList.add('selected');
-        document.cookie = "selected_category=" + link.textContent.trim() + "; path=/";
-        window.location = route;
-    }
-
-    function getCookie(name) {
-        let value = "; " + document.cookie;
-        let parts = value.split("; " + name + "=");
-        if (parts.length == 2) return parts.pop().split(";").shift();
-    }
-
-    window.onload = function() {
-        let selectedCategory = getCookie("selected_category");
-        let categoryLinks = document.getElementsByClassName('category_link');
-        if (!selectedCategory) {
-            categoryLinks[0].classList.add('selected');
-            return;
-        }
-        for (let i = 0; i < categoryLinks.length; i++) {
-            if (categoryLinks[i].textContent.trim() === selectedCategory) {
-                categoryLinks[i].classList.add('selected');
-                break;
+            let categoryLinks = document.getElementsByClassName('category_link');
+            for (let i = 0; i < categoryLinks.length; i++) {
+                categoryLinks[i].classList.remove('selected');
             }
+            let link = element.getElementsByTagName('a')[0];
+            link.classList.add('selected');
+            document.cookie = "selected_category=" + link.textContent.trim() + "; path=/";
+            window.location = route;
         }
-    };
+
+        function getCookie(name) {
+            let value = "; " + document.cookie;
+            let parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift();
+        }
+
+        window.onload = function() {
+            let selectedCategory = getCookie("selected_category");
+            let categoryLinks = document.getElementsByClassName('category_link');
+            if (!selectedCategory) {
+                categoryLinks[0].classList.add('selected');
+                return;
+            }
+            for (let i = 0; i < categoryLinks.length; i++) {
+                if (categoryLinks[i].textContent.trim() === selectedCategory) {
+                    categoryLinks[i].classList.add('selected');
+                    break;
+                }
+            }
+        };
 
         // function updateTotal(total) {
         //     let totalBill = parseFloat(document.getElementById("totalbill").value);
@@ -579,20 +622,21 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('search_bar');
-        const productDivs = document.querySelectorAll('#imageBox');
+            const searchInput = document.getElementById('search_bar');
+            const productDivs = document.querySelectorAll('#imageBox');
 
-        searchInput.addEventListener('input', function() {
-            const filter = searchInput.value.toLowerCase();
-            productDivs.forEach(function(div) {
-                const productName = div.querySelector('.product_name').textContent.toLowerCase();
-                if (productName.includes(filter)) {
-                    div.style.display = 'flex';
-                } else {
-                    div.style.display = 'none';
-                }
+            searchInput.addEventListener('input', function() {
+                const filter = searchInput.value.toLowerCase();
+                productDivs.forEach(function(div) {
+                    const productName = div.querySelector('.product_name').textContent
+                .toLowerCase();
+                    if (productName.includes(filter)) {
+                        div.style.display = 'flex';
+                    } else {
+                        div.style.display = 'none';
+                    }
+                });
             });
         });
-    });
     </script>
 @endsection

@@ -1,0 +1,410 @@
+#recipePage {
+    display: flex;
+    flex-direction: column;
+    border-radius: 3px;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.path {
+    display: flex;
+    font-family: "Poppins", sans-serif;
+    font-size: 1vw;
+    margin: 1vw 1vw 0 1vw;
+}
+
+.path p {
+    margin: 0;
+}
+
+.productCategory {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    height: 80vh;
+    overflow: auto;
+}
+
+.categorydiv {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5vw;
+    width: 23%;
+    height: 45%;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+    box-shadow: inset 0 0 5px #a5a5a5;
+    cursor: pointer;
+}
+
+.categorydiv:active {
+    box-shadow: 0 0 5px #6b6b6b;
+}
+
+.categoryImg,
+.categoryDetails {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px 10px 0 0;
+    height: 75%;
+}
+
+.categoryImg img {
+    border-radius: 10px 10px 0 0;
+    width: 95%;
+    height: 95%;
+}
+
+.categoryDetails {
+    height: 25%;
+    border-radius: 0 0 10px 10px;
+}
+
+#recipeOverlay,
+#categoryProductOverlay,
+#productRecipeOverlay,
+#addProductRecipeOverlay,
+#editProductRecipeOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+#recipePopup,
+#categoryProducts,
+#productRecipe,
+#addProductRecipe,
+#editProductRecipe {
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    position: absolute;
+    border-radius: 10px;
+    width: 60vw;
+    height: 30vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    justify-content: space-around;
+}
+
+#addProductRecipe,
+#editProductRecipe {
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 45vw;
+    height: 25vw;
+}
+
+#editProductRecipe {
+    width: 45vw;
+    height: 18vw;
+}
+
+.inputdivs {
+    display: flex;
+    justify-content: space-around;
+    width: 95%;
+}
+
+.stockquantity {
+    display: flex;
+    width: 30%;
+}
+
+.unitselection {
+    display: flex;
+    width: 30%;
+}
+
+.recipeContainer {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#addProductRecipe h3,
+#editProductRecipe h3 {
+    margin: 0;
+    padding: 1vw 2vw;
+    font-size: 1.5vw;
+    font-family: "Poppins", sans-serif;
+}
+
+#addProductRecipe hr,
+#editProductRecipe hr {
+    border: 1px solid #9b9b9b;
+    width: 98%;
+    margin: 0 auto 1vw;
+}
+
+.stockquantity {
+    display: flex;
+    flex-direction: column;
+}
+
+.unitselection {
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+}
+
+.stockquantity input,
+.unitselection select {
+    border: none;
+    border-radius: 10px;
+    padding: 0.71vw 0.5vw;
+    background-color: #e2e2e2;
+}
+
+.remove-item:hover {
+    background-color: #f45b69;
+    color: #fff;
+}
+
+.edit-item:hover {
+    background-color: #2ea666;
+    color: #fff;
+}
+
+.btns {
+    display: flex;
+    justify-content: flex-end;
+    margin: 01vw auto;
+    width: 85%;
+}
+
+.btns #cancel,
+.btns input {
+    display: flex;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2vw;
+    padding: 0 2vw;
+    border-radius: 10px;
+    margin: 0.5vw;
+    border: none;
+    align-items: center;
+}
+
+#cancel {
+    background-color: #e2e2e2;
+}
+
+.btns input {
+    background-color: #ffbb00;
+    color: #fff;
+}
+
+#cancel:hover {
+    background-color: #d3d3d3;
+}
+
+.btns input:hover {
+    background-color: #d4a011;
+}
+
+#categoryProducts,
+#productRecipe {
+    flex-direction: column;
+    width: 50vw;
+    max-height: 90vh;
+    justify-content: start;
+    align-items: start;
+}
+
+#productRecipeitems {
+    border: 1px solid #000;
+    margin: 10px auto;
+    width: 95%;
+    text-align: center;
+    font-size: 1.2vw;
+    border: 1px solid #000;
+    border-left: none;
+    border-right: none;
+}
+
+.table {
+    display: flex;
+    width: 98%;
+    height: 80%;
+    margin: 0 auto;
+    overflow-y: auto;
+}
+
+.btns {
+    display: flex;
+    justify-content: center;
+    width: 98%;
+    height: 18%;
+    margin: 0.31vw auto;
+}
+
+.btns button {
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2vw;
+    padding: 0.5vw 2vw;
+    border-radius: 10px;
+    margin: 0.5vw;
+    border: none;
+    background-color: #e2e2e2;
+}
+
+table {
+    border-collapse: collapse;
+    width: 95%;
+    margin: 1vw auto;
+}
+
+table thead {
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    z-index: 1000;
+}
+
+table thead tr {
+    border-bottom: 2px solid #000;
+}
+
+table thead tr th {
+    text-align: left;
+}
+
+table thead tr th:last-child {
+    text-align: center;
+}
+
+table tbody {
+    width: 100%;
+}
+
+table tbody tr {
+    border-bottom: 1px solid #898989;
+}
+
+table tbody tr td {
+    text-align: left;
+}
+
+table tbody tr td:last-child {
+    text-align: center;
+    padding: 1vw 0;
+}
+
+table tbody tr td:last-child a {
+    padding: 0.3vw 0.5vw;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 1.3vw;
+}
+
+table tbody tr td:last-child a:first-child {
+    background-color: #3fc28a;
+    margin-right: 10px;
+}
+
+table tbody tr td:last-child a:last-child {
+    background-color: #ffbb00;
+}
+
+table tbody tr td:last-child a:first-child:hover {
+    background-color: #2da571;
+}
+
+table tbody tr td:last-child a:last-child:hover {
+    background-color: #bc9017;
+}
+
+#recipelist,
+#recipepad {
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+    height: 90%;
+    margin-right: 2px;
+}
+
+#recipelist h5 {
+    border: 1px solid #000;
+    text-align: center;
+    margin: 0;
+    flex: 1;
+}
+
+.recipeContainer,
+.stockContainer {
+    border: 1px solid #000;
+    border-radius: 7px;
+    flex: 9;
+}
+
+.stockContainer {
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.stockContainer p {
+    border-bottom: 0.01rem solid #6b6b6b;
+    margin: 0;
+    padding: 2px 10px;
+    font-size: 1vw;
+}
+
+.stockContainer p:hover {
+    background-color: #e0e0e0;
+}
+
+#buttons {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border: none;
+    padding: 05px;
+}
+
+#buttons button,
+#buttons input[type="submit"] {
+    font-size: 1.2vw;
+    font-weight: 500;
+    border: none;
+    background-color: #ffbb00;
+    color: #fff;
+    padding: 0.5vw 2vw;
+    border-radius: 8px;
+    margin: 0.3vw;
+}
+
+#buttons button:hover,
+#buttons input[type="submit"]:hover {
+    background-color: #bc9017;
+}
+
+.searchBar {
+    display: flex;
+    margin-bottom: 2px;
+    position: relative;
+}
+
+#Search {
+    width: 100%;
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid #6b6b6b;
+}
+
+.searchBar .bx-search {
+    position: absolute;
+    right: 1%;
+    top: 25%;
+}

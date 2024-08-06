@@ -72,13 +72,14 @@
                             $salesman_id = $value->salesman_id;
                             $transaction_report_date = $value->transaction_date;
                             $time = $value->created_at->format('H:i:s');
+                            $order_bill = (float)str_replace('Rs. ','', $value->total_bill)
                         @endphp
                         <tr>
                             <td>{{ $value->order_number }}</td>
                             <td>{{ $time }}</td>
                             <td>{{ $value->salesman->name }}</td>
                             <td>{{ $value->total_bill }}</td>
-                            <td>{{ $value->discount?? 0.0 }}</td>
+                            <td>Rs. {{ $value->discount_type == '%' ? ($order_bill + $value->taxes) * ($value->discount / 100) : $value->discount }}</td>
                         </tr>
                     @endforeach
                 </tbody>

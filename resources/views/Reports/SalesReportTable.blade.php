@@ -74,8 +74,8 @@
                             <tr>
                                 <td>{{ $salesman }}</td>
                                 <td>{{ $date }}</td>
-                                <td>{{ $totals['sales'] }}</td>
-                                <td>{{ $totals['refunds'] }}</td>
+                                <td>Rs. {{ $totals['sales'] }}</td>
+                                <td>Rs. {{ $totals['refunds'] }}</td>
                             </tr>
                         @endforeach
                     @endforeach

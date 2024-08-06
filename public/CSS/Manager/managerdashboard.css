@@ -1,0 +1,279 @@
+main {
+    display: flex;
+    flex-direction: column;
+    /*background-color: #e0e0e04f; */
+    border-radius: 03px;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.path {
+    display: flex;
+    font-family: "Poppins", sans-serif;
+    font-size: 1vw;
+    margin: 1vw 1vw 0 1vw;
+}
+
+.path p {
+    margin: 0;
+}
+
+.heading {
+    display: flex;
+    font-family: "Poppins", sans-serif;
+    font-size: 1vw;
+    margin: 0.5vw 1vw 1vw;
+    width: 98%;
+}
+
+.heading h3 {
+    display: flex;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    letter-spacing: 0.01rem;
+    margin: 0 1vw 0;
+    max-width: 30%;
+}
+
+#branchServices {
+    display: flex;
+    flex-direction: row;
+    font-family: "Poppins", sans-serif;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1vw;
+    margin: 0 1vw;
+    width: 70%;
+    border-radius: 0.25rem;
+    box-shadow: 0px 0px 5px #939393;
+}
+
+#branchServices h4 {
+    display: flex;
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin: 0.3vw 0;
+    padding: 0.3vw;
+    width: 15%;
+}
+
+.options {
+    display: flex;
+    width: 80%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.opt {
+    display: flex;
+    flex-direction: row;
+    width: 30%;
+    margin: 0.3vw 0;
+}
+
+.opt-txt {
+    margin: 0;
+}
+
+.cards {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 1vw 1vw;
+    flex-wrap: wrap;
+}
+
+.cards a {
+    display: flex;
+    flex-direction: row;
+    font-family: "Poppins", sans-serif;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    ;
+    width: 24%;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #262626;
+    font-size: 1.2vw;
+    padding: 0.5vw 0;
+    text-decoration: none;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon i {
+    font-size: 1.3rem;
+    color: #ffbb00;
+    margin: 0.5rem 1rem;
+}
+
+.disc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.disc p,
+.disc h3 {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+.graph {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 1vw 1vw;
+    padding: 10px;
+}
+
+.monthlyRevenuegraph,
+.totalRevenueGraph,
+.dailyRevenueGraph {
+    position: relative;
+    width: 49%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    ;
+}
+
+.dailyRevenueGraph {
+    width: 100%;
+    margin-top: 1vw;
+}
+
+.info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-family: "Poppins", sans-serif;
+    align-items: center;
+    text-align: center;
+}
+
+.info .ttle {
+    font-size: 1.4vw;
+    margin: 0 0.5vw;
+    padding: 0.5vw;
+    font-weight: bold;
+}
+
+.info .filter {
+    font-size: 1vw;
+    margin: 0 0.5vw;
+    padding: 0.5vw;
+    border: none;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.map {
+    display: flex;
+    flex-direction: column;
+    height: 30vw;
+    margin: 0 1vw 1vw;
+    font-family: "Poppins", sans-serif;
+}
+
+.map h4 {
+    margin: 0.5vw;
+}
+
+.map iframe {
+    display: flex;
+    width: 98%;
+    height: 75%;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+
+@media (max-width: 1050px) and (min-width: 600px) {
+    .path {
+        width: 90vw;
+        font-size: 0.91rem;
+        margin: 1vh;
+    }
+    .heading {
+        width: 90vw;
+        font-size: 1rem;
+        margin: 1vh;
+    }
+    .cards a {
+        font-size: 0.65rem;
+        padding: 0.51vh 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .path {
+        width: 90vw;
+        font-size: 0.91rem;
+        margin: 1vh auto;
+    }
+    .heading {
+        width: 90vw;
+        font-size: 1rem;
+        margin: 1vh auto;
+    }
+    .cards {
+        width: 90vw;
+        margin: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .cards a {
+        width: 48%;
+        font-size: 0.75rem;
+        margin: 0.5vh auto;
+        padding: 1vh 0;
+    }
+    .icon i {
+        font-size: 1.3rem;
+    }
+    .graph {
+        flex-direction: column;
+        margin: auto;
+        width: 90vw;
+        margin-top: 1vh;
+    }
+    .monthlyRevenuegraph,
+    .totalRevenueGraph {
+        width: 95%;
+        margin: auto;
+        margin-bottom: 2vh;
+        padding: 1vh;
+    }
+    .info .ttle {
+        font-size: 0.7rem;
+        margin: 0 0 0 1vh;
+    }
+    .info .filter {
+        font-size: 0.75rem;
+        margin: 0.5vh 1vh 0 0;
+    }
+    .map {
+        width: 90vw;
+        margin: 1vh auto;
+        height: 45vh;
+        font-size: 0.75rem;
+    }
+    .map h4 {
+        margin: 0;
+    }
+    .map iframe {
+        width: 95%;
+    }
+}

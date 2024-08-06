@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('owner_settings', function (Blueprint $table) {
+        Schema::create('theme_settings', function (Blueprint $table) {
             $table->id();
             $table->string('pos_logo');
             $table->string('pos_primary_color');
             $table->string('pos_secondary_color');
 
-            $table->unsignedBigInteger('owner_id')->nullable();
-            $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('branch_id')->nullable();
+            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
             
             $table->timestamps();
         });

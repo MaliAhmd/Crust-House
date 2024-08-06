@@ -59,6 +59,6 @@ class User extends Authenticatable
     }
     public function ownerSettings()
     {
-        return $this->belongsTo(OwnerSetting::class);
+        return $this->belongsTo(ThemeSetting::class);
     }
 }

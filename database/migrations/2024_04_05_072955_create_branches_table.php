@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('branches', function (Blueprint $table) {
             $table->id();
             $table->string('branch_state')->nullable();
-            $table->string('branchLocation'); 
-            $table->string('branchName');
-            $table->string('branchCode')->unique();
-            $table->string('address');
+            $table->string('branch_city')->nullable(); 
+            $table->string('company_name')->nullable();
+            $table->string('branch_name')->nullable();
+            $table->string('branch_code')->unique()->nullable();
+            $table->string('branch_address')->nullable();
             $table->string('branch_web_address')->nullable();
             $table->decimal('max_discount_percentage', 8, 2)->nullable()->default(20);
             $table->string('receipt_message')->nullable();
@@ -25,9 +26,7 @@ return new class extends Migration
             $table->string('receipt_tagline')->nullable();
             $table->boolean('riderOption')->nullable();
             $table->boolean('onlineDeliveryOption')->nullable();
-            $table->boolean('DiningTableOption')->nullable();
-            $table->unsignedBigInteger('owner_id')->nullable();
-            $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
+            $table->boolean('DiningOption')->nullable();
             $table->timestamps();
         }); 
     }

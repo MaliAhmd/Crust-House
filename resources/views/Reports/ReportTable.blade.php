@@ -84,7 +84,7 @@
                                 <td>{{ $item->product_name }}</td>
                                 <td>{{ $item->product_quantity }}</td>
                                 <td>{{ $item->total_price }}</td>
-                                <td>Cash</td>
+                                <td>{{$value->payment_method}}</td>
                             </tr>
                         @endforeach
                     @endforeach
@@ -95,7 +95,7 @@
                     </tr>
                     <tr>
                         <td><strong>Total Sales:</strong></td>
-                        <td>{{ number_format($total_sales, 2) }}</td>
+                        <td>Rs. {{ number_format($total_sales, 2) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Report Date:</strong></td>

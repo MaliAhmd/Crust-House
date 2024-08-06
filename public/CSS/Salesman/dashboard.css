@@ -11,10 +11,20 @@
 
 .alert {
     display: flex;
-    color: white;
+    color: white !important;
     align-items: center;
     justify-content: center;
     text-align: center;
+    font-size: 1.2vw !important;
+    padding: 10px;
+    margin-top: 0.5vw;
+    border-radius: 0.25rem;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+.alert-hide {
+    opacity: 0;
 }
 
 .alert-success {

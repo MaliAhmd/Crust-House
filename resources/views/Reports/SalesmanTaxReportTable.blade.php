@@ -74,7 +74,7 @@
                             <td>{{ $value->order_number }}</td>
                             <td>{{ $time }}</td>
                             <td>{{ $value->total_bill }}</td>
-                            <td>{{ $value->taxes }}</td>
+                            <td>Rs. {{ $value->taxes }}</td>
                         </tr>
                     @endforeach
                 </tbody>

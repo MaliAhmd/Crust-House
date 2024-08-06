@@ -135,18 +135,18 @@
                 <img src="{{ asset('Images/image 1.png') }}" alt="Pizza Image">
             </div> --}}
 
-            <div class="address">Address :{{ $orderData->salesman->branch->address }}</div>
+            <div class="address">Address :{{ $orderData->salesman->branch->branch_address }}</div>
             <br>
             <div class="detail">
                 <p style="display:inline-block; width:62%;">
                     Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : {{ $date }}</p>
-                <p style="display:inline-block; width:33%;">Time : {{ $time }}</p>
+                <p style="display:inline-block; width:35%;">Time : {{ $time }}</p>
             </div>
             {{-- <div class="detail"> Time : {{ $time }}</div> --}}
             <div class="detail">
                 <p style="display:inline-block; width:62%;;">ORDER TYPE &nbsp;:
                     {{ $orderData->ordertype }}</p>
-                <p style="display:inline-block; width:33%;">Order:
+                <p style="display:inline-block; width:35%;">Order:
                     {{ $orderData->order_number }}</p>
             </div>
 
@@ -220,7 +220,7 @@
             <div class="detail">
                 <p style="display:inline-block; width:45%;">BALANCE
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</p>
-                <p style="display:inline-block;">Rs. {{ $orderData->return_change }}</p>
+                <p style="display:inline-block;">Rs. {{ $orderData->return_change + $orderData->discount}}</p>
             </div>
             {{-- <div class="returnPolicy bold">
                             Returns with receipt, subject to CVS Return Policy, thru 08/30/2024

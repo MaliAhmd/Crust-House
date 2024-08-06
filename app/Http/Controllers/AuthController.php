@@ -26,6 +26,10 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'profile_picture' => 'image|mimes:jpeg,png,jpg,gif',
         ]);
+        $existingChef = User::where('role','chef')->where('branch_id', $req->branch)->first();
+        if($existingChef->role == $req->role){
+            return redirect()->back()->with('error', 'Chef Already exist in this branch');
+        }
 
         $user = new User();
 
@@ -58,21 +62,22 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
-
+        
         $user = User::where('email', $request->email)->first();
-
+        
         if ($user && Hash::check($request->password, $user->password)) {
             session(['username' => $user->name, 'profile_pic' => $user->profile_picture]);
-
+            
             if ($user->role === 'owner') {
                 session()->put('owner', true);
                 session()->put('owner_id', $user->id);
                 return redirect()->route('dashboard', ['owner_id' => $user->id]);
-            } else if ($user->role === 'admin') {
-                session()->put('admin', true);
+            } else if ($user->role === 'branchManager') {
+
                 session()->put('id', $user->id);
                 session()->put('branch_id', $user->branch_id);
-                return redirect()->route('admindashboard', ['id' => $user->id, 'branch_id'=> $user->branch_id]);
+                session()->put('branchManager', true);
+                return redirect()->route('managerdashboard', ['id' => $user->id, 'branch_id'=> $user->branch_id]);
             } else if ($user->role === 'salesman') {
                 session()->put('salesman', true);
                 return redirect()->route('salesman_dashboard', ['id' => $user->id, 'branch_id'=> $user->branch_id]);
@@ -87,7 +92,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        session()->forget(['username','owner','OwnerSettings','owner_id','admin', 'salesman','chef' ,'id', 'branch_id']);
+        session()->forget(['username','owner','ThemeSettings','owner_id','branchManager', 'salesman','chef' ,'id', 'branch_id']);
         return redirect()->route('viewLoginPage');
     }
 }

@@ -70,7 +70,7 @@
                             <tr>
                                 <td>{{ $salesman }}</td>
                                 <td>{{ $date }}</td>
-                                <td>{{ $totals['refunds'] }}</td>
+                                <td>Rs. {{ $totals['refunds'] }}</td>
                             </tr>
                         @endforeach
                     @endforeach
@@ -78,7 +78,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="2" style="text-align: center;"><strong>Total Refund:</strong></td>
-                        <td>{{ $refundsReport['total_refunds'] }}</td>
+                        <td>Rs. {{ $refundsReport['total_refunds'] }}</td>
                     </tr>
                 </tfoot>
             </table>

@@ -74,8 +74,8 @@
                             <tr>
                                 <td>{{ $salesman }}</td>
                                 <td>{{ $date }}</td>
-                                <td>{{ $totals['sales'] }}</td>
-                                <td>{{ $totals['discount'] }}</td>
+                                <td>Rs. {{ $totals['sales'] }}</td>
+                                <td>Rs. {{ $totals['discount'] }}</td>
                             </tr>
                         @endforeach
                     @endforeach
@@ -86,7 +86,7 @@
                     </tr>
                     <tr>
                         <td><strong>Total Sales Made by Salesman:</strong></td>
-                        <td>{{ number_format($total_Sales, 2) }}</td>
+                        <td>Rs. {{ number_format($total_Sales, 2) }}</td>
                     </tr>
                     <tr>
                         <td><strong>Report Date:</strong></td>

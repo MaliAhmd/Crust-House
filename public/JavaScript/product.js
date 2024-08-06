@@ -193,12 +193,12 @@ function closeEditProduct() {
     |---------------------------------------------------------------|
 */
 
-const uploadUpdatedFile = document.getElementById("upload-update-file");
-const filenamSpan = document.getElementById("namefile");
-uploadUpdatedFile.addEventListener("change", function(e) {
-    const fileNam = this.value.split("\\").pop();
-    filenamSpan.textContent = fileNam ? fileNam : "No file chosen";
-});
+// const uploadUpdatedFile = document.getElementById("upload-update-file");
+// const filenamSpan = document.getElementById("namefile");
+// uploadUpdatedFile.addEventListener("change", function(e) {
+//     const fileNam = this.value.split("\\").pop();
+//     filenamSpan.textContent = fileNam ? fileNam : "No file chosen";
+// });
 
 // const uploadFile = document.getElementById("upload-file");
 // const filenameSpan = document.getElementById("filename");

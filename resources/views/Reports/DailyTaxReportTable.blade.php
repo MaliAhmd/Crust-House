@@ -71,8 +71,8 @@
                             <tr>
                                 <td>{{ $salesman }}</td>
                                 <td>{{ $date }}</td>
-                                <td>{{ $totals['Sale'] }}</td>
-                                <td>{{ $totals['Tax'] }}</td>
+                                <td>Rs. {{ $totals['Sale'] }}</td>
+                                <td>Rs. {{ $totals['Tax'] }}</td>
                             </tr>
                         @endforeach
                     @endforeach
@@ -80,11 +80,11 @@
                 <tfoot>
                     <tr>
                         <td colspan="2" style="text-align: center;"><strong>Total Sales:</strong></td>
-                        <td colspan="2"> {{ $taxReport['total_sales'] }}</td>
+                        <td colspan="2">Rs. {{ $taxReport['total_sales'] }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: center;"><strong>Total Taxes:</strong></td>
-                        <td colspan="2">{{ $taxReport['total_tax'] }}</td>
+                        <td colspan="2">Rs. {{ $taxReport['total_tax'] }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -94,3 +94,4 @@
 
 
 </html>
+ 

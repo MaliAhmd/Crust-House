@@ -1,0 +1,573 @@
+main {
+    display: flex;
+    flex-direction: column;
+    border-radius: 03px;
+    width: 100%;
+    min-height: 85vh;
+    overflow-y: scroll;
+    font-family: "Poppins", sans-serif;
+}
+
+.alert {
+    display: flex;
+    color: white;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.2vw;
+    padding: 10px;
+}
+
+.alert-success {
+    background-color: rgb(30, 151, 83);
+}
+
+.alert-danger {
+    background-color: #c65541;
+}
+
+#heading {
+    display: block;
+    text-align: center;
+    margin: 0.51vw 0;
+}
+
+#options {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#options button {
+    display: flex;
+    margin: 0.51vw;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 15%;
+    height: 100px;
+    border-radius: 0.50rem;
+    box-shadow: inset 0px 0px 5px #ffc46a;
+    border: none;
+    font-family: "Poppins", sans-serif;
+    background-color: #ffbb00;
+    color: #fff;
+    letter-spacing: 1px;
+    font-size: 1.2vw;
+}
+
+#options button:hover {
+    background-color: #fff;
+    color: #ffbb00;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+#texOverlay,
+#discountOverlay,
+#discountTypeOverlay,
+#receiptOverlay,
+#orderTypeOverlay,
+#updateProfileOverlay,
+#discountValueOverlay,
+#paymentMethodOverlay,
+#confirmDeletionOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+#newTax,
+#discount,
+#paymentMethod,
+#discountType,
+#discountValue,
+#updateProfile,
+#orderType,
+#receipt,
+.confirmDeletion {
+    display: none;
+    flex-direction: column;
+    background-color: #ffffff;
+    position: absolute;
+    border-radius: 10px;
+    width: 70vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+#updateProfile {
+    width: 30vw;
+}
+
+#newTax h3,
+#receipt h3,
+#paymentMethod h3,
+#discountType h3,
+#orderType h3,
+#discountValue h3,
+#updateProfile h3,
+#discount h3 {
+    margin: 0;
+    padding: 1vw 2vw;
+    font-size: 1.5vw;
+    font-family: "Poppins", sans-serif;
+}
+
+#newTax hr,
+#receipt hr,
+#discountType hr,
+#orderType hr,
+#discountValue hr,
+#paymentMethod hr,
+#updateProfile hr,
+#discount hr {
+    border: 1px solid #9b9b9b;
+    width: 98%;
+    margin: 0 auto 1vw;
+}
+
+.container-fields {
+    display: flex;
+    flex-direction: column;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+#texFields {
+    display: flex;
+    margin: 1vw;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#option_button {
+    display: flex;
+    margin: 10px;
+    flex-direction: row;
+    align-items: center;
+    width: 30%;
+    height: 4vw;
+    font-family: "Poppins", sans-serif;
+    font-size: 1vw;
+}
+
+#option_button button {
+    display: flex;
+    background-color: #ffbb00;
+    color: #fff;
+    width: 20%;
+    height: 70%;
+    font-size: 1.2vw;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.deleteTax {
+    background-color: #d84444 !important;
+}
+
+.deleteTax:hover {
+    background-color: #ee5f5f !important;
+    color: #fff !important;
+}
+
+.inputdivs {
+    margin: 10px;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    font-family: "Poppins", sans-serif;
+    font-size: 1vw;
+}
+
+.inputdivs input,
+.inputdivs select {
+    border: none;
+    outline: 0.5px solid #9b9b9b;
+    border-radius: 10px;
+    padding: 0.71vw 0.5vw;
+    background-color: #e2e2e2;
+}
+
+.forms-btns {
+    display: flex;
+    margin: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 95%;
+    height: 4vw;
+    font-family: "Poppins", sans-serif;
+    font-size: 1vw;
+}
+
+.forms-btns .add,
+.forms-btns #cancel {
+    display: flex;
+    background-color: #ffbb00;
+    color: #fff;
+    padding: 0.5vw 2vw;
+    height: 90%;
+    font-size: 1.2vw;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+}
+
+.forms-btns .add:hover {
+    background-color: #e3bc3b;
+}
+
+.forms-btns #cancel {
+    background-color: #dcdcdc;
+    color: #000;
+}
+
+.forms-btns #cancel:hover {
+    background-color: #f8f8f8;
+    color: #000;
+}
+
+#text-info,
+#totalSales {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+
+/* 
+.btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 01vw auto;
+    width: 85%;
+}
+
+.btns button {
+    display: flex;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2vw;
+    padding: 0.5vw 2vw;
+    border-radius: 10px;
+    margin: 0.5vw;
+    border: none;
+}
+
+.btns button {
+    background-color: #ffbb00;
+    color: #fff;
+}
+
+.btns button:hover {
+    background-color: #d4a011;
+    color: #fff;
+} */
+
+#confirmDeletionOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+.confirmDeletion {
+    display: none;
+    flex-direction: column;
+    background-color: #dadada;
+    position: absolute;
+    border-radius: 10px;
+    width: 30vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+#message-text {
+    text-align: center;
+    margin: 10px;
+}
+
+.box-btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 01vw auto;
+    width: 85%;
+}
+
+.box-btns button {
+    display: flex;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2vw;
+    padding: 0.5vw 2vw;
+    border-radius: 10px;
+    margin: 0.5vw;
+    border: none;
+    color: #fff;
+}
+
+.box-btns #confirm {
+    background-color: #b52828;
+}
+
+.box-btns #close {
+    background-color: #ffbb00;
+}
+
+.box-btns #confirm:hover {
+    background-color: #d84444;
+}
+
+.box-btns #close:hover {
+    background-color: #e5ba45;
+}
+
+#themeSettingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+#themeSetting {
+    display: none;
+    flex-direction: column;
+    background-color: #ffffff;
+    position: absolute;
+    border-radius: 10px;
+    width: 30vw;
+    align-items: center;
+    height: 90vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+#themeSetting h3 {
+    margin: 0;
+    padding: 1vw 2vw;
+    font-size: 1.5vw;
+    width: 90%;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+}
+
+#themeSetting hr {
+    border: 1px solid #9b9b9b;
+    width: 98%;
+    margin: 0 auto 1vw;
+}
+
+#themeSetting .inputdivs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2vw;
+    margin: 0;
+    padding: 1vw 1.5vw;
+}
+
+#logoDiv {
+    display: flex;
+    flex-direction: column;
+    width: 85%;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    font-size: 1vw;
+}
+
+#imagePreview {
+    display: flex;
+    width: 125px;
+    height: 125px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 1px solid #000;
+    background-color: #ebebeb;
+}
+
+#imagePreview img {
+    display: flex;
+    margin: auto;
+    width: 95%;
+    height: 95%;
+    border-radius: 50%;
+}
+
+#addImg {
+    display: flex;
+    background-color: #fb0;
+    color: #dadada;
+    font-weight: bold;
+    font-size: 1.4vw;
+    padding: 5px 10px;
+    margin: 0.71vw;
+    border-radius: 10px;
+    font-family: "Poppins", sans-serif;
+}
+
+#primaryColor,
+#secondaryColor {
+    width: 80%;
+    margin: 0.31vw;
+    padding: 5px;
+    outline: 0.5px solid #9b9b9b;
+    background-color: #e2e2e2;
+    border: none;
+    cursor: pointer;
+}
+
+#primaryColor::-webkit-color-swatch-wrapper,
+#secondaryColor::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+#primaryColor::-webkit-color-swatch,
+#secondaryColor::-webkit-color-swatch-wrapper {
+    border: none;
+}
+
+#primaryColor::-moz-color-swatch,
+#secondaryColor::-webkit-color-swatch-wrapper {
+    border: none;
+}
+
+#form_btns {
+    display: flex;
+    flex-direction: row;
+    height: 10%;
+    margin: 1vw;
+    justify-content: center;
+    align-items: center;
+}
+
+#form_btns #form_btns-update,
+#form_btns #form_btns-delete,
+#form_btns #form_btns-close {
+    display: flex;
+    width: 100%;
+    height: 75%;
+    margin: 0 1vw;
+    padding: 0.8vw 1.5vw;
+}
+
+#form_btns #form_btns-delete {
+    background-color: #c72d25;
+}
+
+#updateProfile .formDiv {
+    margin: 0.4vw auto;
+    width: 85%;
+    display: flex;
+    flex-direction: column;
+    font-family: "Poppins", sans-serif;
+    font-size: 1vw;
+}
+
+#updateProfile .formBtns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0.4vw auto;
+    width: 85%;
+    flex-direction: row;
+    font-family: "Poppins", sans-serif;
+    font-size: 1vw;
+}
+
+#updateProfile .formBtns #cancel-profile-update,
+#updateProfile .formBtns #profile-update {
+    display: flex;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2vw;
+    margin: 0.5vw;
+    border: none;
+    color: #fff;
+    background-color: #2da571;
+    font-weight: 400;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    line-height: 1.5;
+    padding: 0.375rem 0.75rem;
+    margin-bottom: 1vw;
+    width: auto;
+    height: auto;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+#updateProfile .formBtns #cancel-profile-update {
+    background-color: #b52828;
+}
+
+#updateProfile .formBtns #cancel-profile-update:hover {
+    background-color: #671b1b;
+}
+
+#updateProfile .formBtns #profile-update:hover {
+    background-color: #207550;
+}
+
+#updateProfile .formDiv input {
+    border: none;
+    border-radius: 0.2rem;
+    padding: 0.5vw 0.2vw;
+    background-color: #e2e2e2;
+}
+
+.choose-file-btn {
+    display: flex;
+    background-color: #e2e2e2;
+    color: #333;
+    text-align: center;
+    border-radius: 0.5rem;
+}
+
+.choose-file-btn input[type="file"] {
+    display: none;
+}
+
+.choose-file-btn span {
+    padding: 0.5vw;
+    border: 1px solid #bbbbbb;
+    background-color: #bbbbbb;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.choose-file-btn p {
+    margin: 0;
+    padding: 0.5vw;
+    overflow: hidden;
+}

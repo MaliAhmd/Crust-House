@@ -99,7 +99,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: center;"><strong>Total Sales:</strong></td>
-                        <td>{{ number_format($total_Sales, 2) }}</td>
+                        <td>Rs. {{ number_format($total_Sales, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: center;"><strong>Total Products Sold:</strong></td>

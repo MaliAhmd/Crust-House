@@ -104,7 +104,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: center; border:none;"><strong>Total Refund:</strong></td>
-                        <td>{{ number_format($total_Sales, 2) }}</td>
+                        <td>Rs. {{ number_format($total_Sales, 2) }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align: center;border:none"><strong>Total Products Refund:</strong></td>

@@ -11,7 +11,7 @@ use App\Models\OrderItem;
 use App\Models\Branch;
 use App\Models\PaymentMethod;
 use App\Models\Product;
-use App\Models\OwnerSetting;
+use App\Models\ThemeSetting;
 use App\Models\User;
 use App\Models\Tax;
 use App\Models\Discount;
@@ -33,10 +33,6 @@ class SalesmanController extends Controller
         $products = Product::where('branch_id', $branch_id)->get();
         $categories = Category::where('branch_id', $branch_id)->get();
         $branch = Branch::find($branch_id);
-        $settings = OwnerSetting::where('owner_id', $branch->owner_id)->first();
-        
-        session()->put('OwnerSettings', $settings);
-
         $discounts = Discount::where('branch_id', $branch_id)->get();
         $taxes = Tax::where('branch_id', $branch_id)->get();
         $payment_methods = PaymentMethod::where('branch_id', $branch_id)->get();
@@ -229,7 +225,6 @@ class SalesmanController extends Controller
             $order->save();
 
             $this->deductStock($order->id);
-
             $orderData = Order::with(['salesman.branch'])->find($order->id);
 
             $products = OrderItem::where('order_id', $order->id)->get();
@@ -346,7 +341,7 @@ class SalesmanController extends Controller
             $recipes = Recipe::where('product_id', $product->id)->get();
 
             foreach ($recipes as $recipeItem) {
-                $quantityToDeduct = floatval($recipeItem->quantity);
+                $quantityToDeduct = floatval($this->convertToBaseUnit($recipeItem->quantity));
                 $stockItem = Stock::find($recipeItem->stock_id);
 
                 if ($stockItem) {
@@ -354,7 +349,6 @@ class SalesmanController extends Controller
                     $deductedQuantityInBaseUnit = $quantityToDeduct * $totalQuantity;
                     $newQuantityInBaseUnit = $currentQuantityInBaseUnit - $deductedQuantityInBaseUnit;
                     $newQuantity = $this->convertFromBaseUnit($newQuantityInBaseUnit, $stockItem->itemQuantity);
-
                     $stockItem->itemQuantity = $newQuantity;
                     $stockItem->save();
                 }

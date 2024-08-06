@@ -85,8 +85,8 @@
                             <td>{{ $tax->order_number }}</td>
                             <td>{{ $tax->salesman->name }}</td>
                             <td>{{ $date }}</td>
-                            <td>{{ $tax->total_bill }}</td>
-                            <td>{{ $tax->taxes }}</td>
+                            <td>Rs. {{ $tax->total_bill }}</td>
+                            <td>Rs. {{ $tax->taxes }}</td>
                         </tr>
                     @endforeach
                 </tbody>
