@@ -29,7 +29,7 @@
                 <div class="passwordfield">
                     <input type="password" id="password" name="password" placeholder="Password" autocomplete="off"
                         required>
-                    <i class='bx bxs-lock-alt' onclick="showAndHidePswd()"></i>
+                    <i class='bx bxs-show' onclick="showAndHidePswd()"></i>
                 </div>
 
                 @error('email')

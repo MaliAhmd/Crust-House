@@ -153,7 +153,7 @@
                 <div class="passwordfield">
                     <input type="password" id="password" name="password" placeholder="Password" required
                         oninput="validatePassword()">
-                    <i class='bx bxs-lock-alt' onclick="showAndHidePswd()"></i>
+                    <i class='bx bxs-show' onclick="showAndHidePswd()"></i>
                 </div>
             </div>
 
@@ -162,7 +162,7 @@
                 <div class="passwordfield">
                     <input type="password" id="cnfrmPswd" name="password_confirmation" placeholder="Confirm Password"
                         required oninput="validatePassword()">
-                    <i class='bx bxs-lock-alt' onclick="showAndHideCnfrmPswd()"></i>
+                    <i class='bx bxs-show' onclick="showAndHideCnfrmPswd()"></i>
                 </div>
             </div>
 
@@ -234,7 +234,7 @@
                 <label for="editpassword">Password</label>
                 <div class="passwordfield">
                     <input type="password" id="editpassword" name="password" oninput="validateEditPassword()">
-                    <i class='bx bxs-lock-alt' onclick="showAndHideEditPswd()"></i>
+                    <i class='bx bxs-show' onclick="showAndHideEditPswd()"></i>
                 </div>
             </div>
 
@@ -243,7 +243,7 @@
                 <div class="passwordfield">
                     <input type="password" id="editcnfrmPswd" name="password_confirmation"
                         oninput="validateEditPassword()">
-                    <i class='bx bxs-lock-alt' onclick="showAndHideEditCnfrmPswd()"></i>
+                    <i class='bx bxs-show' onclick="showAndHideEditCnfrmPswd()"></i>
                 </div>
             </div>
 

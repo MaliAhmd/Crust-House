@@ -169,7 +169,7 @@
 
             <div class="inputdivs">
                 <label for="upload-file" class="choose-file-btn">
-                    <span>Choose File <br> Max = 1MB, Ratio = 3:2</span>
+                    <span>Choose File <br><span style="color: #b11d1d; margin:0;padding:0;">(Max = 1MB, Ratio = 3:2)*</span></span>
                     <input type="file" id="upload-file" name="productImage" accept=".jpg,.jpeg,.png" required>
                     <p id="filename"></p>
                 </label>
@@ -319,7 +319,7 @@
 
             <div class="inputdivs">
                 <label for="upload-update-file" class="choose-file-btn">
-                    <span>Choose File <br> Max = 1MB, Ratio = 3:2</span>
+                    <span>Choose File <br><span style="color: #b11d1d; margin:0;padding:0;">(Max = 1MB, Ratio = 3:2)*</span></span>
                     <input type="file" id="upload-update-file" name="productImage" accept=".jpg,.jpeg,.png" required>
                     <p id="filename"></p>
                 </label>
