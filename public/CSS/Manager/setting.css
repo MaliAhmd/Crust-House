@@ -4,7 +4,7 @@ main {
     border-radius: 03px;
     width: 100%;
     min-height: 85vh;
-    overflow-y: scroll;
+    overflow-y: auto;
     font-family: "Poppins", sans-serif;
 }
 
@@ -36,13 +36,13 @@ main {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
-#options button {
+#options .opt-buttons {
     display: flex;
-    margin: 0.51vw;
+    margin: 0.68vw;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -58,7 +58,7 @@ main {
     font-size: 1.2vw;
 }
 
-#options button:hover {
+#options .opt-buttons:hover {
     background-color: #fff;
     color: #ffbb00;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
@@ -72,6 +72,7 @@ main {
 #updateProfileOverlay,
 #discountValueOverlay,
 #paymentMethodOverlay,
+#tableSettingsOverlay,
 #confirmDeletionOverlay {
     position: fixed;
     top: 0;
@@ -90,6 +91,9 @@ main {
 #discountValue,
 #updateProfile,
 #orderType,
+#tableSettings,
+#add-table-form,
+#edit-table-form,
 #receipt,
 .confirmDeletion {
     display: none;
@@ -104,10 +108,25 @@ main {
     z-index: 1000;
 }
 
-#updateProfile {
+#updateProfile,
+#edit-table-form,
+#add-table-form {
+    min-height: 40vh;
     width: 30vw;
 }
 
+#tableSettings {
+    width: 90vw;
+    min-height: 40vh;
+}
+
+#add-table-form h3,
+#edit-table-form h3,
+#tableSettings h3 {
+    text-align: center;
+}
+
+#tableSettings h3,
 #newTax h3,
 #receipt h3,
 #paymentMethod h3,
@@ -123,6 +142,8 @@ main {
 }
 
 #newTax hr,
+#add-table-form hr,
+#edit-table-form hr,
 #receipt hr,
 #discountType hr,
 #orderType hr,
@@ -155,21 +176,27 @@ main {
     margin: 10px;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
     width: 30%;
     height: 4vw;
     font-family: "Poppins", sans-serif;
     font-size: 1vw;
 }
 
-#option_button button {
+#option_button button,
+.deleteTax {
     display: flex;
     background-color: #ffbb00;
     color: #fff;
     width: 20%;
+    align-items: center;
+    justify-content: center;
     height: 70%;
     font-size: 1.2vw;
     border-radius: 10px;
     cursor: pointer;
+    margin: 0 0.75vw;
+    border: none;
 }
 
 .deleteTax {
@@ -216,12 +243,15 @@ main {
     display: flex;
     background-color: #ffbb00;
     color: #fff;
+    margin: 0 0.5vw;
     padding: 0.5vw 2vw;
     height: 90%;
     font-size: 1.2vw;
     border-radius: 10px;
     cursor: pointer;
     border: none;
+    border: none;
+    align-items: center;
 }
 
 .forms-btns .add:hover {
@@ -425,7 +455,7 @@ main {
 #addImg {
     display: flex;
     background-color: #fb0;
-    color: #dadada;
+    color: #ffffff;
     font-weight: bold;
     font-size: 1.4vw;
     padding: 5px 10px;
@@ -473,14 +503,44 @@ main {
 #form_btns #form_btns-delete,
 #form_btns #form_btns-close {
     display: flex;
-    width: 100%;
-    height: 75%;
-    margin: 0 1vw;
-    padding: 0.8vw 1.5vw;
+    font-size: 1.2vw;
+    margin: 0.5vw;
+    border: none;
+    color: #fbfbfb;
+    font-weight: 400;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    padding: 0.375rem 0.75rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 #form_btns #form_btns-delete {
-    background-color: #c72d25;
+    background-color: #dc3545;
+}
+
+#form_btns #form_btns-update {
+    background-color: #ffbb00;
+}
+
+#form_btns #form_btns-close {
+    background-color: #dcdcdc;
+    color: #000;
+}
+
+#form_btns #form_btns-delete:hover {
+    background-color: #b42f3c;
+}
+
+#form_btns #form_btns-update:hover {
+    background-color: #ce9907;
+}
+
+#form_btns #form_btns-close:hover {
+    background-color: #c1c1c1;
+    color: #000;
 }
 
 #updateProfile .formDiv {
@@ -506,20 +566,20 @@ main {
 #updateProfile .formBtns #cancel-profile-update,
 #updateProfile .formBtns #profile-update {
     display: flex;
+    border: none;
+    background-color: #2da571;
+    border-radius: 0.25rem;
+    color: #fff;
     font-family: "Poppins", sans-serif;
     font-size: 1.2vw;
-    margin: 0.5vw;
-    border: none;
-    color: #fff;
-    background-color: #2da571;
     font-weight: 400;
-    white-space: nowrap;
+    line-height: 1.5;
     text-align: center;
     vertical-align: middle;
-    border-radius: 0.25rem;
+    white-space: nowrap;
     cursor: pointer;
-    line-height: 1.5;
     padding: 0.375rem 0.75rem;
+    margin: 0.5vw;
     margin-bottom: 1vw;
     width: auto;
     height: auto;

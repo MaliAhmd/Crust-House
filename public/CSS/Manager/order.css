@@ -94,6 +94,14 @@ table tbody tr td a:hover {
     background-color: #f84857;
 }
 
+#view {
+    background-color: #ffbb00;
+}
+
+#view:hover {
+    background-color: #a97e05;
+}
+
 #orderItemsOverlay {
     position: fixed;
     top: 0;
@@ -192,12 +200,4 @@ table tbody tr td a:hover {
 
 #printbtn:hover {
     background-color: #41bb41;
-}
-
-.table-row-data {
-    cursor: pointer;
-}
-
-.table-row-data:hover {
-    background-color: #fff;
 }

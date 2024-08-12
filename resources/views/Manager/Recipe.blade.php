@@ -63,7 +63,7 @@
             @endforeach
         </div>
 
-        @if ($categoryProducts != null)
+        @if ($categoryProducts)
             <div id="categoryProductOverlay" style="display: block;"></div>
             <div id="categoryProducts" style="display: flex;">
                 <div class="table">

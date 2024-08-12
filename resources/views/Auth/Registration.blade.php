@@ -28,30 +28,27 @@
                 @error('name')
                     <div class="error-message">{{ $message }}</div>
                 @enderror
-                
+
                 <div class="emailfield">
-                    <input type="email" name="email" placeholder="Email" autocomplete="off" required>
+                    <input type="email" name="email" placeholder="Email" id="email" autocomplete="off"
+                        oninput="validateEmail()" required>
                     <i class='bx bxs-envelope'></i>
                 </div>
-                @error('email')
-                    <div class="error-message">{{ $message }}</div>
-                @enderror
+
+                <div id="email-error-message" class="error-message" style="display: none;"></div>
 
                 <div class="passwordfield">
                     <input type="password" id="password" name="password" placeholder="Password" autocomplete="off"
-                    required>
-                    <i class='bx bxs-lock-alt' onclick="showAndHidePswd()"></i>
+                        required oninput="validatePassword()">
+                    <i class='bx bxs-show' onclick="showAndHidePswd()"></i>
                 </div>
 
                 <div class="passwordfield CnfrmPswdField">
                     <input type="password" id="cnfrmPswd" name="password_confirmation" placeholder="Confirm Password"
-                    autocomplete="off" required>
-                    <i class='bx bxs-lock-alt' onclick="showAndHideCnfrmPswd()"></i>
+                        autocomplete="off" oninput="validatePassword()" required>
+                    <i class='bx bxs-show' onclick="showAndHideCnfrmPswd()"></i>
                 </div>
-                @error('password')
-                    <div class="error-message">{{ $message }}</div>
-                @enderror
-
+                <div id="password-error-message" class="error-message" style="display: none;"></div>
             </div>
 
             {{-- <div class="fgtpswd">
@@ -59,12 +56,58 @@
             </div> --}}
 
             <div class="btn">
-                <input type="submit" value="Register">
+                <input id="submit-btn" type="submit" value="Register">
             </div>
         </form>
 
     </div>
     <script src="{{ asset('JavaScript/index.js') }}"></script>
+    <script>
+        function validateEmail() {
+            let email = document.getElementById("email").value.trim();
+            let emailErrorMessage = document.getElementById('email-error-message');
+            let submitBtn = document.getElementById('submit-btn');
+            if (!email.endsWith(".com")) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email must end with '.com'.";
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = '#c19b32';
+                return;
+            }
+            var invalidChars = /[*\/=]/;
+            if (invalidChars.test(email)) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";
+                submitBtn.disabled = true;
+                return;
+            }
+            emailErrorMessage.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = '#ffbb00';
+        }
+
+        function validatePassword() {
+            let password = document.getElementById('password').value;
+            let confirmPassword = document.getElementById('cnfrmPswd').value;
+            let message = document.getElementById('password-error-message');
+
+            if (password.length < 8) {
+                message.textContent = "Password must be at least 8 characters long!";
+                message.className = "error-message";
+                message.style.display = "block";
+            } else if (password !== confirmPassword) {
+                message.textContent = "Passwords do not match!";
+                message.className = "error-message";
+                message.style.display = "block";
+            } else {
+                message.textContent = "Passwords match!";
+                message.className = "success-message";
+                setTimeout(() => {
+                    message.style.display = "none";
+                }, 1000);
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -9,7 +9,7 @@
     #stocksTable_filter,
     .dataTables_length,
     .dataTables_info {
-        margin: 0.5vw 7vw !important;
+        margin: 0.5vw 6.2vw !important;
         font-size: 0.8rem !important;
     }
 
@@ -65,7 +65,7 @@
         @endif
         <div class="newCategory">
             <button onclick="addStock()">Add New Stock</button>
-            <button onclick="window.location='{{ route('viewStockHistory', $branch_id) }}'">Stock History</button>
+            <button onclick="window.location='{{ route('viewStockHistory', [$branch_id, $user_id]) }}'">Stock History</button>
         </div>
 
         @if (!empty($notifications))
@@ -196,7 +196,7 @@
             <div class="inputdivs unitdivs">
                 <div class="stockquantity">
                     <label for="iQuantity">Stock Quantity</label>
-                    <input type="number" id="iQuantity" name="stockQuantity" step="any" min="0" required>
+                    <input type="number" id="iQuantity" name="stockQuantity" step="any" min="1" required>
                 </div>
 
                 <div class="unitselection">

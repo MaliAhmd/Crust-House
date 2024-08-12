@@ -27,7 +27,10 @@
 </style>
 @section('main')
     <main id="stock">
-        <h3 style="text-align: center">Stock history</h3>
+        <div style="display:flex;justify-content:space-between; align-item:center;">
+            <button id="back" type="button" onclick="window.location='{{ route('viewStockPage', [$user_id, $branch_id]) }}'">Back</button>
+            <h3 style="margin:0; width:60%;">Stock history</h3>
+        </div>
         @php
             $stockHistory = $stockHistory;
         @endphp

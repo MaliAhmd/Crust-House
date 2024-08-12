@@ -26,12 +26,33 @@
                 $posLogo = $ThemeSettings->pos_logo;
             }
         @endphp
+        {{--      
+            |---------------------------------------------------------------|
+            |======================== Warning Overlay ======================|
+            |---------------------------------------------------------------|
+        --}}
+        @dd(session('warning'));
+        @if (session('warning'))
+            <div id="warningOverlay" class="warningOverlay"></div>
+            <div id="warning" class="warning">
+                <p style="text-align:center;">
+                    {{ session('warning') }}
+                </p>
+                <button id="warning-close" type="button" onclick="hideWarning()">Ok</button>
+            </div>
+            <script>
+                function hideWarning() {
+                    document.getElementById('warningOverlay').style.display = 'none';
+                    document.getElementById('warning').style.display = 'none';
+                };
+            </script>
+        @endif
         <nav>
             <div class="logo">
                 @if ($posLogo)
-                    <img src="{{ asset('Images/Logos/' . $posLogo) }}" alt="Logo Here">
+                    <img src="{{ asset('Images/Logos/' . $posLogo) }}" alt="Logo Here" onclick="setActiveMenus('menu1','{{ route('managerdashboard', [$id, $branch_id]) }}')" style="cursor: pointer;">
                 @else
-                    <img src="{{ asset('Images/image-1.png') }}" alt="Logo Here">
+                    <img src="{{ asset('Images/image-1.png') }}" alt="Logo Here" onclick="setActiveMenus('menu1','{{ route('managerdashboard', [$id, $branch_id]) }}')" style="cursor: pointer;">
                 @endif
             </div>
 
@@ -96,23 +117,40 @@
                     </div>
 
                     <div class="menuItems" id="menu9">
-                        <i class='bx bxs-report'></i>
-                        <a href="{{ route('report', $branch_id) }}" style="text-decoration: none;"
+                        <i class='bx bxs-group'></i>
+                        <a href="{{ route('viewDineInPage',  $branch_id) }}" style="text-decoration: none;"
                             onclick="setActiveMenu('menu9')">
-                            <p class="link">Reports</p>
+                            <p class="link">Dine-In</p>
                         </a>
                     </div>
 
                     <div class="menuItems" id="menu10">
+                        <i class='bx bxs-report'></i>
+                        <a href="{{ route('report', $branch_id) }}" style="text-decoration: none;"
+                            onclick="setActiveMenu('menu10')">
+                            <p class="link">Reports</p>
+                        </a>
+                    </div>
+
+                    <div class="menuItems" id="menu11">
                         <i class='bx bx-dots-vertical-rounded'></i>
                         <a href="{{ route('viewSettingsPage', [$id, $branch_id]) }}" style="text-decoration: none;"
-                            onclick="setActiveMenu('menu10')">
+                            onclick="setActiveMenu('menu11')">
                             <p class="link">More</p>
                         </a>
                     </div>
                 </div>
             </div>
             <script>
+                 function setActiveMenus(menuId, route) {
+                    document.cookie = "activeMenu=" + menuId + "; path=/";
+                    document.querySelectorAll('.menuItems').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    document.getElementById(menuId).classList.add('active');
+                    window.location.href= route;
+                }
+                
                 function setActiveMenu(menuId) {
                     document.cookie = "activeMenu=" + menuId + "; path=/";
                     document.querySelectorAll('.menuItems').forEach(item => {

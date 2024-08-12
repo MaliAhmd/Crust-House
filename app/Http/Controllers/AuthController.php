@@ -20,17 +20,20 @@ class AuthController extends Controller
 
     public function register(Request $req)
     {
-        $validateData = $req->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'profile_picture' => 'image|mimes:jpeg,png,jpg,gif',
-        ]);
+        
+        dd($req->all());
+
         $existingChef = User::where('role','chef')->where('branch_id', $req->branch)->first();
-        if($existingChef->role == $req->role){
+        if($existingChef && $existingChef->role == $req->role){
             return redirect()->back()->with('error', 'Chef Already exist in this branch');
         }
 
+        $existingUser = User::all();
+        foreach ($existingUser as $user) {
+            if($user->email == $req->input('email')){
+                return redirect()->back()->with('error', 'Email already exist');
+            }
+        } 
         $user = new User();
 
         if ($req->hasFile('profile_picture')) {

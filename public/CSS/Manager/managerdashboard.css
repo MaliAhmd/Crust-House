@@ -24,6 +24,7 @@ main {
     font-size: 1vw;
     margin: 0.5vw 1vw 1vw;
     width: 98%;
+    justify-content: space-between;
 }
 
 .heading h3 {
@@ -42,7 +43,7 @@ main {
     justify-content: space-between;
     align-items: center;
     font-size: 1vw;
-    margin: 0 1vw;
+    margin: 0 0.5vw;
     width: 70%;
     border-radius: 0.25rem;
     box-shadow: 0px 0px 5px #939393;

@@ -9,7 +9,7 @@
     #categoryTable_filter,
     .dataTables_length,
     .dataTables_info {
-        margin: 0.5vw 7vw !important;
+        margin: 0.5vw 6.3vw !important;
         font-size: 0.8rem !important;
     }
 

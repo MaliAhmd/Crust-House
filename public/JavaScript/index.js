@@ -12,6 +12,7 @@ function toggleMenu() {
     }
 }
 
+
 /*
 // Theme color change
 function toggleTheme() {

@@ -30,10 +30,13 @@
                     <img src="{{ asset('Images/image-1.png') }}" alt="Logo Here">
                 @endif
             </div>
-
-            <div class="search_bar_div">
-                <input type="text" id="search_bar" name="search" placeholder="Search.."
-                    style="background-image: url('{{ asset('Images/search.png') }}');">
+            <div id="centerDiv">
+                <button id="dineIn-btn" type="button" onclick="showDineInOrders()">Dine-In Orders</button>
+                <div class="search_bar_div">
+                    <input type="text" id="search_bar" name="search" placeholder="Search.."
+                        style="background-image: url('{{ asset('Images/search.png') }}');">
+                </div>
+                <button id="online-btn" type="button" onclick="showOnlineOrders()">Online Orders</button>
             </div>
 
             <div class="profilepanel">

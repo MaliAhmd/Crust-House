@@ -9,7 +9,7 @@
     #ordersTable_filter,
     .dataTables_length,
     .dataTables_info {
-        margin: 0.5vw 5vw !important;
+        margin: 0.5vw 4.1vw !important;
         font-size: 0.8rem !important;
     }
 
@@ -47,7 +47,7 @@
                 {{ session('error') }}
             </div>
             <script>
-              setTimeout(() => {
+                setTimeout(() => {
                     document.getElementById('error').classList.add('alert-hide');
                 }, 2000);
 
@@ -77,31 +77,18 @@
             <tbody>
                 @foreach ($orders as $order)
                     <tr class="table-row-data">
-                        <td onclick="window.location.href='{{ route('viewOrderProducts', $order->id) }}'">
-                            {{ $order->id }}
-                        </td>
-                        <td onclick="window.location.href='{{ route('viewOrderProducts', $order->id) }}'">
-                            {{ $order->order_number }}</td>
-                        <td onclick="window.location.href='{{ route('viewOrderProducts', $order->id) }}'">
-                            {{ $order->total_bill }}</td>
-                        <td onclick="window.location.href='{{ route('viewOrderProducts', $order->id) }}'">
-                            {{ $order->salesman->name }}</td>
+                        <td>{{ $order->id }}</td>
+                        <td>{{ $order->order_number }}</td>
+                        <td>{{ $order->total_bill }}</td>
+                        <td>{{ $order->salesman->name }}</td>
 
-                        @if ($order->status == 1)
-                            <td class="status"
-                                onclick="window.location.href='{{ route('viewOrderProducts', $order->id) }}'">
-                                Completed</td>
-                        @elseif ($order->status == 2)
-                            <td class="status"
-                                onclick="window.location.href='{{ route('viewOrderProducts', $order->id) }}'">
-                                Pending</td>
-                        @elseif ($order->status == 3)
-                            <td class="status"
-                                onclick="window.location.href='{{ route('viewOrderProducts', $order->id) }}'">
-                                Canceled</td>
+                        @if ($order->status == 1) <td class="status">Completed</td>
+                        @elseif ($order->status == 2) <td class="status">Pending</td>
+                        @elseif ($order->status == 3) <td class="status">Canceled</td>
                         @endif
 
                         <td>
+                            <a id="view" href="{{ route('viewOrderProducts', $order->id) }}">View</a>
                             @if ($order->status == 1)
                                 <a id="cancel-order" style="background-color:#4d4d4d; cursor: default;">Cancel</a>
                             @elseif($order->status == 2)
@@ -144,11 +131,12 @@
                         </tbody>
                     </table>
                 </div>
- 
+
                 <div class="btns">
                     <a href="{{ route('printrecipt', $order_id) }}"><button id="printbtn"
                             type="button">Print</button></a>
-                    <a href="{{ route('viewOrdersPage',[$user_id ,$branch_id]) }}"><button id="closebtn" type="button">Close</button></a>
+                    <a href="{{ route('viewOrdersPage', [$user_id, $branch_id]) }}"><button id="closebtn"
+                            type="button">Close</button></a>
                 </div>
             </div>
         @endif

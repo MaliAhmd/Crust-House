@@ -1,6 +1,0 @@
-INSERT INTO `branches` (`id`, `branch_state`, `branchLocation`, `branchName`, `branchCode`, `address`, `branch_web_address`, `max_discount_percentage`, `receipt_message`, `feedback`, `receipt_tagline`, `riderOption`, `onlineDeliveryOption`, `DiningTableOption`, `owner_id`, `created_at`, `updated_at`) VALUES
-(1, 'Punjab', 'Lahore', 'Lahore Branch', 'LH-123', 'lahorei gate', NULL, 20.00, NULL, NULL, NULL, 1, 1, 1, 1, '2024-07-15 05:59:59', '2024-07-19 01:22:18'),
-(2, 'Capital', 'Islamabad', 'Islamabad Branch', 'ISB-312', 'Itehhad Center 1st Floor Shop#2, Main Muree Rd, opposite Attock Pump, ISB', 'www.crusthouse.com.pk', 19.00, 'THANK YOU FOR YOUR VISIT', 'SHARE YOUR FEEDBACk', 'ENJOY YOUR MEAL', 1, 1, 1, 1, '2024-07-15 01:00:16', '2024-07-31 09:39:24'),
-(3, 'Sindh', 'Badin', 'Badin crust', 'bdn-123', 'badin central park', NULL, 20.00, NULL, NULL, NULL, 1, 0, 0, 1, '2024-07-19 06:19:26', '2024-07-19 06:19:26'),
-(4, 'Punjab', 'Wah Cantonment', 'Hello Burger', '1234', 'House No. A-230 Gulistan Colony Wah Cantt', NULL, 20.00, NULL, NULL, NULL, 1, 1, 1, NULL, '2024-07-31 07:14:10', '2024-07-31 07:14:10'),
-(5, 'Sindh', 'Shahpur Chakar', 'Yum Bakers', 'SC-1234', 'xyz', NULL, 20.00, NULL, NULL, NULL, 1, 1, 1, NULL, '2024-07-31 09:51:01', '2024-07-31 09:51:01');

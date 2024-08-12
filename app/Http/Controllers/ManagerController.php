@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\BranchCategory;
 use App\Models\Category;
 use App\Models\Deal;
+use App\Models\DineInTable;
 use App\Models\Discount;
 use App\Models\handler;
 use App\Models\ThemeSetting;
@@ -128,10 +129,12 @@ class ManagerController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
-        $validatedData = $request->validate([
-            'CategoryImage' => 'required|image|mimes:jpeg,png,jpg|',
-            'categoryName' => 'required|string|max:255',
-        ]);
+        $categories = Category::all();
+        foreach ($categories as $category) {
+            if ($category->categoryName == $request->categoryName) {
+                return redirect()->back()->with('error', 'Category already exist.');
+            }
+        }
 
         if ($request->hasFile('CategoryImage')) {
             $image = $request->file('CategoryImage');
@@ -141,7 +144,7 @@ class ManagerController extends Controller
 
         $category = new Category();
         $category->categoryImage = $imageName;
-        $category->categoryName = $validatedData['categoryName'];
+        $category->categoryName = $request->input('categoryName');
         $category->branch_id = $request->branch_id;
         $category->save();
 
@@ -159,9 +162,13 @@ class ManagerController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
-        $validatedData = $request->validate([
-            'categoryName' => 'required|string|max:255',
-        ]);
+        $categories = Category::all();
+        foreach ($categories as $category) {
+            if ($category->categoryName == $request->categoryName) {
+                return redirect()->back()->with('error', 'Category already exist.');
+            }
+        }
+
         $category = Category::find($request->id);
         if ($category) {
             if ($request->hasFile('CategoryImage')) {
@@ -176,7 +183,7 @@ class ManagerController extends Controller
                 $category->categoryImage = $imageName;
             }
 
-            $category->categoryName = $validatedData['categoryName'];
+            $category->categoryName = $request->input('categoryName');
             $category->save();
             return redirect()->back()->with('success', 'Category Updated successfully');
         } else {
@@ -230,6 +237,7 @@ class ManagerController extends Controller
         if (!$category) {
             return redirect()->back();
         }
+
         $total_variations = intval($request->noOfVariations);
 
         $imageContent = null;
@@ -403,8 +411,14 @@ class ManagerController extends Controller
         }
         $branch_id = $request->branch_id;
 
-        $deal = new Deal();
+        $existingDeals = Deal::all();
+        foreach ($existingDeals as $deal) {
+            if ($deal->dealTitle == $request->input('dealTitle')) {
+                return redirect()->back()->with('error', 'Deal already exist.');
+            }
+        }
 
+        $deal = new Deal();
         $imageName = null;
         if ($request->hasFile('dealImage')) {
             $image = $request->file('dealImage');
@@ -463,6 +477,13 @@ class ManagerController extends Controller
     {
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
+        }
+
+        $existingDeals = Deal::all();
+        foreach ($existingDeals as $deal) {
+            if ($deal->dealTitle == $request->input('dealTitle')) {
+                return redirect()->back()->with('error', 'Deal already exist.');
+            }
         }
 
         $deal = Deal::find($request->dId);
@@ -651,11 +672,11 @@ class ManagerController extends Controller
             $quantityInBaseUnit = isset($conversionMap[$unit]) ? $quantity * $conversionMap[$unit] : $quantity;
             $minimumQuantityInBaseUnit = isset($conversionMap[$minimumUnit]) ? $minimumQuantity * $conversionMap[$minimumUnit] : $minimumQuantity;
             if ($quantityInBaseUnit <= $minimumQuantityInBaseUnit) {
-                    $notificationMessage = "Quantity of {$stock->itemName} is below or equal to the minimum level";
-                    Notification::create(['message' => $notificationMessage]);
-                    $notifications[] = $notificationMessage;
-                }
+                $notificationMessage = "Quantity of {$stock->itemName} is below or equal to the minimum level";
+                Notification::create(['message' => $notificationMessage]);
+                $notifications[] = $notificationMessage;
             }
+        }
 
         $notify = Notification::where('is_read', false)->get();
         session(['Notifications' => $notify]);
@@ -747,10 +768,10 @@ class ManagerController extends Controller
 
         return redirect()->back();
     }
-    public function stockHistory($branch_id)
+    public function stockHistory($branch_id, $user_id)
     {
         $stock_history = StockHistory::where('branch_id', $branch_id)->get();
-        return view('Manager.StockHistory')->with(['stockHistory' => $stock_history]);
+        return view('Manager.StockHistory')->with(['stockHistory' => $stock_history, 'branch_id' => $branch_id, 'user_id' => $user_id]);
     }
 
     /*
@@ -765,13 +786,20 @@ class ManagerController extends Controller
             return redirect()->route('viewLoginPage');
         }
         $categories = Category::where('branch_id', $branch_id)->get();
+        $products = Product::all();
+        $categoryIdsWithProducts = $products->pluck('category_id')->unique();
+
+        $categoriesWithProducts = $categories->filter(function ($category) use ($categoryIdsWithProducts) {
+            return $categoryIdsWithProducts->contains($category->id);
+        });
+
         $stocks = Stock::where('branch_id', $branch_id)->get();
         $recipe = Recipe::with('product', 'stock')->get();
 
         session(['showproductRecipe' => false]);
         return view('Manager.Recipe')->with([
             'categoryProducts' => null,
-            'categories' => $categories,
+            'categories' => $categoriesWithProducts,
             'stocks' => $stocks,
             'user_id' => $id,
             'branch_id' => $branch_id,
@@ -918,7 +946,7 @@ class ManagerController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
-        $orders = Order::with('salesman')->get();
+        $orders = Order::with('salesman')->where('id', $order_id)->get();
         $orderItems = OrderItem::where('order_id', $order_id)->get();
         return view('Manager.Order')->with(['orders' => $orders, 'orderItems' => $orderItems]);
     }
@@ -1007,12 +1035,13 @@ class ManagerController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
-        $validateData = $req->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $req->input('staffId'),
-            'password' => 'nullable|string|min:8|confirmed',
-            'updated_profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif', // Check for image file
-        ]);
+        $existingUser = User::all();
+        foreach ($existingUser as $user) {
+            if ($user->email == $req->input('email')) {
+                return redirect()->back()->with('error', 'Email already exist');
+            }
+        }
+
         $auth = User::find($req->input('staffId'));
         if ($req->hasFile('updated_profile_picture')) {
             $imageName = null;
@@ -1104,6 +1133,26 @@ class ManagerController extends Controller
 
     /*
     |---------------------------------------------------------------|
+    |======================= Dine-In Functions =====================|
+    |---------------------------------------------------------------|
+    */
+
+    public function viewDineInPage($branch_id)
+    {
+        if (!session()->has('branchManager')) {
+            return redirect()->route('viewLoginPage');
+        }
+        $branch = Branch::find($branch_id);
+        if ($branch->DiningOption === 0) {
+            return redirect()->back()->with('warning' ,'The Dine-In option for this branch is disable, kindly contact with Tachyon.');
+        }
+
+        $dineInTables = DineInTable::where('branch_id', $branch_id)->get();
+        return view('Manager.Dine-In');
+    }
+
+    /*
+    |---------------------------------------------------------------|
     |====================== Settings Functions =====================|
     |---------------------------------------------------------------|
     */
@@ -1118,6 +1167,7 @@ class ManagerController extends Controller
         $paymentMethods = PaymentMethod::where('branch_id', $branch_id)->whereNotNull('payment_method')->get();
         $orderTypes = PaymentMethod::where('branch_id', $branch_id)->whereNotNull('order_type')->get();
         $discountTypes = PaymentMethod::where('branch_id', $branch_id)->whereNotNull('discount_type')->get();
+        $branchOptions = Branch::find($branch_id);
         return view('Manager.Setting')->with([
             'taxes' => $taxes,
             'discounts' => $discounts,
@@ -1126,7 +1176,8 @@ class ManagerController extends Controller
             'orderTypes' => $orderTypes,
             'discountTypes' => $discountTypes,
             'settingsData' => $settingsData,
-            'profile' => $profile
+            'profile' => $profile,
+            'branchOptions' => $branchOptions
         ]);
     }
     public function createTax(Request $request)
@@ -1476,9 +1527,6 @@ class ManagerController extends Controller
 
     public function dayFullTransactionReport(Request $request)
     {
-        // if (!session()->has('branchManager')) {
-        //     return redirect()->route('viewLoginPage');
-        // }
         $branch_id = $request->branch_id;
         $salesman_id = $request->salesman;
         $selectedDate = $request->transaction_report_date;
@@ -1496,7 +1544,7 @@ class ManagerController extends Controller
         if (!$dailyOrders->isEmpty()) {
             return redirect()->back()->with('dailyOrders', $dailyOrders);
         } else {
-            return redirect()->back()->with('error', 'No data found against your requirements');
+            return redirect()->back()->with('error', 'Data not found');
         }
     }
     public function printDailyFullTransactionReport($branch_id, $salesman_id, $selectedDate)
@@ -1569,6 +1617,9 @@ class ManagerController extends Controller
             } elseif ($order->status == 3) {
                 $report['sales_data'][$Name][$order_date]['refunds'] += $order_bill;
             }
+        }
+        if (collect($report['sales_data'])->isEmpty()) {
+            return redirect()->back()->with('error', 'Data not found.');
         }
         return redirect()->back()->with('report', $report);
     }
@@ -1761,7 +1812,9 @@ class ManagerController extends Controller
                 $order->end_date = $end_date;
                 return $order;
             });
-
+        if ($dailySales->isEmpty()) {
+            return redirect()->back()->with('error', 'Data not found');
+        }
         return redirect()->back()->with('dailySales', $dailySales);
     }
     public function printSoldProductsReport($branch_id, $start_date, $end_date)
@@ -1795,6 +1848,10 @@ class ManagerController extends Controller
     public function stockHistoryReport($branch_id)
     {
         $stock_history = StockHistory::where('branch_id', $branch_id)->get();
+
+        if ($stock_history->isEmpty()) {
+            return redirect()->back()->with('error', 'Stock history not found');
+        }
         $pdfName = 'Stock Reorder Report';
 
         $html = view('Reports.StockReorderReportTable', ['stock_history' => $stock_history])->render();
@@ -1829,7 +1886,7 @@ class ManagerController extends Controller
             });
 
         if ($salesRefund->isEmpty()) {
-            return redirect()->back()->with('error', "Record not found again " . $start_date . " & " . $end_date);
+            return redirect()->back()->with('error', "Data not found.");
         }
         return redirect()->back()->with('salesRefund', $salesRefund);
     }
@@ -1861,7 +1918,6 @@ class ManagerController extends Controller
             'pdf_filename' => $pdfFileName
         ]);
     }
-
     public function refundReport(Request $request)
     {
 
@@ -1903,6 +1959,9 @@ class ManagerController extends Controller
                 $refundsReport['refunds_data'][$Name][$order_date]['refunds'] += $order_bill;
                 $refundsReport['total_refunds'] += $order_bill;
             }
+        }
+        if (collect($refundsReport['refunds_data'])->isEmpty()) {
+            return redirect()->back()->with('error', 'Data not found.');
         }
         return redirect()->back()->with('refundsReport', $refundsReport);
     }
@@ -2012,8 +2071,9 @@ class ManagerController extends Controller
                 $taxReport['total_tax'] += $order_tax;
             }
         }
-
-        // dd($taxes, $taxReport, $tax->taxes);
+        if (collect($taxReport['sales_data'])->isEmpty()) {
+            return redirect()->back()->with('error', 'Data not found.');
+        }
         return redirect()->back()->with('taxReport', $taxReport);
     }
     public function printTaxReportByDate($Branch_id, $Start_date, $End_date)
@@ -2103,6 +2163,9 @@ class ManagerController extends Controller
                 $order->end_date = $end_date->toDateString();
                 return $order;
             });
+        if ($transactionTaxes->isEmpty()) {
+            return redirect()->back()->with('error', 'Data not found.');
+        }
         return redirect()->back()->with('transactionTaxes', $transactionTaxes);
     }
     public function printDailyTransactionTaxReport($Branch_id, $Start_date, $End_date)
@@ -2141,7 +2204,6 @@ class ManagerController extends Controller
 
     public function salesmanTaxReportByDate(Request $request)
     {
-
         $branch_id = $request->branch_id;
         $salesman_id = $request->salesman;
         $transaction_report_date = Carbon::parse($request->transaction_report_date)->startOfDay();
@@ -2159,7 +2221,7 @@ class ManagerController extends Controller
             });
 
         if ($salesmanTaxReport->isEmpty()) {
-            return redirect()->back()->with('error', 'Data Not Found Against Requirements');
+            return redirect()->back()->with('error', 'Data not found.');
         } else {
             return redirect()->back()->with('salesmanTaxReport', $salesmanTaxReport);
         }
@@ -2215,7 +2277,7 @@ class ManagerController extends Controller
             });
 
         if ($salesmanDiscountReport->isEmpty()) {
-            return redirect()->back()->with('error', 'Data Not Found Against Requirements');
+            return redirect()->back()->with('error', 'Data not found.');
         } else {
             return redirect()->back()->with('salesmanDiscountReport', $salesmanDiscountReport);
         }

@@ -9,7 +9,7 @@
     #dealsTable_filter,
     .dataTables_length,
     .dataTables_info {
-        margin: 0.5vw 7vw !important;
+        margin: 0.5vw 6.3vw !important;
         font-size: 0.8rem !important;
     }
 
@@ -470,7 +470,7 @@
                 <p id="priceTag">Actual Price: <span id="price"></span></p>
                 <button type="button" id="cancel" onclick="closeEditCatogry()">Cancel</button>
                 <a id="add-product-link" style="text-decoration: none;"><input type="button" value="Add Product"></a>
-                <input type="submit" value="Edit">
+                <input type="submit" value="Update">
             </div>
         </form>
 

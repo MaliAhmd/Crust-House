@@ -13,7 +13,7 @@
         #dayTransactionReportTable_filter,
         .dataTables_length,
         .dataTables_info {
-            margin: 0.5vw 5vw !important;
+            margin: 0.5vw 4.2vw !important;
             font-size: 0.8rem !important;
         }
 
@@ -51,7 +51,7 @@
                 {{ session('error') }}
             </div>
             <script>
-              setTimeout(() => {
+                setTimeout(() => {
                     document.getElementById('error').classList.add('alert-hide');
                 }, 2000);
 
@@ -140,7 +140,8 @@
 
                     <div class="btns">
                         <button type="submit">OK</button>
-                        <button id="closebtn" type="button" onclick="closeDailyTransactionReportTable()">Close</button>
+                        <button class="option-close-btn" id="closebtn" type="button"
+                            onclick="closeDailyTransactionReportTable()">Close</button>
 
                     </div>
                 </form>
@@ -158,7 +159,8 @@
                                         <th>Time of Sale</th>
                                         <th>Items</th>
                                         <th>Qty</th>
-                                        <th>Sale Total</th>
+                                        <th>Product Total Price</th>
+                                        <th>Total Bill</th>
                                         <th>Payment Methods</th>
                                     </tr>
                                 </thead>
@@ -168,29 +170,62 @@
                                         $total_sales = 0.0;
                                         $salesman_id = null;
                                         $selectedDate = null;
+                                        $renderedOrders = [];
                                     @endphp
                                     @foreach ($dailyOrders as $value)
                                         @php
+                                            if (isset($renderedOrders[$value->order_number])) {
+                                                continue;
+                                            }
+
+                                            $orderProduct = [];
+                                            $productQuantities = [];
+                                            $productPrices = [];
+                                            foreach ($dailyOrders as $order) {
+                                                if ($order->order_number == $value->order_number) {
+                                                    foreach ($order->items as $item) {
+                                                        $orderProduct[] = $item->product_name;
+                                                        $productQuantities[] = $item->product_quantity;
+                                                        $productPrices[] = $item->total_price;
+                                                    }
+                                                }
+                                            }
+                                            $renderedOrders[$value->order_number] = true;
                                             $salesman_id = $value->salesman_id;
                                             $selectedDate = $value->selected_date;
+                                            $order_bill = (float) str_replace('Rs. ', '', $value->total_bill);
+                                            $total_sales += $order_bill;
                                         @endphp
-                                        @foreach ($value->items as $item)
-                                            @php
-                                                $time = $item->created_at->format('H:i:s');
-                                                $order_bill = (float) str_replace('Rs. ', '', $item->total_price);
-                                                $total_sales += $order_bill;
-                                            @endphp
-                                            <tr>
-                                                <td>{{ $item->order_number }}</td>
-                                                <td>{{ $time }}</td>
-                                                <td>{{ $item->product_name }}</td>
-                                                <td>{{ $item->product_quantity }}</td>
-                                                <td>{{ $item->total_price }}</td>
-                                                <td>{{$value->payment_method}}</td>
-                                            </tr>
-                                        @endforeach
+                                        <tr style="border-bottom: 1px solid #000;">
+                                            <td>{{ $value->order_number }}</td>
+                                            <td>{{ $value->created_at->format('H:i:s') }}</td>
+                                            <td>
+                                                <div style="display: flex; flex-direction:column;">
+                                                    @foreach ($orderProduct as $product)
+                                                        <p class="truncate-text">{{ $product }}</p>
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; flex-direction:column;">
+                                                    @foreach ($productQuantities as $quantity)
+                                                        <p class="truncate-text">{{ $quantity }}</p>
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div style="display: flex; flex-direction:column;">
+                                                    @foreach ($productPrices as $price)
+                                                        <p class="truncate-text">{{ $price }}</p>
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                            <td>{{ $value->total_bill }}</td>
+                                            <td>{{ $value->payment_method }}</td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
+
                                 <tfoot>
                                     <tr>
                                         <td colspan="4" style="text-align: right;"><strong>Total Sales:</strong></td>
@@ -207,7 +242,8 @@
                             </button>
 
                             <button id="closebtn" type="button"
-                                onclick="closeDailyTransactionReportTable()">Close</button>
+                                onclick="closeDailyTransactionReportTable()">Close
+                            </button>
                         </div>
                     </div>
                 @endif
@@ -236,7 +272,7 @@
                 --}}
 
                 <button type="button" class="option" id="option3" onclick="salesAssistantTotalReport()">
-                    Sales Assistant total sales report
+                    Sales assistant total sales report
                 </button>
                 <div id="salesAssistantTotalReportOverlay"></div>
                 <form id="salesAssistantTotalReport" action="{{ route('salesAssistantTotalSalesReport') }}" method="POST"
@@ -260,7 +296,8 @@
 
                     <div class="btns">
                         <button type="submit">OK</button>
-                        <button id="closebtn" type="button" onclick="closeSalesAssistantTotalReport()">Close</button>
+                        <button class="option-close-btn" id="closebtn" type="button"
+                            onclick="closeSalesAssistantTotalReport()">Close</button>
 
                     </div>
                 </form>
@@ -354,8 +391,9 @@
                     </div>
 
                     <div class="btns">
-                        <button id="closebtn" type="button" onclick="closeSalesAssistantTotalReport()">Close</button>
                         <button type="submit">OK</button>
+                        <button class="option-close-btn" id="closebtn" type="button"
+                            onclick="closeSalesAssistantTotalReport()">Close</button>
                     </div>
                 </form>
 
@@ -425,18 +463,18 @@
                 <h4>Product Reports</h4>
                 {{--  
                 |---------------------------------------------------------------|
-                |===================== Product Sold Report =====================|
+                |===================== Product Sale Report =====================|
                 |---------------------------------------------------------------|
                 --}}
 
                 <button type="button" class="option" id="option5" onclick="soldProductsReport()">
-                    Product sold report
+                    Product sales report
                 </button>
                 <div id="soldProductsReportOverlay"></div>
                 <form id="soldProductsReport" action="{{ route('soldProductsReport') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
-                    <h3>Sold Products Report</h3>
+                    <h3>Products Sales Report</h3>
                     <hr>
                     <input type="hidden" value="{{ $branch_id }}" name = "branch_id">
                     <div class="details" id="detail">
@@ -454,8 +492,9 @@
                     </div>
 
                     <div class="btns">
-                        <button id="closebtn" type="button" onclick="closesoldProductsReport()">Close</button>
                         <button type="submit">OK</button>
+                        <button id="closebtn" class="option-close-btn" type="button"
+                            onclick="closesoldProductsReport()">Close</button>
                     </div>
                 </form>
                 @if (session()->has('dailySales'))
@@ -553,7 +592,7 @@
                 --}}
 
                 <button type="button" class="option" id="option8" onclick="productsRefundReport()">
-                    Products refunded report
+                    Products refund report
                 </button>
                 <div id="productsRefundReportOverlay"></div>
                 <form id="productsRefundReport" action="{{ route('productsRefundReport') }}" method="POST"
@@ -576,8 +615,9 @@
                     </div>
 
                     <div class="btns">
-                        <button id="closebtn" type="button" onclick="closeProductsRefundReport()">Close</button>
                         <button type="submit">OK</button>
+                        <button id="closebtn" class="option-close-btn" type="button"
+                            onclick="closeProductsRefundReport()">Close</button>
                     </div>
                 </form>
                 @if (session()->has('salesRefund'))
@@ -662,7 +702,7 @@
                 --}}
 
                 <button type="button" class="option" id="option9" onclick="refundReport()">
-                    Refunds report
+                    Refund report
                 </button>
                 <div id="refundReportOverlay"></div>
                 <form id="refundReport" action="{{ route('refundReport') }}" method="POST"
@@ -685,14 +725,15 @@
                     </div>
 
                     <div class="btns">
-                        <button id="closebtn" type="button" onclick="closeRefundReport()">Close</button>
                         <button type="submit">OK</button>
+                        <button id="closebtn" class="option-close-btn" type="button"
+                            onclick="closeRefundReport()">Close</button>
                     </div>
                 </form>
                 @if (session()->has('refundsReport'))
                     <div id="refundReportTableOverlay"></div>
                     <div id="refundReportTable">
-                        <h3>Refound Report</h3>
+                        <h3>Refund Report</h3>
                         <hr>
                         <div id="table-container">
                             <table id="dayTransactionReportTable">
@@ -752,7 +793,7 @@
                 --}}
 
                 <button type="button" class="option" id="option10" onclick="taxReportByDate()">
-                    Tax by date report
+                    Tax report by date
                 </button>
                 <div id="taxReportByDateOverlay"></div>
                 <form id="taxReportByDate" action="{{ route('taxReportByDate') }}" method="POST"
@@ -776,7 +817,8 @@
 
                     <div class="btns">
                         <button type="submit">OK</button>
-                        <button id="closebtn" type="button" onclick="closeTaxReportByDate()">Close</button>
+                        <button id="closebtn" class="option-close-btn" type="button"
+                            onclick="closeTaxReportByDate()">Close</button>
                     </div>
                 </form>
 
@@ -846,7 +888,7 @@
                 --}}
 
                 <button type="button" class="option" id="option10" onclick="dailyTransactionTaxReport()">
-                    Daily Transaction Tax Report
+                    Daily transaction tax report
                 </button>
                 <div id="dailyTransactionTaxReportOverlay"></div>
                 <form id="dailyTransactionTaxReport" action="{{ route('dailyTransactionTaxReport') }}" method="POST"
@@ -870,7 +912,8 @@
 
                     <div class="btns">
                         <button type="submit">OK</button>
-                        <button id="closebtn" type="button" onclick="closeDailyTransactionTaxReport()">Close</button>
+                        <button id="closebtn" type="button" class="option-close-btn"
+                            onclick="closeDailyTransactionTaxReport()">Close</button>
                     </div>
                 </form>
 
@@ -951,19 +994,18 @@
 
                 <button type="button" class="option" id="option13" onclick="salesmanTaxReportByDate()">
                     {{-- Transaction / User defined sales field report --}}
-                    Tax Report by Salesman
+                    Tax report by salesman
                 </button>
-
                 <div id="salesmanTaxReportByDateOverlay"></div>
                 <form id="salesmanTaxReportByDate" action="{{ route('salesmanTaxReportByDate') }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
-                    <h3>Salesman Tax Report By Date</h3>
+                    <h3>Tax Report by Salesman</h3>
                     <hr>
                     <input type="hidden" value="{{ $branch_id }}" name = "branch_id">
                     <div class="details" id="detail">
                         <div class="inputdivs">
-                            <label for="transaction-report-date1">Transaction Report Date</label>
+                            <label for="transaction-report-date1">Tax Report Date</label>
                             <input type="date" id="transaction-report-date1" name="transaction_report_date" required>
                         </div>
 
@@ -980,7 +1022,8 @@
 
                     <div class="btns">
                         <button type="submit">OK</button>
-                        <button id="closebtn" type="button" onclick="closeSalesmanTaxReportByDate()">Close</button>
+                        <button id="closebtn" class="option-close-btn" type="button"
+                            onclick="closeSalesmanTaxReportByDate()">Close</button>
                     </div>
                 </form>
 
@@ -1039,18 +1082,18 @@
                 --}}
 
                 <button type="button" class="option" id="option14" onclick="salesAndDiscountReportByDate()">
-                    Daily Sales Discount Report
+                    Daily sales discount report
                 </button>
                 <div id="salesAndDiscountReportByDateOverlay"></div>
                 <form id="salesAndDiscountReportByDate" action="{{ route('salesAndDiscountReportByDate') }}"
                     method="POST" enctype="multipart/form-data">
                     @csrf
-                    <h3>Sales And Discount Report By Date</h3>
+                    <h3>Sales Discount Report By Date</h3>
                     <hr>
                     <input type="hidden" value="{{ $branch_id }}" name = "branch_id">
                     <div class="details" id="detail">
                         <div class="inputdivs">
-                            <label for="transaction-report-date2">Transaction Report Date</label>
+                            <label for="transaction-report-date2">Sales Discount Report Date</label>
                             <input type="date" id="transaction-report-date2" name="transaction_report_date" required>
                         </div>
 
@@ -1067,7 +1110,7 @@
 
                     <div class="btns">
                         <button type="submit">OK</button>
-                        <button id="closebtn" type="button"
+                        <button id="closebtn" type="button" class="option-close-btn"
                             onclick="closeSalesAndDiscountReportByDate()">Close</button>
                     </div>
                 </form>
@@ -1099,14 +1142,16 @@
                                             $salesman_id = $value->salesman_id;
                                             $transaction_report_date = $value->transaction_date;
                                             $time = $value->created_at->format('H:i:s');
-                                            $bill = (float)str_replace('Rs. ','',$value->total_bill);
+                                            $bill = (float) str_replace('Rs. ', '', $value->total_bill);
                                         @endphp
                                         <tr>
                                             <td>{{ $value->order_number }}</td>
                                             <td>{{ $time }}</td>
                                             <td>{{ $value->salesman->name }}</td>
                                             <td>Rs. {{ $value->total_bill }}</td>
-                                            <td>Rs. {{$value->discount_type == '%'? (float)($bill + $value->taxes) * (float)($value->discount / 100) : $value->discount}}</td>
+                                            <td>Rs.
+                                                {{ $value->discount_type == '%' ? (float) ($bill + $value->taxes) * (float) ($value->discount / 100) : $value->discount }}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

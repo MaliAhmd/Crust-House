@@ -10,7 +10,7 @@
     #staffTable_filter,
     .dataTables_length,
     .dataTables_info {
-        margin: 0.5vw 5vw !important;
+        margin: 0.5vw 4.1vw !important;
         font-size: 0.8rem !important;
     }
 
@@ -123,12 +123,10 @@
 
             <div class="inputdivs">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="Enter Email Address" required>
+                <input type="email" id="email" name="email" placeholder="Enter Email Address" oninput="validateEmail()" required>
             </div>
-            @error('email')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
-
+            <div id="email-error-message" class="error-message" style="display: none;"></div>
+            
             <div class="inputdivs">
                 <label for="branch">Select Branch</label>
                 <select name="branch" id="branch">
@@ -172,7 +170,7 @@
             <div id="message" class="error"></div>
             <div class="btns">
                 <button id="cancel" type="button" onclick="closeAddStaff()">Cancel</button>
-                <input type="submit" value="Add Now">
+                <input id="submit-btn" type="submit" value="Add Now">
             </div>
         </form>
 
@@ -206,11 +204,10 @@
 
             <div class="inputdivs">
                 <label for="editemail">Member Email Address</label>
-                <input type="email" id="editemail" name="email" required>
+                <input type="email" id="editemail" name="email" oninput="validateEditEmail()" required>
             </div>
-            @error('email')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
+
+            <div id="edit-email-error-message" class="error-message" style="display: none;"></div>
 
             <div class="inputdivs">
                 <label for="editbranch">Select Branch</label>
@@ -253,7 +250,7 @@
             <div id="editMessage" class="error"></div>
             <div class="btns">
                 <button type="button" id="Cancel" onclick="closeEditStaff()">Cancel</button>
-                <input type="submit" value="Update Staff Data">
+                <input id="update-btn" type="submit" value="Update Staff Data">
             </div>
         </form>
 
@@ -426,6 +423,62 @@
             }
         }
 
+        function validateEmail() {
+            let email = document.getElementById("email").value.trim();
+            let emailErrorMessage = document.getElementById('email-error-message');
+            let submitBtn = document.getElementById('submit-btn');
+            if (email == '') {
+                emailErrorMessage.style.display = 'none';
+                return;
+            }
+            if (!email.endsWith(".com")) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email must end with '.com'.";
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = '#c19b32';
+                return;
+            }
+            var invalidChars = /[*\/=]/;
+            if (invalidChars.test(email)) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = '#c19b32';
+                return;
+            }
+            emailErrorMessage.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = '#ffbb00';
+        }
+
+        function validateEditEmail() {
+            let email = document.getElementById("editemail").value.trim();
+            let emailErrorMessage = document.getElementById('edit-email-error-message');
+            let submitBtn = document.getElementById('update-btn');
+            if (email == '') {
+                emailErrorMessage.style.display = 'none';
+                return;
+            }
+            if (!email.endsWith(".com")) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email must end with '.com'.";
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = '#c19b32';
+                return;
+            }
+            var invalidChars = /[*\/=]/;
+            if (invalidChars.test(email)) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = '#c19b32';
+                return;
+            }
+            submitBtn.disabled = false;
+            emailErrorMessage.style.display = 'none';
+            submitBtn.style.backgroundColor = '#ffbb00';
+        }
+
         const uploadUpdatedFile = document.getElementById('upload-update-file');
         const filenameSpan = document.getElementById('namefile');
         uploadUpdatedFile.addEventListener('change', function(e) {
@@ -439,5 +492,5 @@
             const fileName = this.value.split('\\').pop();
             filenameSpanNew.textContent = fileName ? fileName : 'No file chosen';
         });
-    </script>   
+    </script>
 @endsection

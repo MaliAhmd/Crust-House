@@ -22,9 +22,38 @@
             $posLogo = $OwnerSettings->pos_logo;
         }
     @endphp
+    @if (session('success'))
+        <div id="success" class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        <script>
+            setTimeout(() => {
+                document.getElementById('success').classList.add('alert-hide');
+            }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('success').style.display = 'none';
+            }, 2000);
+        </script>
+    @endif
+
+    @if (session('error'))
+        <div id="error" class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+        <script>
+            setTimeout(() => {
+                document.getElementById('error').classList.add('alert-hide');
+            }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('error').style.display = 'none';
+            }, 2000);
+        </script>
+    @endif
     <header id="header">
         <div class="logo">
-            <img src="{{ asset('Images/logo.png') }}" alt="Logo Here">
+            <img src="{{ asset('Images/logo.png') }}" alt="Logo Here" onclick="window.loction.href='{{ route('dashboard', $owner_id) }}'" style="cursor: pointer;" >
         </div>
 
         <div class="profilepanel">

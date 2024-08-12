@@ -18,7 +18,7 @@ main {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 95%;
+    width: 90%;
     margin: 1vw auto;
     /* margin-bottom: 1vw; */
 }
@@ -33,13 +33,13 @@ main {
     text-decoration: none;
     padding: 0.7vw 1vw;
     border-radius: 0.25rem;
-    box-shadow: 0px 0px 5px #939393;
     font-family: "Poppins", sans-serif;
     font-weight: 550;
     background-color: #ffbb00;
     color: #ffffff;
     text-align: center;
     border: none;
+    box-shadow: 0px 2px 8px #939393;
 }
 
 .headings button:hover {
@@ -268,7 +268,7 @@ table tbody tr td a:last-child:hover {
 .error-message {
     color: #F45B69;
     font-size: 0.7rem;
-    margin: 0px 20px;
+    margin: 0px 30px;
 }
 
 .error {

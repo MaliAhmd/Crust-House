@@ -12,7 +12,7 @@
     #productTable_filter,
     .dataTables_length,
     .dataTables_info {
-        margin: 0.5vw 5vw !important;
+        margin: 0.5vw 4.2vw !important;
         font-size: 0.8rem !important;
     }
 

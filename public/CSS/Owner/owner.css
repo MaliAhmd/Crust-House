@@ -10,6 +10,25 @@ body {
     overflow: hidden;
 }
 
+.alert {
+    display: flex;
+    color: white !important;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.2vw !important;
+    padding: 10px;
+    width: 100%;
+}
+
+.alert-success {
+    background-color: #1e9752d7;
+}
+
+.alert-danger {
+    background-color: #c65541d7;
+}
+
 
 /* Header Styling starts */
 
@@ -90,26 +109,6 @@ header {
     height: calc(100% - 50px);
 }
 
-.alert {
-    display: flex;
-    color: white !important;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 1.2vw !important;
-    padding: 10px;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-
-.alert-success {
-    background-color: rgb(30, 151, 83);
-}
-
-.alert-danger {
-    background-color: #c65541;
-}
-
 
 /* Navigation Bar styling  */
 
@@ -188,18 +187,6 @@ main {
 .title h3 {
     margin: 0.5vw;
     line-height: 2;
-}
-
-.alert-danger {
-    color: #f45b69;
-    font-size: 0.7rem;
-    margin: 0px 20px;
-}
-
-.alert-success {
-    color: #40c788;
-    font-size: 0.7rem;
-    margin: 0px 20px;
 }
 
 .warningOverlay,
@@ -744,8 +731,11 @@ h3 {
 
 .error-message {
     color: #f45b69;
+    border: none;
+    margin: 0.3rem 2.5rem;
+    border-radius: 6px;
+    width: 95%;
     font-size: 0.8rem;
-    margin: 0px 05px;
     font-family: "Poppins", sans-serif;
 }
 

@@ -49,6 +49,13 @@ class OwnerController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
+        $existingUser = User::all();
+        foreach ($existingUser as $user) {
+            if ($user->email == $req->input('manager_email')) {
+                return redirect()->back()->with('error', 'Email already exist');
+            }
+        }
+
         $riderOption = $req->has('riderOption') ? true : false;
         $onlineDeliveryOption = $req->has('onlineDeliveryOption') ? true : false;
         $diningTableOption = $req->has('diningTableOption') ? true : false;
@@ -81,7 +88,7 @@ class OwnerController extends Controller
         if (!session()->has('owner')) {
             return redirect()->route('viewLoginPage');
         }
-
+        
         $riderOption = $req->has('riderOption') ? true : false;
         $onlineDeliveryOption = $req->has('onlineDeliveryOption') ? true : false;
         $diningTableOption = $req->has('diningTableOption') ? true : false;

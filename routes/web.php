@@ -97,7 +97,7 @@ Route::get('/viewStockPage/{id}/{branch_id}', [ManagerController::class,'viewSto
 Route::post('/createStock', [ManagerController::class,'createStock'])->name('createStock');
 Route::post('/updateStock',[ManagerController::class,'updateStock'])->name('updateStock');
 Route::get('/deleteStock/{id}',[ManagerController::class,'deleteStock'])->name('deleteStock');
-Route::get('/viewStockHistory/{branch_id}',[ManagerController::class,'stockHistory'])->name('viewStockHistory');
+Route::get('/viewStockHistory/{branch_id}/{user_id}',[ManagerController::class,'stockHistory'])->name('viewStockHistory');
 
 /*
 |---------------------------------------------------------------|
@@ -128,6 +128,13 @@ Route::post('/updateStaff', [ManagerController::class,'updateStaff'])->name('upd
 Route::get('/deleteStaff/{id}', [ManagerController::class,'deleteStaff'])->name('deleteStaff');
 
 Route::get('/download-pdf/{filename}', [SalesmanController::class, 'downloadPdf'])->name('downloadPdf');
+
+/*
+|---------------------------------------------------------------|
+|======================== Dine-In Routes =======================|
+|---------------------------------------------------------------|
+*/
+Route::get('viewDineInPage/{branch_id}', [ManagerController::class,'viewDineInPage'])->name('viewDineInPage');
 
 /*
 |---------------------------------------------------------------|

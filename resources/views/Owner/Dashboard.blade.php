@@ -8,8 +8,8 @@
     #branchTable_filter,
     .dataTables_length,
     .dataTables_info {
-        margin: 0.5vw 7vw !important;
-        font-size: 0.8rem !important;
+        margin: 0.5vw 4.5vw !important;
+        font-size: 1rem !important;
     }
 
     #branchTable_next,
@@ -25,6 +25,7 @@
     }
 </style>
 @section('main')
+@include('Components.Loader')
     <main id="dashboard">
 
         <div style="margin-top:1vw;" class="stat">
@@ -79,8 +80,8 @@
                     <tr>
                         <th>Company Name</th>
                         <th>Branch City</th>
-                        <th>Branch Code</th>
                         <th>Branch Name</th>
+                        <th>Branch Code</th>
                         <th>Branch Address</th>
                         <th style="text-align:center;">Action</th>
                     </tr>
@@ -112,32 +113,32 @@
                             $renderedCompany[$branch->company_name] = true;
                         @endphp
                         <tr style="border-bottom: 1px solid #000;">
-                            <td>{{ $branch->company_name }}</td>
+                            <td class="truncate-text" title="{{ $branch->company_name }}">{{ $branch->company_name }}</td>
                             <td>
                                 <div style="display: flex; flex-direction:column;">
                                     @foreach ($branchCity as $city)
-                                        <p>{{ $city }}</p>
+                                        <p class="truncate-text" title="{{$city}}" >{{ $city }}</p>
                                     @endforeach
                                 </div>
                             </td>
                             <td>
                                 <div style="display: flex; flex-direction:column;">
                                     @foreach ($branchName as $name)
-                                        <p>{{ $name }}</p>
+                                        <p class="truncate-text" title="{{$name}}">{{ $name }}</p>
                                     @endforeach
                                 </div>
                             </td>
                             <td>
                                 <div style="display: flex; flex-direction:column;">
                                     @foreach ($branchCode as $code)
-                                        <p>{{ $code }}</p>
+                                        <p class="truncate-text" title="{{ $code }}">{{ $code }}</p>
                                     @endforeach
                                 </div>
                             </td>
                             <td>
                                 <div style="display: flex; flex-direction:column;">
                                     @foreach ($branchAddress as $address)
-                                        <p class="truncate-text">{{ $address }}</p>
+                                        <p class="truncate-text" title="{{ $address }}">{{ $address }}</p>
                                     @endforeach
                                 </div>
                             </td>
@@ -151,7 +152,7 @@
                                         <a class="delete" title="Delete"
                                             onclick="showConfirmDelete('{{ route('deleteBranch', $id) }}')"><i
                                                 class='bx bxs-trash-alt'></i></a>
-                                        <a class="statistics" href="{{ route('showBranchStats', $id) }}"
+                                        <a class="statistics" onclick="showLoader('{{ route('showBranchStats', $id) }}')"
                                             title="Statistics"><i class='bx bx-stats'></i></a>
                                     </div>
                                 @endforeach
@@ -272,7 +273,7 @@
 
                 <div class="cities">
                     <label for="brancharea">Select City</label>
-                    <select name="branch_city" id="brancharea" required onchange="limitBranchCode(this.value)">
+                    <select name="branch_city" id="brancharea" required onchange="BranchCode(this.value, {{json_encode($branchData)}})">
                     </select>
                 </div>
 
@@ -303,9 +304,9 @@
 
             <div class="inputdivs">
                 <label for="manager_Email">Branch Manager</label>
-                <input type="email" name="manager_email" id="manager_Email" placeholder="email@gmail.com" required>
+                <input type="email" name="manager_email" id="manager_Email" placeholder="email@gmail.com" oninput="validateEmail()" required>
             </div>
-
+            <div id="email-error-message" class="error-message" style="display: none;"></div>
             <div class="inputdivs">
                 <label for="password">Password</label>
                 <div class="passwordField">
@@ -315,7 +316,7 @@
             </div>
 
             <div class="pswdBtns">
-                <button type="button" class="generate" onclick="branchManagerId()">Generate</button>
+                <button type="button" class="generate" onclick="GeneratePassword()">Generate</button>
                 <button type="button" class="copy" onclick="copyPassword()">Copy</button>
             </div>
 
@@ -347,7 +348,7 @@
 
             <div class="btns">
                 <button type="button" id="cancel" onclick="closeAddNewBranch()">Cancel</button>
-                <input type="submit" value="Add Now">
+                <input type="submit" id="submit-btn" value="Add Now">
             </div>
         </form>
 
@@ -360,7 +361,7 @@
         <div id="editBranchOverlay"></div>
         <form id="editBranch" action="{{ route('updateBranches') }}" method="Post" enctype="multipart/form-data">
             @csrf
-            <h3>Edit New Branch</h3>
+            <h3>Edit Branch</h3>
             <hr>
 
             <input type="hidden" name="branch_id" id="branch_id">
@@ -381,7 +382,7 @@
 
                 <div class="cities">
                     <label for="editbrancharea">Select City</label>
-                    <select name="branch_city" id="editbrancharea" required>
+                    <select name="branch_city" id="editbrancharea" onchange="BranchCode(this.value, {{json_encode($branchData)}})" required>
                         <option value="" selected></option>
                     </select>
                 </div>
@@ -413,9 +414,9 @@
             <input type="hidden" id="brnachManagerId" name="branch_manager_id">
             <div class="inputdivs">
                 <label for="manager_Email">Branch Manager</label>
-                <input type="email" name="manager_email" id="editManagerEmail" placeholder="email@gmail.com" required>
+                <input type="email" name="manager_email" id="editManagerEmail" placeholder="email@gmail.com" oninput="validateEditEmail()" required>
             </div>
-
+            <div id="edit-email-error-message" class="error-message" style="display: none;"></div>
             <div class="inputdivs">
                 <label for="password">Password</label>
                 <div class="passwordField">
@@ -425,7 +426,7 @@
             </div>
 
             <div class="pswdBtns">
-                <button type="button" class="generate" onclick="branchManagerId()">Generate</button>
+                <button type="button" class="generate" onclick="GeneratePassword()">Generate</button>
                 <button type="button" class="copy" onclick="copyPassword()">Copy</button>
             </div>
 
@@ -458,7 +459,7 @@
 
             <div class="btns">
                 <button type="button" id="editcancel" onclick="closeEditBranch()">Cancel</button>
-                <input type="submit" value="Update Now">
+                <input type="submit" id="update-btn" value="Update Now">
             </div>
         </form>
 
@@ -470,10 +471,30 @@
         <div id="confirmDeletionOverlay"></div>
         <div class="confirmDeletion" id="confirmDeletion">
             <h3 id="message-text">Are you sure you want to delete this Branch</h3>
+            <div class="inputdivs">
+                <label style="margin-bottom:15px;" for="formRandomString">Enter this Code: <span style="font-family:consolas; background-color:#000; padding:5px; color:#fff;border-radius:7px; font-size:18px; letter-spacing:5px;" id="rndom"></span></label>
+                <input type="text" id="formRandomString" name="random_string" autocomplete="off" required>
+            </div>
             <div class="box-btns">
                 <button id="confirm">Delete</button>
                 <button id="close" onclick="closeConfirmDelete()">Close</button>
             </div>
+            <script>
+                document.getElementById("formRandomString").addEventListener("input", function() {
+                    let enteredString = this.value.trim();
+                    let randomString = document.getElementById("rndom").textContent;
+                    let deleteButton = document.getElementById("confirm");
+                                                        
+                    if (enteredString === randomString) {
+                        deleteButton.disabled = false;
+                        deleteButton.style.background = '#b52828';
+                        deleteButton.style.cursor = 'pointer';
+                    } else {
+                        deleteButton.style.background = '#ed7680';
+                        deleteButton.disabled = true;
+                    }
+                });
+            </script>
         </div>
 
     </main>
@@ -1480,7 +1501,7 @@
             const OVERLAY = document.getElementById('editBranchOverlay');
             const POPUP = document.getElementById('editBranch');
             Branches.forEach(Branch => {
-                if (Branch.id === branch_id) {
+                if (Branch.id == branch_id) {
                     document.getElementById('branch_id').value = Branch.id;
                     document.getElementById('editbranchstate').value = Branch.branch_state;
                     updateCityOptions('editbranchstate', 'editbrancharea');
@@ -1496,6 +1517,7 @@
                     document.getElementById('editriderOption').checked = Branch.riderOption == 1;
                     document.getElementById('editonlineDeliveryOption').checked = Branch.onlineDeliveryOption == 1;
                     document.getElementById('editdiningTableOption').checked = Branch.DiningOption == 1;
+
 
                 }
             })
@@ -1514,10 +1536,19 @@
             let confirmDeletionOverlay = document.getElementById('confirmDeletionOverlay');
             let confirmDeletionPopup = document.getElementById('confirmDeletion');
             confirmDeletionOverlay.style.display = 'block';
-            confirmDeletionPopup.style.display = 'block';
+            confirmDeletionPopup.style.display = 'flex';
+            let deleteButton = document.getElementById("confirm");
+             deleteButton.disabled = true;
+             deleteButton.style.background = '#ed7680';
+             
+             rndom.textContent = Math.random().toString(36).slice(2, 6).toUpperCase();
 
             let confirmButton = document.getElementById('confirm');
             confirmButton.onclick = function() {
+                document.getElementById('loaderOverlay').style.display = 'block';
+                document.getElementById('loader').style.display = 'flex';
+                confirmDeletionOverlay.style.display = 'none';
+                confirmDeletionPopup.style.display = 'none';
                 window.location.href = deleteUrl;
             };
         }
@@ -1527,6 +1558,7 @@
             let confirmDeletionPopup = document.getElementById('confirmDeletion');
             confirmDeletionOverlay.style.display = 'none';
             confirmDeletionPopup.style.display = 'none';
+            document.getElementById('formRandomString').value='';
         }
 
         function updateCityOptions(stateId, cityId) {
@@ -1559,8 +1591,7 @@
             }
         }
 
-        function limitBranchCode(value) {
-
+         function BranchCode(value, branchData) {
             let cityInitials;
             statesWithCitiesAndInitials.forEach(state => {
                 state.cities.forEach(city => {
@@ -1575,15 +1606,19 @@
             let number = Math.floor(Math.random() * (max - min + 1)) + min;
             let codeNumber = number.toString().padStart(3, '0');
 
-            let branchCode = `${cityInitials}-${codeNumber}`;
-            document.getElementById('branchcode').value = branchCode;
-
+            let branch_Code = `${cityInitials}-${codeNumber}`;
+            branchData.forEach(branch => {
+                if (branch.branch_code == branch_Code) {
+                   BranchCode(value, branchData);
+                }else{
+                    document.getElementById('branchcode').value = branch_Code;
+                    document.getElementById('editBranchCode').value = branch_Code;
+                }
+            })
         }
-        document.getElementById('branchstate').addEventListener('change', function() {
-            document.getElementById('branchcode').value = '';
-        });
+        
 
-        function branchManagerId() {
+        function GeneratePassword() {
             let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()~`{}[];:.,></?\|";
             let generatedPassword = "";
             let charactersLength = characters.length;
@@ -1601,5 +1636,68 @@
             text = document.execCommand('copy');
             alert('Password copied to clipboard!', text);
         }
+        
+        function showLoader(route){
+            document.getElementById('loaderOverlay').style.display = 'block';
+            document.getElementById('loader').style.display = 'flex';
+            window.location.href = route;
+        }
+
+        function validateEmail() {
+            let email = document.getElementById("manager_Email").value.trim();
+            let emailErrorMessage = document.getElementById('email-error-message');
+            let submitBtn = document.getElementById('submit-btn');
+            if(email == ''){
+                emailErrorMessage.style.display = 'none';
+                return;
+            }
+            if (!email.endsWith(".com")) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email must end with '.com'.";
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = '#034a6c';
+                return;
+            }
+            var invalidChars = /[*\/=]/;
+            if (invalidChars.test(email)) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = '#034a6c';
+                return;
+            }
+            emailErrorMessage.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = '#008fd3';
+        }
+
+        function validateEditEmail() {
+            let email = document.getElementById("editManagerEmail").value.trim();
+            let emailErrorMessage = document.getElementById('edit-email-error-message');
+            let submitBtn = document.getElementById('update-btn');
+            if(email == ''){
+                emailErrorMessage.style.display = 'none';
+                return;
+            }
+            if (!email.endsWith(".com")) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email must end with '.com'.";
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = '#034a6c';
+                return;
+            }
+            var invalidChars = /[*\/=]/;
+            if (invalidChars.test(email)) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";
+                submitBtn.disabled = true;
+                submitBtn.style.backgroundColor = '#034a6c';
+                return;
+            }
+            submitBtn.disabled = false;
+            emailErrorMessage.style.display = 'none';
+            submitBtn.style.backgroundColor = '#008fd3';
+        }
+
     </script>
 @endsection

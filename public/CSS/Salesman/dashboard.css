@@ -329,13 +329,42 @@
     border-right: 1px solid #afafaf79;
 }
 
-.discount-field,
 .cash-fields {
     display: flex;
     width: 48%;
     margin: 0 auto;
     padding: 5px 0;
     flex-direction: column;
+}
+
+.discount-field,
+.tablesList {
+    display: flex;
+    flex-direction: column;
+    width: 95%;
+    margin: 0 auto;
+    padding: 5px 0;
+}
+
+.tablesList {
+    display: none;
+}
+
+.tablesList label {
+    font-size: 0.7vw;
+    margin-bottom: 0.5vw;
+}
+
+.tablesList select {
+    border: none;
+    border-radius: 0.50rem;
+    padding: 0.5vw;
+    width: 95%;
+    font-size: 0.8vw;
+}
+
+.tablesList select:focus {
+    outline: 0.01vw #999 solid;
 }
 
 .paymentfields {
@@ -351,7 +380,7 @@
 .paymentfields input,
 .paymentfields select {
     border: none;
-    border-radius: 10px;
+    border-radius: 0.50rem;
     padding: 0.5vw;
     width: 75%;
     font-size: 0.8vw;
@@ -582,4 +611,190 @@ input:checked+.slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+
+/* Dine-In and online orders stylings */
+
+#dineInOrdersOverlay,
+#onlineOrdersOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999;
+}
+
+#dineInOrdersDiv,
+#onlineOrdersDiv {
+    display: none;
+    flex-direction: column;
+    background-color: #ffffff;
+    position: absolute;
+    border-radius: 10px;
+    padding: 1vw;
+    width: 90vw;
+    height: 90vh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+#dineInOrdersDiv h3,
+#onlineOrdersDiv h3 {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 1.5vw;
+    font-family: "Poppins", sans-serif;
+}
+
+#dineInOrdersDiv hr,
+#onlineOrdersDiv hr {
+    border: 1px solid #9b9b9b;
+    width: 98%;
+    margin: 0 auto 0.51vw;
+}
+
+#dineInOrdersTable {
+    display: flex;
+    flex-direction: column;
+    height: 87%;
+}
+
+#dineInOrdersTable .searchBarDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 98%;
+    margin: 0.5vw;
+}
+
+#dineInOrdersTable #onlineOrderSearchBar,
+#dineInOrdersTable #searchBar {
+    width: 18%;
+    box-sizing: border-box;
+    border: 1px solid #353535;
+    border-radius: 0.50rem;
+    font-size: 12px;
+    background-color: #fbfbfb;
+    background-position: 10px 10px;
+    background-size: 12px;
+    background-repeat: no-repeat;
+    padding: 8px 8px 8px 40px;
+}
+
+#tableDiv {
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+#dineInOrdersTable table {
+    border-collapse: collapse;
+    width: 98% !important;
+    margin: 0.5vw auto;
+}
+
+.truncate-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+#dineInOrdersTable table thead {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+}
+
+#dineInOrdersTable table thead tr {
+    border-bottom: 2px solid #000;
+}
+
+#dineInOrdersTable table thead tr th {
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+#dineInOrdersTable table thead tr th:first-child,
+#dineInOrdersTable table thead tr th:last-child {
+    text-align: center;
+}
+
+#dineInOrdersTable table tbody tr {
+    /* border-bottom: 1px solid #898989; */
+    box-shadow: 0 2px 5px -2px #898989;
+}
+
+#dineInOrdersTable table tbody tr td {
+    text-align: left;
+    border-radius: 6px;
+    padding: 0.5vw 0;
+    font-size: 1.3vw;
+}
+
+#dineInOrdersTable table tbody tr td:first-child,
+#dineInOrdersTable table tbody tr td:last-child {
+    text-align: center;
+}
+
+#dineInOrdersTable table tbody tr td a {
+    text-decoration: none;
+}
+
+.bxs-cart-add,
+.bxs-right-arrow-square {
+    font-size: 1.5rem;
+    color: #fff;
+    border-radius: 0.30rem;
+    padding: 0.35rem 0.85rem;
+}
+
+.bxs-cart-add {
+    background-color: #ffbb00;
+}
+
+.bxs-cart-add:hover {
+    background-color: #c99608;
+}
+
+.bxs-right-arrow-square {
+    background-color: #28a745;
+}
+
+.bxs-right-arrow-square:hover {
+    background-color: #217d36;
+}
+
+#closeBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#closeBtn button {
+    display: flex;
+    font-size: 1.2vw;
+    margin: 0.5vw;
+    border: none;
+    color: #fbfbfb;
+    background-color: #dc3545;
+    font-weight: 400;
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    padding: 0.375rem 0.75rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+#closeBtn button:hover {
+    background-color: #d21c2e;
 }

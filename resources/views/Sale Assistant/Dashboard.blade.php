@@ -214,9 +214,9 @@
                     foreach ($taxes as $tax) {
                         $totalTaxes += $totalbill * ((float) $tax->tax_value / 100);
                     }
-                    $totalbill  += $totalTaxes;
+                    $totalbill += $totalTaxes;
                 @endphp
- 
+
                 <form action="{{ route('placeOrder', $id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="payment-div">
@@ -241,27 +241,6 @@
                                     readonly>
                             </div>
 
-                            <div class="paymentfields"
-                                style="flex-direction: row; justify-content:space-between; align-items:center;">
-                                <span id="false-option">
-                                    @if ($orderTypeArray)
-                                        {{ $orderTypeArray[0] }}
-                                    @else
-                                        Dine-In
-                                    @endif &nbsp;&nbsp;
-                                </span><label class="switch">
-                                    <input id="order_type" type="checkbox">
-                                    <span class="slider round"></span>
-                                </label><span id="true-option">
-                                    @if ($orderTypeArray)
-                                        {{ $orderTypeArray[1] }}
-                                    @else
-                                        Takeaway
-                                    @endif
-                                </span>
-                            </div>
-                            <input type="hidden" name="orderType" id="orderTypeHidden">
-
                             <div class="paymentfields">
                                 <label for="paymentMethod">Payment Method:</label>
                                 <div class="paymentfields"
@@ -284,91 +263,121 @@
                                 </select>
                             </div>
 
-
-                        </div>
-                        <div class="discount-field">
-                            <div class="paymentfields" style="flex-direction:row;align-items: center;">
-                                <label style="width:200px" id="toggle-text" for="discountEnableDisable">Enable
-                                    Discount</label>
-                                <input type="checkbox" name="discount" id="discountEnableDisable"
-                                    onclick="toggleDiscount()">
+                            <div class="paymentfields"
+                                style="flex-direction: row; justify-content:space-between; align-items:center;">
+                                <span id="false-option">
+                                    @if ($orderTypeArray)
+                                        {{ $orderTypeArray[0] }}
+                                    @else
+                                        Dine-In
+                                    @endif &nbsp;&nbsp;
+                                </span><label class="switch">
+                                    <input id="order_type" type="checkbox" checked>
+                                    <span class="slider round"></span>
+                                </label><span id="true-option">
+                                    @if ($orderTypeArray)
+                                        {{ $orderTypeArray[1] }}
+                                    @else
+                                        Takeaway
+                                    @endif
+                                </span>
                             </div>
-                            <script>
-                                function toggleDiscount() {
-                                    let temp = document.getElementById("totalbill").value;
-                                    let temp1 = parseFloat(temp.replace('Rs', '').trim());
-                                    updateDiscountTypeInput(parseInt(temp1));
-                                    togglebtn = document.getElementById('discountEnableDisable').checked;
-                                    if (togglebtn == true) {
-                                        document.getElementById('toggle-text').textContent = "Disable Discount";
-                                        document.getElementById('toggle-text').style.width = "250px";
-                                        document.getElementById('discount').disabled = false;
-                                        document.getElementById('discount_reason').disabled = false;
-                                        document.getElementById('discountType').disabled = false;
+                            <input type="hidden" name="orderType" id="orderTypeHidden">
+                        </div>
+                        <div style="display: flex; flex-direction:column; width: 48%;">
+                            <div class="discount-field">
+                                <div class="paymentfields" style="flex-direction:row;align-items: center;">
+                                    <label style="width:200px" id="toggle-text" for="discountEnableDisable">Enable
+                                        Discount</label>
+                                    <input type="checkbox" name="discount" id="discountEnableDisable"
+                                        onclick="toggleDiscount()">
+                                </div>
+                                <script>
+                                    function toggleDiscount() {
+                                        let temp = document.getElementById("totalbill").value;
+                                        let temp1 = parseFloat(temp.replace('Rs', '').trim());
+                                        updateDiscountTypeInput(parseInt(temp1));
+                                        togglebtn = document.getElementById('discountEnableDisable').checked;
+                                        if (togglebtn == true) {
+                                            document.getElementById('toggle-text').textContent = "Disable Discount";
+                                            document.getElementById('toggle-text').style.width = "250px";
+                                            document.getElementById('discount').disabled = false;
+                                            document.getElementById('discount_reason').disabled = false;
+                                            document.getElementById('discountType').disabled = false;
 
-                                        document.getElementById('discount-Type-div').style.display = "flex"
-                                        document.getElementById('discountFieldDiv').style.display = "flex"
-                                        document.getElementById('discountReasonDiv').style.display = "flex"
-                                        document.getElementById('discountTypeDiv').style.display = "flex"
-                                    } else {
-                                        document.getElementById('toggle-text').textContent = "Enable Discount";
-                                        document.getElementById('toggle-text').style.width = "200px";
-                                        document.getElementById('discount').disabled = true;
-                                        document.getElementById('discount_reason').disabled = true;
-                                        document.getElementById('discountType').disabled = true;
+                                            document.getElementById('discount-Type-div').style.display = "flex"
+                                            document.getElementById('discountFieldDiv').style.display = "flex"
+                                            document.getElementById('discountReasonDiv').style.display = "flex"
+                                            document.getElementById('discountTypeDiv').style.display = "flex"
+                                        } else {
+                                            document.getElementById('toggle-text').textContent = "Enable Discount";
+                                            document.getElementById('toggle-text').style.width = "200px";
+                                            document.getElementById('discount').disabled = true;
+                                            document.getElementById('discount_reason').disabled = true;
+                                            document.getElementById('discountType').disabled = true;
 
-                                        document.getElementById('discount-Type-div').style.display = "none"
-                                        document.getElementById('discountFieldDiv').style.display = "none"
-                                        document.getElementById('discountReasonDiv').style.display = "none"
-                                        document.getElementById('discountTypeDiv').style.display = "none"
+                                            document.getElementById('discount-Type-div').style.display = "none"
+                                            document.getElementById('discountFieldDiv').style.display = "none"
+                                            document.getElementById('discountReasonDiv').style.display = "none"
+                                            document.getElementById('discountTypeDiv').style.display = "none"
+                                        }
                                     }
-                                }
-                            </script>
+                                </script>
 
-                            <div id="discount-Type-div" class="paymentfields" style="display:none">
-                                <label for="discountType">Type of Discount</label>
-                                <div id="discountTypeDiv"
-                                    style="flex-direction: row; display:none; justify-content:center; align-items:center;">
-                                    <span id="false-option2">
-                                        @if ($discountTypeArray)
-                                            {{ $discountTypeArray[1] }}
-                                        @else
-                                            Percentage
-                                        @endif
-                                    </span>
-                                    <label class="switch">
-                                        <input id="discounttype" type="checkbox" value="%"
-                                            onclick="updateTotalONSwitch({{ json_encode($totalbill) }})">
-                                        <span class="slider round"></span>
+                                <div id="discount-Type-div" class="paymentfields" style="display:none">
+                                    <label for="discountType">Type of Discount</label>
+                                    <div id="discountTypeDiv"
+                                        style="flex-direction: row; display:none; justify-content:center; align-items:center;">
+                                        <span id="false-option2">
+                                            @if ($discountTypeArray)
+                                                {{ $discountTypeArray[1] }}
+                                            @else
+                                                Percentage
+                                            @endif
+                                        </span>
+                                        <label class="switch">
+                                            <input id="discounttype" type="checkbox" value="%"
+                                                onclick="updateTotalONSwitch({{ json_encode($totalbill) }})">
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span id="true-option2">
+                                            @if ($discountTypeArray)
+                                                {{ $discountTypeArray[0] }}
+                                            @else
+                                                Fixed
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="discount_type" id="discountType" value="%">
+
+                                <div class="paymentfields" id="discountFieldDiv" style="display: none">
+                                    <label for="discount">Discount Applied</label>
+                                    <input style="background-color: #fff" type="number" name="discount" id="discount"
+                                        min="0" placeholder="Rupees" disabled value="0" step="any"
+                                        oninput="updateTotalONInput({{ json_encode($totalbill) }},{{ json_encode($maximum_discount_percentage_value) }})">
+                                </div>
+
+                                <div class="paymentfields" id="discountReasonDiv" style="display: none">
+                                    <label for="discount_reason">Reason for Discount
                                     </label>
-                                    <span id="true-option2">
-                                        @if ($discountTypeArray)
-                                            {{ $discountTypeArray[0] }}
-                                        @else
-                                            Fixed
-                                        @endif
-                                    </span>
+                                    <select style="background-color: #fff" name="discount_reason" id="discount_reason"
+                                        disabled>
+                                        <option value="none" selected>Select</option>
+                                        @foreach ($discounts as $discount)
+                                            <option value="{{ $discount->discount_reason }}">
+                                                {{ $discount->discount_reason }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                            <input type="hidden" name="discount_type" id="discountType" value="%">
-
-                            <div class="paymentfields" id="discountFieldDiv" style="display: none">
-                                <label for="discount">Discount Applied</label>
-                                <input style="background-color: #fff" type="number" name="discount" id="discount"
-                                    min="0" placeholder="Rupees" disabled value="0" step="any"
-                                    oninput="updateTotalONInput({{ json_encode($totalbill) }},{{ json_encode($maximum_discount_percentage_value) }})">
-                            </div>
-
-                            <div class="paymentfields" id="discountReasonDiv" style="display: none">
-                                <label for="discount_reason">Reason for Discount
-                                </label>
-                                <select style="background-color: #fff" name="discount_reason" id="discount_reason"
-                                    disabled>
-                                    <option value="none" selected>Select</option>
-                                    @foreach ($discounts as $discount)
-                                        <option value="{{ $discount->discount_reason }}">
-                                            {{ $discount->discount_reason }}</option>
-                                    @endforeach
+                            <div id="TablesList" class="tablesList">
+                                <label for="tables_list">Select Table Number</label>
+                                <select name="table_number" id="tables_list">
+                                    <option value="1">1 - 4 Chairs</option>
+                                    <option value="2">2 - 4 Chairs</option>
+                                    <option value="3">3 - 6 Chairs</option>
+                                    <option value="4">4 - 8 Chairs</option>
                                 </select>
                             </div>
                         </div>
@@ -424,7 +433,142 @@
                 <input id="addbtn" type="submit" value="Add">
             </div>
         </form>
+
+        {{--  
+            |---------------------------------------------------------------|
+            |========================= Dine-In Orders ======================|
+            |---------------------------------------------------------------|
+        --}}
+
+        <div id="dineInOrdersOverlay"></div>
+        <div id="dineInOrdersDiv">
+            <h3>Dine-In Orders</h3>
+            <div id="dineInOrdersTable">
+                <div class="searchBarDiv">
+                    <input type="text" id="searchBar" name="search" placeholder="Search by table number..."
+                        style="background-image: url('{{ asset('Images/search.png') }}');">
+                </div>
+                <div id="tableDiv">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Table #</th>
+                                <th>Order #</th>
+                                <th>Order Items</th>
+                                <th>Item Price</th>
+                                <th>Total Bill</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- @foreach ($orders as $order) --}}
+                            <tr class="table-row">
+                                <td id="table-number">
+                                    1
+                                </td>
+                                <td>
+                                    CH102
+                                </td>
+                                <td>
+                                    <div>Pizza</div>
+                                    <div>Calzon</div>
+                                    <div>Pasta</div>
+                                </td>
+                                <td>
+                                    <div>Rs. 1200</div>
+                                    <div>Rs. 1500</div>
+                                    <div>Rs. 1100</div>
+                                </td>
+                                <td>
+                                    Rs. 3800
+                                </td>
+                                <td>
+                                    <a title="Add New Prduct"><i class='bx bxs-cart-add'></i></a>
+                                    <a title="Proceed to Payment"><i class='bx bxs-right-arrow-square'></i></a>
+                                </td>
+                            </tr>
+                            {{-- @endforeach --}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="closeBtn">
+                <button onclick="hideDineInOrders()">Close</button>
+            </div>
+        </div>
+
+        {{--  
+        |---------------------------------------------------------------|
+        |========================== Online Orders ======================|
+        |---------------------------------------------------------------|
+        --}}
+
+        <div id="onlineOrdersOverlay"></div>
+        <div id="onlineOrdersDiv">
+            <h3>Online Orders</h3>
+            <div id="dineInOrdersTable">
+                <div class="searchBarDiv">
+                    <input type="text" id="onlineOrderSearchBar" name="search"
+                        placeholder="Search by Order Number..."
+                        style="background-image: url('{{ asset('Images/search.png') }}');">
+                </div>
+                <div id="tableDiv">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Address</th>
+                                <th>Order Status</th>
+                                <th>Order Items</th>
+                                <th>Item Price</th>
+                                <th>Total Bill</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- @foreach ($orders as $order) --}}
+                            <tr class="table-row">
+                                <td id="table-number">
+                                    CH102
+                                </td>
+                                <td class="truncate-text">
+                                    10/368 Barri Gali Awanan Neka Pura
+                                </td>
+                                <td>
+                                    Complete
+                                </td>
+                                <td>
+                                    <div>Pizza</div>
+                                    <div>Calzon</div>
+                                    <div>Pasta</div>
+                                </td>
+                                <td>
+                                    <div>Rs. 1200</div>
+                                    <div>Rs. 1500</div>
+                                    <div>Rs. 1100</div>
+                                </td>
+                                <td>
+                                    Rs. 3800
+                                </td>
+                                <td>
+                                    {{-- <a title="Add New Prduct" ><i class='bx bxs-cart-add'></i></a> --}}
+                                    <a title="Assign to Rider"><i class='bx bxs-right-arrow-square'></i></a>
+                                </td>
+                            </tr>
+                            {{-- @endforeach --}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="closeBtn">
+                <button onclick="hideOnlineOrders()">Close</button>
+            </div>
+        </div>
+
     </main>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let toggle = document.getElementById('order_type');
@@ -434,6 +578,11 @@
 
             function updateHiddenInput() {
                 orderTypeHidden.value = toggle.checked ? truetext : falsetext;
+                if (orderTypeHidden.value.trim() == "Dine-In") {
+                    document.getElementById('TablesList').style.display = 'flex';
+                } else {
+                    document.getElementById('TablesList').style.display = 'none';
+                }
             }
 
             updateHiddenInput();
@@ -442,6 +591,7 @@
                 updateHiddenInput();
             });
         });
+
         let discountTypeInput = document.getElementById('discountType');
         let toggleDiscountType = document.getElementById('discounttype');
 
@@ -629,7 +779,7 @@
                 const filter = searchInput.value.toLowerCase();
                 productDivs.forEach(function(div) {
                     const productName = div.querySelector('.product_name').textContent
-                .toLowerCase();
+                        .toLowerCase();
                     if (productName.includes(filter)) {
                         div.style.display = 'flex';
                     } else {
@@ -637,6 +787,67 @@
                     }
                 });
             });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let search_input = document.getElementById('searchBar');
+            let table_rows = document.querySelectorAll('.table-row');
+
+            search_input.addEventListener('input', () => {
+                let filter_table_number = search_input.value.toLowerCase();
+                table_rows.forEach(function(table_row) {
+                    let table_number = table_row.querySelector('#table-number').textContent
+                        .toLowerCase();
+                    if (table_number.includes(filter_table_number)) {
+                        table_row.style.display = 'table-row';
+                    } else {
+                        table_row.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let search_input = document.getElementById('onlineOrderSearchBar');
+            let table_rows = document.querySelectorAll('.table-row');
+
+            search_input.addEventListener('input', () => {
+                let filter_table_number = search_input.value.toLowerCase();
+                table_rows.forEach(function(table_row) {
+                    let table_number = table_row.querySelector('#table-number').textContent
+                        .toLowerCase();
+                    if (table_number.includes(filter_table_number)) {
+                        table_row.style.display = 'table-row';
+                    } else {
+                        table_row.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        function showDineInOrders() {
+            document.getElementById('dineInOrdersOverlay').style.display = 'block';
+            document.getElementById('dineInOrdersDiv').style.display = 'flex';
+        }
+
+        function hideDineInOrders() {
+            document.getElementById('dineInOrdersOverlay').style.display = 'none';
+            document.getElementById('dineInOrdersDiv').style.display = 'none';
+        }
+
+        function showOnlineOrders() {
+            document.getElementById('onlineOrdersOverlay').style.display = 'block';
+            document.getElementById('onlineOrdersDiv').style.display = 'flex';
+        }
+
+        function hideOnlineOrders() {
+            document.getElementById('onlineOrdersOverlay').style.display = 'none';
+            document.getElementById('onlineOrdersDiv').style.display = 'none';
+        }
+
+        document.body.addEventListener('dblclick', () => {
+            hideDineInOrders();
+            hideOnlineOrders();
         });
     </script>
 @endsection
