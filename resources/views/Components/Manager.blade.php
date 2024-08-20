@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title')</title>
+    <title id="dynamic-title">@yield('title')</title>
     <link rel="stylesheet" href="{{ asset('CSS/Manager/manager.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="icon" href="{{ asset('Images/Web_Images/chlogo.png') }}" type="image">
@@ -21,9 +21,19 @@
             $id = session('id');
             $branch_id = session('branch_id');
             $posLogo = false;
-            if (session()->has('ThemeSettings')) {
-                $ThemeSettings = session('ThemeSettings');
+            $profile_pic = false;
+            $user_name = false;
+            if ($ThemeSettings) {
                 $posLogo = $ThemeSettings->pos_logo;
+
+                $branch = $ThemeSettings->branch;
+                $users = $branch->users;
+                foreach ($users as $user) {
+                    if ($user->role == 'branchManager') {
+                        $profile_pic = $user->profile_picture;
+                        $user_name = $user->name;
+                    }
+                }
             }
         @endphp
         {{--      
@@ -31,8 +41,7 @@
             |======================== Warning Overlay ======================|
             |---------------------------------------------------------------|
         --}}
-        @dd(session('warning'));
-        @if (session('warning'))
+        @if (session()->has('warning'))
             <div id="warningOverlay" class="warningOverlay"></div>
             <div id="warning" class="warning">
                 <p style="text-align:center;">
@@ -50,9 +59,13 @@
         <nav>
             <div class="logo">
                 @if ($posLogo)
-                    <img src="{{ asset('Images/Logos/' . $posLogo) }}" alt="Logo Here" onclick="setActiveMenus('menu1','{{ route('managerdashboard', [$id, $branch_id]) }}')" style="cursor: pointer;">
+                    <img src="{{ asset('Images/Logos/' . $posLogo) }}" alt="Logo Here"
+                        onclick="setActiveMenus('menu1','{{ route('managerdashboard', [$id, $branch_id]) }}')"
+                        style="cursor: pointer;">
                 @else
-                    <img src="{{ asset('Images/image-1.png') }}" alt="Logo Here" onclick="setActiveMenus('menu1','{{ route('managerdashboard', [$id, $branch_id]) }}')" style="cursor: pointer;">
+                    <img src="{{ asset('Images/image-1.png') }}" alt="Logo Here"
+                        onclick="setActiveMenus('menu1','{{ route('managerdashboard', [$id, $branch_id]) }}')"
+                        style="cursor: pointer;">
                 @endif
             </div>
 
@@ -118,7 +131,7 @@
 
                     <div class="menuItems" id="menu9">
                         <i class='bx bxs-group'></i>
-                        <a href="{{ route('viewDineInPage',  $branch_id) }}" style="text-decoration: none;"
+                        <a href="{{ route('viewDineInPage', $branch_id) }}" style="text-decoration: none;"
                             onclick="setActiveMenu('menu9')">
                             <p class="link">Dine-In</p>
                         </a>
@@ -142,15 +155,15 @@
                 </div>
             </div>
             <script>
-                 function setActiveMenus(menuId, route) {
+                function setActiveMenus(menuId, route) {
                     document.cookie = "activeMenu=" + menuId + "; path=/";
                     document.querySelectorAll('.menuItems').forEach(item => {
                         item.classList.remove('active');
                     });
                     document.getElementById(menuId).classList.add('active');
-                    window.location.href= route;
+                    window.location.href = route;
                 }
-                
+
                 function setActiveMenu(menuId) {
                     document.cookie = "activeMenu=" + menuId + "; path=/";
                     document.querySelectorAll('.menuItems').forEach(item => {
@@ -187,18 +200,20 @@
                 <div class="profilepanel">
                     <div class="profile">
                         <div class="profilepic">
-                            @if (session('profile_pic'))
-                                <img src="{{ asset('Images/UsersImages/' . session('profile_pic')) }}"
-                                    alt="Profile Picture">
+                            @if ($profile_pic)
+                                <img src="{{ asset('Images/UsersImages/' . $profile_pic) }}" alt="Profile Picture">
                             @else
                                 <img src="{{ asset('Images/Rectangle 3463281.png') }}" alt="Profile Picture">
                             @endif
                         </div>
-                        @if (session('username'))
-                            <p class="profilename">{{ session('username') }}</p>
+                        @if ($user_name)
+                            <p class="profilename">{{ $user_name }}</p>
+                        @else
+                            <p class="profilename">User Name</p>
                         @endif
-
                     </div>
+
+                    <input type="hidden"  id="branch_name" value="{{$branch->branch_name . ' - ' . $branch->branch_city}}">
 
                     @php
                         $notifications = session('Notifications');
@@ -250,8 +265,13 @@
 
             <script>
                 function clearCookies() {
-                    document.cookie = 'activeMenu=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                    document.cookie = 'laravel_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                    const cookies = document.cookie.split(";");
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i];
+                        const eqPos = cookie.indexOf("=");
+                        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+                    }
                     window.location.href = "{{ route('logout') }}";
                 }
             </script>

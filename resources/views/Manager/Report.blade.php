@@ -1,6 +1,11 @@
 @extends('Components.Manager')
-
-@section('title', 'Crust - House | Manager - Report')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let branchName = document.getElementById('branch_name').value;
+        let titleElement = document.getElementById('dynamic-title');
+        titleElement.textContent = branchName + ' | Manager - Reports';
+    });
+</script>
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('CSS/Manager/report.css') }}">
@@ -27,6 +32,10 @@
 
         table.dataTable {
             border-collapse: collapse !important;
+        }
+
+        table.dataTable tfoot td {
+            border-top: none;
         }
     </style>
 
@@ -129,8 +138,8 @@
 
                         <div class="inputdivs">
                             <label for="salesman">Select Salesman</label>
-                            <select name="salesman" id="salesman">
-                                <option value="none" selected disabled>Select Salesman</option>
+                            <select name="salesman" id="salesman" required>
+                                <option value="" selected disabled>Select Salesman</option>
                                 @foreach ($salesmans as $value)
                                     <option value="{{ $value->id }}">{{ $value->name }}</option>
                                 @endforeach
@@ -160,6 +169,8 @@
                                         <th>Items</th>
                                         <th>Qty</th>
                                         <th>Product Total Price</th>
+                                        <th>Tax</th>
+                                        <th>Discount</th>
                                         <th>Total Bill</th>
                                         <th>Payment Methods</th>
                                     </tr>
@@ -195,6 +206,7 @@
                                             $selectedDate = $value->selected_date;
                                             $order_bill = (float) str_replace('Rs. ', '', $value->total_bill);
                                             $total_sales += $order_bill;
+                                            $discountValue = $value->discount === null ? 0 : $value->discount;
                                         @endphp
                                         <tr style="border-bottom: 1px solid #000;">
                                             <td>{{ $value->order_number }}</td>
@@ -220,6 +232,9 @@
                                                     @endforeach
                                                 </div>
                                             </td>
+                                            <td>{{ $value->taxes }}</td>
+                                            <td>{{ $value->discount_type == '%' ? (int) $order_bill * (int) ($discountValue / 100) : $value->discount }}
+                                            </td>
                                             <td>{{ $value->total_bill }}</td>
                                             <td>{{ $value->payment_method }}</td>
                                         </tr>
@@ -241,8 +256,7 @@
                                 Print
                             </button>
 
-                            <button id="closebtn" type="button"
-                                onclick="closeDailyTransactionReportTable()">Close
+                            <button id="closebtn" type="button" onclick="closeDailyTransactionReportTable()">Close
                             </button>
                         </div>
                     </div>
@@ -333,7 +347,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-
                         </div>
                         <div class="btns">
                             @php
@@ -381,8 +394,8 @@
                         </div>
                         <div class="inputdivs">
                             <label for="salesman">Select Salesman</label>
-                            <select name="salesman" id="salesman">
-                                <option value="none" selected disabled>Select Salesman</option>
+                            <select name="salesman" id="salesman" required>
+                                <option value="" selected disabled>Select Salesman</option>
                                 @foreach ($salesmans as $value)
                                     <option value="{{ $value->id }}">{{ $value->name }}</option>
                                 @endforeach
@@ -508,6 +521,42 @@
                         <h3>Sold Products Report</h3>
                         <hr>
                         <div id="table-container">
+                            @php
+                                $groupedItems = [];
+                                $total_Sales = 0;
+                                $count = 0;
+
+                                // Group items by product_id and sum their quantities and total prices
+                                foreach ($dailySales as $Sales) {
+                                    foreach ($Sales->items as $item) {
+                                        $productId = $item->product_id;
+                                        $productName = $item->product_name;
+                                        $productPrice = $item->product_price;
+                                        $quantity = $item->product_quantity;
+                                        $totalPrice = (float) str_replace('Rs. ', '', $item->total_price);
+                                        $date = $item->created_at->format('d/m/y');
+
+                                        if (!isset($groupedItems[$productId])) {
+                                            $groupedItems[$productId] = [
+                                                'product_id' => $productId,
+                                                'product_name' => $productName,
+                                                'product_price' => $productPrice,
+                                                'product_quantity' => 0,
+                                                'total_price' => 0,
+                                                'date' => $date,
+                                            ];
+                                        }
+
+                                        $groupedItems[$productId]['product_quantity'] += $quantity;
+                                        $groupedItems[$productId]['total_price'] += $totalPrice;
+                                        $total_Sales += $totalPrice;
+                                        $count += $quantity;
+                                    }
+                                    $start_date = $Sales->start_date;
+                                    $end_date = $Sales->end_date;
+                                }
+                            @endphp
+
                             <table id="dayTransactionReportTable">
                                 <thead>
                                     <tr>
@@ -520,39 +569,26 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($dailySales as $Sales)
-                                        @foreach ($Sales->items as $item)
-                                            @php
-                                                $date = $item->created_at->format('d/m/y');
-                                                $order_bill = (float) str_replace('Rs. ', '', $item->total_price);
-                                                $total_Sales += $order_bill;
-                                                $count += 1;
-                                                $start_date = $Sales->start_date;
-                                                $end_date = $Sales->end_date;
-
-                                            @endphp
-                                            <tr>
-                                                <td>{{ $item->product_id }}</td>
-                                                <td>{{ $item->product_name }}</td>
-                                                <td>{{ $item->product_price }}</td>
-                                                <td>{{ $item->product_quantity }}</td>
-                                                <td>{{ $item->total_price }}</td>
-                                                <td>{{ $date }}</td>
-                                            </tr>
-                                        @endforeach
+                                    @foreach ($groupedItems as $item)
+                                        <tr>
+                                            <td>{{ $item['product_id'] }}</td>
+                                            <td>{{ $item['product_name'] }}</td>
+                                            <td>{{ $item['product_price'] }}</td>
+                                            <td>{{ $item['product_quantity'] }}</td>
+                                            <td>Rs. {{ number_format($item['total_price'], 2) }}</td>
+                                            <td>{{ $item['date'] }}</td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                                 <tfoot>
-                                    <tr>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" style="text-align: center;"><strong>Total Sales:</strong></td>
+                                    <tr style="border: none;">
+                                        <td><strong>Total Sales</strong></td>
+                                        <td style="width: 5px;">:</td>
                                         <td>Rs. {{ number_format($total_Sales, 2) }}</td>
                                     </tr>
-                                    <tr>
-                                        <td colspan="2" style="text-align: center;"><strong>Total Products
-                                                Sold:</strong>
-                                        </td>
+                                    <tr style="border: none;">
+                                        <td><strong>Total Products Sold</strong></td>
+                                        <td style="width: 5px;">:</td>
                                         <td>{{ $count }}</td>
                                     </tr>
                                 </tfoot>
@@ -576,13 +612,13 @@
 
                 {{--  
                 |---------------------------------------------------------------|
-                |================== Stock Reorder Report =======================|
+                |================== Stock History Report =======================|
                 |---------------------------------------------------------------|
                 --}}
 
                 <button type="button" class="option" id="option7"
                     onclick="window.location.href='{{ route('stockHistoryReport', $branch_id) }}'">
-                    Stock reorder report
+                    Stock History report
                 </button>
 
                 {{--  
@@ -1011,8 +1047,8 @@
 
                         <div class="inputdivs">
                             <label for="salesman">Select Salesman</label>
-                            <select name="salesman" id="salesman">
-                                <option value="none" selected disabled>Select Salesman</option>
+                            <select name="salesman" id="salesman" required>
+                                <option value="" selected disabled>Select Salesman</option>
                                 @foreach ($salesmans as $value)
                                     <option value="{{ $value->id }}">{{ $value->name }}</option>
                                 @endforeach
@@ -1051,6 +1087,7 @@
                                     @foreach ($salesmanTaxReport as $value)
                                         @php
                                             $salesman_id = $value->salesman_id;
+                                            $salesmanName = $value->salesman->name;
                                             $transaction_report_date = $value->transaction_date;
                                             $time = $value->created_at->format('H:i:s');
                                         @endphp
@@ -1062,6 +1099,13 @@
                                         </tr>
                                     @endforeach
                                 </tbody>
+                                <tfoot>
+                                    <tr style="font-weight:bold;">
+                                        <td style="padding: 10px 0; width:125px"><strong>Report By &nbsp;&nbsp;&nbsp; :
+                                            </strong></td>
+                                        <td style="padding: 10px 0;">{{ $salesmanName }}</td>
+                                    </tr>
+                                </tfoot>
                             </table>
 
                         </div>
@@ -1077,7 +1121,7 @@
 
                 {{--  
                 |---------------------------------------------------------------|
-                |=========== Daily Transaction By Salesman Report ==============|
+                |=========== Daily sales and discount ==========================|
                 |---------------------------------------------------------------|
                 --}}
 
@@ -1099,8 +1143,8 @@
 
                         <div class="inputdivs">
                             <label for="salesman">Select Salesman</label>
-                            <select name="salesman" id="salesman">
-                                <option value="none" selected disabled>Select Salesman</option>
+                            <select name="salesman" id="salesman" required>
+                                <option value="" selected disabled>Select Salesman</option>
                                 @foreach ($salesmans as $value)
                                     <option value="{{ $value->id }}">{{ $value->name }}</option>
                                 @endforeach
@@ -1150,7 +1194,7 @@
                                             <td>{{ $value->salesman->name }}</td>
                                             <td>Rs. {{ $value->total_bill }}</td>
                                             <td>Rs.
-                                                {{ $value->discount_type == '%' ? (float) ($bill + $value->taxes) * (float) ($value->discount / 100) : $value->discount }}
+                                                {{ $value->discount_type == '%' ? (float) $bill * (float) ($value->discount / 100) : $value->discount }}
                                             </td>
                                         </tr>
                                     @endforeach

@@ -1,4 +1,4 @@
-@extends('Components.chef')
+@extends('Components.Chef')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('CSS/Chef/dashboard.css') }}">
@@ -12,6 +12,16 @@
     </script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 @endpush
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let branchName = document.getElementById('branch_name').value;
+        let titleElement = document.getElementById('dynamic-title');
+        titleElement.textContent = branchName + ' | Chef - Dashboard';
+    });
+</script>
+
+
 <style>
     #newOrdersTable_paginate,
     #newOrdersTable_filter,
@@ -138,6 +148,7 @@
                 "lengthMenu": [5, 10, 25, 50, 100]
             });
         });
+
         function showDetails(order) {
             document.getElementById('orderItemsOverlay').style.display = 'block';
             document.getElementById('orderItems').style.display = 'flex';

@@ -17,9 +17,15 @@
     @php
         $owner_id = session('owner_id');
         $posLogo = false;
+        $profile_pic = null;
+        $user_name = null;
         if (session()->has('OwnerSettings')) {
             $OwnerSettings = session('OwnerSettings');
             $posLogo = $OwnerSettings->pos_logo;
+        }
+        if ($ownerData) {
+            $profile_pic = $ownerData->profile_picture;
+            $user_name = $ownerData->name;
         }
     @endphp
     @if (session('success'))
@@ -53,15 +59,30 @@
     @endif
     <header id="header">
         <div class="logo">
-            <img src="{{ asset('Images/logo.png') }}" alt="Logo Here" onclick="window.loction.href='{{ route('dashboard', $owner_id) }}'" style="cursor: pointer;" >
+            <img src="{{ asset('Images/logo.png') }}" alt="Logo Here"
+                onclick="setActiveMenus('menu11','{{ route('dashboard', $owner_id) }}')" style="cursor: pointer;">
         </div>
 
         <div class="profilepanel">
             <div class="profile">
                 <div class="profilepic">
-                    <img src="{{ asset('Images/Rectangle 3463281.png') }}" alt="Profile Picture">
+                    @if ($profile_pic)
+                        <img src="{{ asset('Images/UsersImages/' . $profile_pic) }}" alt="Profile Picture"
+                            onclick="updateProfile({{ json_encode($ownerData) }})" style="cursor: pointer;">
+                    @else
+                        <img src="{{ asset('Images/Rectangle 3463281.png') }}" alt="Profile Picture"
+                            onclick="updateProfile({{ json_encode($ownerData) }})" style="cursor: pointer;">
+                    @endif
                 </div>
-                <p class="profilename">Tachyon</p>
+                @if ($user_name)
+                    <p class="profilename" onclick="updateProfile({{ json_encode($ownerData) }})"
+                        style="cursor: pointer;">
+                        {{$user_name}}</p>
+                @else
+                    <p class="profilename" onclick="updateProfile({{ json_encode($ownerData) }})"
+                        style="cursor: pointer;">
+                        Tachyon</p>
+                @endif
             </div>
 
             <a href="{{ route('logout') }}" class="logout">
@@ -71,60 +92,42 @@
     </header>
     <div class="container">
         <nav>
-            <div class="menuItems" id="menu1">
+            <div class="menuItems active" id="menu11">
                 <i class='bx bxs-dashboard'></i>
-                <a href="{{ route('dashboard', $owner_id) }}" onclick="setActiveMenu('menu1')"
+                <a href="{{ route('dashboard', $owner_id) }}" onclick="setActiveMenu('menu11')"
                     style="text-decoration: none;">
                     <p class="link">Dashboard</p>
                 </a>
             </div>
-            {{-- <div class="menuItems" id="menu2">
-                <i class='bx bx-package'></i>
-                <a href="{{ route('branches', $owner_id) }}" onclick="setActiveMenu('menu2')"
-                    style="text-decoration: none;">
-                    <p class="link">My Branch</p>
-                </a>
-            </div> --}}
-            {{-- <div class="menuItems" id="menu5">
-                <i class='bx bxs-group'></i>
-                <a href="{{ route('staff', $owner_id) }}" onclick="setActiveMenu('menu5')"
-                    style="text-decoration: none;">
-                    <p class="link">My Staff</p>
-                </a>
-            </div> --}}
-            {{-- <div class="menuItems" id="menu7">
-                <i class='bx bxs-report'></i>
-                <a href="{{ route('showReports', $owner_id) }}" onclick="setActiveMenu('menu7')"
-                    style="text-decoration: none;">
-                    <p class="link">Reports</p>
-                </a>
-            </div>
-            <div class="menuItems" id="menu8">
-                <i class='bx bxs-cog'></i>
-                <a href="{{ route('settings', $owner_id) }}" onclick="setActiveMenu('menu8')"
-                    style="text-decoration: none;">
-                    <p class="link">Settings</p>
-                </a>
-            </div> --}}
 
-        </nav>
-        <div class="rgtPnl">
-            @yield('main')
-        </div>
-    </div>
-    {{-- <script>
+            <script>
+                function setActiveMenus(menuId, route) {
+                    document.cookie = "activeMenu=" + menuId + "; path=/";
+                    document.querySelectorAll('.menuItems').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    document.getElementById(menuId).classList.add('active');
+                    window.location.href = route;
+                }
+
                 function setActiveMenu(menuId) {
                     document.cookie = "activeMenu=" + menuId + "; path=/";
-                    console.log("Set cookie: activeMenu=" + menuId);
                     document.querySelectorAll('.menuItems').forEach(item => {
                         item.classList.remove('active');
                     });
                     document.getElementById(menuId).classList.add('active');
                 }
 
-                document.addEventListener('DOMContentLoaded', (event) => {
+                // Function to get the active menu from cookies
+                function getActiveMenu() {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; activeMenu=`);
+                    if (parts.length === 2) return parts.pop().split(';').shift();
+                }
+
+                // Set the active menu from the cookie on page load
+                document.addEventListener('DOMContentLoaded', () => {
                     const activeMenu = getActiveMenu();
-                    console.log("Active menu from cookie: " + activeMenu);
                     if (activeMenu) {
                         document.querySelectorAll('.menuItems').forEach(item => {
                             item.classList.remove('active');
@@ -132,21 +135,12 @@
                         document.getElementById(activeMenu).classList.add('active');
                     }
                 });
-
-                function getActiveMenu() {
-                    const value = `; ${document.cookie}`;
-                    const parts = value.split(`; activeMenu=`);
-                    if (parts.length === 2) {
-                        const menu = parts.pop().split(';').shift();
-                        console.log("Retrieved menu from cookie: " + menu);
-                        return menu;
-                    }
-                    return null;
-                }
-            </script> --}}
-
-    <script src="{{ asset('JavaScript/index.js') }}"></script>
-
+            </script>
+        </nav>
+        <div class="rgtPnl">
+            @yield('main')
+        </div>
+    </div>
 </body>
 
 </html>

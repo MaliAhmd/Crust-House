@@ -1,5 +1,11 @@
 @extends('Components.Manager')
-@section('title', 'Crust - House | Manager - Orders')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let branchName = document.getElementById('branch_name').value;
+        let titleElement = document.getElementById('dynamic-title');
+        titleElement.textContent = branchName + ' | Manager - Order';
+    });
+</script>
 @push('styles')
     <link rel="stylesheet" href="{{ asset('CSS/Manager/order.css') }}">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -88,11 +94,11 @@
                         @endif
 
                         <td>
-                            <a id="view" href="{{ route('viewOrderProducts', $order->id) }}">View</a>
+                            <a id="view" href="{{ route('viewOrderProducts', [$branch_id ,$order->id]) }}">View</a>
                             @if ($order->status == 1)
                                 <a id="cancel-order" style="background-color:#4d4d4d; cursor: default;">Cancel</a>
                             @elseif($order->status == 2)
-                                <a id="cancel-order" href="{{ route('cancelorder', $order->id) }}">Cancel</a>
+                                <a id="cancel-order" href="{{ route('cancelorder', [$order->id, $user_id]) }}">Cancel</a>
                             @elseif($order->status == 3)
                                 <a id="cancel-order" style="background-color:#4d4d4d;  cursor: default;">Cancel</a>
                             @endif

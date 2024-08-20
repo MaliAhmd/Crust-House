@@ -1,5 +1,11 @@
 @extends('Components.Manager')
-@section('title', 'Crust - House | Manager - Update Deal Product')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let branchName = document.getElementById('branch_name').value;
+        let titleElement = document.getElementById('dynamic-title');
+        titleElement.textContent = branchName + ' | Manager - Add Deal Product';
+    });
+</script>
 @push('styles')
     <link rel="stylesheet" href="{{ asset('CSS/Manager/deal.css') }}">
 @endpush

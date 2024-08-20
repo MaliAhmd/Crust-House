@@ -7,6 +7,7 @@ body {
     height: 100%;
     user-select: none;
     background-color: #ececec;
+    font-family: "Poppins", sans-serif;
 }
 
 .container {
@@ -17,15 +18,33 @@ body {
     height: 100vh;
 }
 
+.alert {
+    display: flex;
+    color: white !important;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.2vw !important;
+    padding: 10px;
+    width: 100%;
+}
+
+.alert-success {
+    background-color: #1e9752d7;
+}
+
+.alert-danger {
+    background-color: #c65541d7;
+}
+
 form {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 30%;
-    /* height: 55%; */
     border-radius: 10px;
-    background-color: #e2e2e2;
-    border-top: 6px solid #ffbb00;
+    background-color: #fff;
+    border-top: 6px solid #64A5FF;
     box-shadow: 0px 1px 3px #3a3a3a;
 }
 
@@ -72,6 +91,7 @@ form p {
     padding: 5px 10px;
     border-radius: 5px;
     width: 90%;
+    line-height: 2;
 }
 
 .emailfield i,
@@ -82,6 +102,16 @@ form p {
     background-color: #cdcdcd;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+    line-height: 2;
+}
+
+.btn {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    margin-bottom: 20px;
 }
 
 .btn input {
@@ -93,13 +123,15 @@ form p {
     font-style: normal;
     border-radius: 10px;
     border: none;
-    background-color: #ffbb00;
+    background-color: #64A5FF;
     color: #fff;
     cursor: pointer;
+    line-height: 2;
+    width: 100%;
 }
 
 .btn input:hover {
-    background-color: #ae8515;
+    background-color: #0f3c75
 }
 
 .fgtpswd {
@@ -111,17 +143,17 @@ form p {
 }
 
 .fgtpswd a {
-    margin: 0.2rem 2.5rem;
+    margin: 0.2rem 3.2rem;
     text-decoration: none;
-    color: #ffbb00;
+    color: #64A5FF;
 }
 
 .fgtpswd a:hover {
-    color: #ae8515;
+    color: #0f3c75;
 }
 
 .error-message {
-    color: #F45B69;
+    color: #f45b69;
     font-size: 0.7rem;
     margin: 0px 20px;
 }

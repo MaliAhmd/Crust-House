@@ -22,6 +22,10 @@ Route::get('/viewRegisterPage',[AuthController::class, 'registrationIndex'])->na
 
 Route::post('/storeRegistrationData',[AuthController::class, 'register'])->name('storeRegistrationData');
 Route::post('/login',[AuthController::class, 'login'])->name('login');
+Route::get('/viewForgotPassword',[AuthController::class, 'viewForgotPassword'])->name('viewForgotPassword');
+Route::get('/resetPasswordPage/{email}',[AuthController::class, 'resetPasswordPage'])->name('resetPasswordPage');
+Route::post('/resetPassword',[AuthController::class, 'resetPassword'])->name('resetPassword');
+Route::post('/forgotPassword',[AuthController::class, 'forgotPassword'])->name('forgotPassword');
 Route::get('/logout',[AuthController::class, 'logout'])->name('logout');
 
 /*
@@ -31,6 +35,8 @@ Route::get('/logout',[AuthController::class, 'logout'])->name('logout');
 */ 
 
 Route::get('/dashboard/{owner_id}', [OwnerController::class, 'viewOwnerDashboard'])->name('dashboard');
+
+Route::post('/UpdateOwnerProfile', [OwnerController::class, 'UpdateOwnerProfile'])->name('UpdateOwnerProfile');
 
 
 Route::post('/storeNewBranchData',[OwnerController::class,'newBranch'])->name('storeNewBranchData'); 
@@ -119,9 +125,9 @@ Route::get('/showCategoryProducts/{category_id}/{branch_id}/{user_id}', [Manager
 */
  
 Route::get('/viewOrdersPage/{id}/{branch_id}', [ManagerController::class,'viewOrdersPage'])->name('viewOrdersPage');
-Route::get('/viewOrderProducts/{order_id}', [ManagerController::class,'viewOrderProducts'])->name('viewOrderProducts');
+Route::get('/viewOrderProducts/{branch_id}/{order_id}', [ManagerController::class,'viewOrderProducts'])->name('viewOrderProducts');
 Route::get('/printrecipt/{order_id}', [ManagerController::class,'printRecipt'])->name('printrecipt');
-Route::get('/cancelorder/{order_id}', [ManagerController::class,'cancelOrder'])->name('cancelorder');
+Route::get('/cancelorder/{order_id}/{staff_id}', [ManagerController::class,'cancelOrder'])->name('cancelorder');
 
 Route::get('/viewStaffPage/{id}/{branch_id}', [ManagerController::class,'viewStaffPage'])->name('viewStaffPage');
 Route::post('/updateStaff', [ManagerController::class,'updateStaff'])->name('updateStaff');
@@ -133,8 +139,11 @@ Route::get('/download-pdf/{filename}', [SalesmanController::class, 'downloadPdf'
 |---------------------------------------------------------------|
 |======================== Dine-In Routes =======================|
 |---------------------------------------------------------------|
-*/
+*/ 
 Route::get('viewDineInPage/{branch_id}', [ManagerController::class,'viewDineInPage'])->name('viewDineInPage');
+Route::post('createTable', [ManagerController::class,'createTable'])->name('createTable');
+Route::post('updateTable', [ManagerController::class,'updateTable'])->name('updateTable');
+Route::get('deleteTable/{table_id}', [ManagerController::class,'deleteTable'])->name('deleteTable');
 
 /*
 |---------------------------------------------------------------|

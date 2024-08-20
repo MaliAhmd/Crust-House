@@ -1,5 +1,11 @@
 @extends('Components.Manager')
-@section('title', 'Crust - House | Manager - Products')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let branchName = document.getElementById('branch_name').value;
+        let titleElement = document.getElementById('dynamic-title');
+        titleElement.textContent = branchName + ' | Manager - Product';
+    });
+</script>
 @push('styles')
     <link rel="stylesheet" href="{{ asset('CSS/Manager/product.css') }}">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">

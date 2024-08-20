@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('branch_state')->nullable();
             $table->string('branch_city')->nullable(); 
             $table->string('company_name')->nullable();
+            $table->string('branch_initial')->nullable();
             $table->string('branch_name')->nullable();
             $table->string('branch_code')->unique()->nullable();
             $table->string('branch_address')->nullable();

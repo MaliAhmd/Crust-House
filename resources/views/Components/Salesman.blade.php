@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crust - House | Salesman - Dashboard</title>
+    <title id="dynamic-title"></title>
     <link rel="stylesheet" href="{{ asset('CSS/Salesman/salesman.css') }}">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="icon" href="{{ asset('Images/Web_Images/chlogo.png') }}" type="image/png">
@@ -16,12 +16,23 @@
 <body>
     @php
         $posLogo = false;
-        if (session()->has('OwnerSettings')) {
-            $OwnerSettings = session('OwnerSettings');
-            $posLogo = $OwnerSettings->pos_logo;
+        $profile_pic = false;
+        $user_name = false;
+        if ($ThemeSettings) {
+            $posLogo = $ThemeSettings->pos_logo;
+
+            $branch = $ThemeSettings->branch;
+            $branchName = $branch->branch_name . ' - ' . $branch->branch_city;
+            $users = $branch->users;
+            foreach ($users as $user) {
+                if ($user->id == $staff_id) {
+                    $profile_pic = $user->profile_picture;
+                    $user_name = $user->name;
+                }
+            }
         }
     @endphp
-    <div class="container">
+    <div class="container"> 
         <header id="header">
             <div class="logo">
                 @if ($posLogo)
@@ -30,28 +41,29 @@
                     <img src="{{ asset('Images/image-1.png') }}" alt="Logo Here">
                 @endif
             </div>
+            <input type="hidden" id="branch_name" value="{{ $branchName }}">
             <div id="centerDiv">
                 <button id="dineIn-btn" type="button" onclick="showDineInOrders()">Dine-In Orders</button>
+                <button id="online-btn" type="button" onclick="showOnlineOrders()">Online Orders</button>
+                <button id="allOrders-btn" type="button" onclick="showAllOrders()">All Orders</button>
                 <div class="search_bar_div">
                     <input type="text" id="search_bar" name="search" placeholder="Search.."
                         style="background-image: url('{{ asset('Images/search.png') }}');">
                 </div>
-                <button id="online-btn" type="button" onclick="showOnlineOrders()">Online Orders</button>
             </div>
 
             <div class="profilepanel">
                 <div class="profile">
                     <div class="profilepic">
-                        @if (session('profile_pic'))
-                            <img src="{{ asset('Images/UsersImages/' . session('profile_pic')) }}"
-                                alt="Profile Picture">
+                        @if ($profile_pic)
+                            <img src="{{ asset('Images/UsersImages/' . $profile_pic) }}" alt="Profile Picture">
                         @else
                             <img src="{{ asset('Images/Rectangle 3463281.png') }}" alt="Profile Picture">
                         @endif
                     </div>
 
-                    @if (session('username'))
-                        <p class="profilename">{{ session('username') }}</p>
+                    @if ($user_name)
+                        <p class="profilename">{{ $user_name }}</p>
                     @endif
                 </div>
 

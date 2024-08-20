@@ -53,7 +53,7 @@
 <body>
     <div id="dayFullTransactionReportTable">
         <h3 style="text-align: center;">
-           Stock Reorder Report
+           Stock History Report
         </h3>
         <div id="table-container">
             <table id="stocksHistroyTable">

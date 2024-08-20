@@ -79,7 +79,7 @@
                             <td>{{ $time }}</td>
                             <td>{{ $value->salesman->name }}</td>
                             <td>{{ $value->total_bill }}</td>
-                            <td>Rs. {{ $value->discount_type == '%' ? ($order_bill + $value->taxes) * ($value->discount / 100) : $value->discount }}</td>
+                            <td>Rs. {{ $value->discount_type == '%' ? ($order_bill) * ($value->discount / 100) : $value->discount }}</td>
                         </tr>
                     @endforeach
                 </tbody>

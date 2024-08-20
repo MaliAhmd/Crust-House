@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Branch;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\ThemeSetting;
@@ -16,14 +15,16 @@ class KitchenController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
-        $branch = Branch::find($branch_id);
-
+        // $branch = Branch::find($branch_id);
+        $settings = ThemeSetting::where('branch_id', $branch_id)->with(['branch.users'])->first();
         $newOrders = Order::with('items')->where('status', 2)->where('branch_id',$branch_id)->get();
         $completeOrders = Order::with('items')->where('status', 1)->where('branch_id',$branch_id)->get();
     
         return view('Kitchen.Dashboard', [
             'newOrders' => $newOrders,
-            'completeOrders' => $completeOrders
+            'completeOrders' => $completeOrders,
+            'ThemeSettings' => $settings,
+            'user_id' => $user_id
         ]);
     }
     

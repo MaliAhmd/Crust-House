@@ -63,7 +63,7 @@ header {
     align-items: center;
     justify-content: space-around;
     height: 85%;
-    width: 20%;
+    width: 30%;
     margin: 10px;
 }
 
@@ -131,6 +131,11 @@ nav {
     width: 95%;
 }
 
+.active i,
+.active a p {
+    color: #008fd3 !important;
+}
+
 .menuItems i,
 .menuItems a p {
     padding: 5px;
@@ -158,7 +163,6 @@ nav {
     display: flex;
     flex-direction: column;
     width: 85%;
-    height: calc(100% - 50px);
     margin: 1px 1px;
     overflow: hidden;
 }
@@ -172,7 +176,7 @@ main {
     justify-content: space-around;
     border-radius: 03px;
     width: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .title {
@@ -375,8 +379,9 @@ h3 {
 .add-New-Branch {
     display: flex;
     justify-content: flex-end;
-    padding-right: 6vw;
-    margin: 10px;
+    padding-right: 0.8vw;
+    width: 90%;
+    margin: 0.5vw auto;
 }
 
 .add-New-Branch button {
@@ -484,6 +489,7 @@ h3 {
 
 #addNewBranchOverlay,
 #editBranchOverlay,
+#editOwnerProfileOverlay,
 #confirmDeletionOverlay {
     position: fixed;
     top: 0;
@@ -497,6 +503,7 @@ h3 {
 
 #addNewBranch,
 #editBranch,
+#editOwnerProfile,
 .confirmDeletion {
     display: none;
     flex-direction: column;
@@ -512,6 +519,7 @@ h3 {
 }
 
 #addNewBranch h3,
+#editOwnerProfile h3,
 .confirmDeletion h3,
 #editBranch h3 {
     margin: 0;
@@ -520,6 +528,7 @@ h3 {
 }
 
 #addNewBranch hr,
+#editOwnerProfile hr,
 .confirmDeletion hr,
 #editBranch hr {
     border: 1px solid #9b9b9b;
@@ -712,6 +721,7 @@ h3 {
 }
 
 #cancel,
+#editOwnerCancel,
 #editCancel {
     background-color: #dc3545;
 }
@@ -721,6 +731,7 @@ h3 {
 }
 
 #cancel:hover,
+#editOwnerCancel:hover,
 #editCancel:hover {
     background-color: #bb303e;
 }
@@ -763,6 +774,36 @@ h3 {
     flex-direction: column;
     font-family: "Poppins", sans-serif;
     font-size: 1vw;
+}
+
+
+/* update profile choose image */
+
+.choose-file-btn {
+    display: flex;
+    background-color: #e2e2e2;
+    color: #333;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.choose-file-btn input[type="file"] {
+    display: none;
+}
+
+.choose-file-btn span {
+    padding: 0.5vw;
+    border: 1px solid #bbbbbb;
+    background-color: #bbbbbb;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    cursor: pointer;
+}
+
+.choose-file-btn p {
+    margin: 0;
+    padding: 0.5vw;
+    overflow: hidden;
 }
 
 

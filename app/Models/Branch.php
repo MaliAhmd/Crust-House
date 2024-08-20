@@ -25,5 +25,9 @@ class Branch extends Model
     {
         return $this->belongsToMany(Category::class, 'branch_categories');
     }
+    public function ThemeSettings()
+    {
+        return $this->belongsTo(ThemeSetting::class);
+    }
 }
  

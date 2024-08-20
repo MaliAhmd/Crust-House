@@ -30,7 +30,7 @@ body {
 }
 
 .warningOverlay {
-    display: none;
+    display: block;
     position: fixed;
     top: 0;
     left: 0;
@@ -41,7 +41,7 @@ body {
 }
 
 .warning {
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
@@ -242,15 +242,16 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90%;
-    width: 25%;
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
     margin-right: 0.5vw;
-    border-radius: 10%;
 }
 
 .profilepic img {
-    height: 99%;
-    border-radius: 25%;
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
 }
 
 .profilename {

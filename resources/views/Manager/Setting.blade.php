@@ -1,6 +1,12 @@
 @extends('Components.Manager')
 
-@section('title', 'Crust - House | Manager - Setting')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let branchName = document.getElementById('branch_name').value;
+        let titleElement = document.getElementById('dynamic-title');
+        titleElement.textContent = branchName + ' | Manager - Settings';
+    });
+</script>
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('CSS/Manager/setting.css') }}">
@@ -398,11 +404,11 @@
                             </div>
 
                             <div class="forms-btns">
-                                <button type="button" id="cancel" onclick="closeReceiptOverlay()">Cancel</button>
-                                <button style="height: 3.5vw;" class="add" type="submit">
+                                <button style="height: 40px;" type="button" id="cancel" onclick="closeReceiptOverlay()">Cancel</button>
+                                <button style="height: 40px;" class="add" type="submit">
                                     Update
                                 </button>
-                                <button style="height: 3.5vw;" class="deleteTax" type="button"
+                                <button style="height: 40px;" class="deleteTax" type="button"
                                     onclick="showConfirmDelete('{{ route('deleteReceipt', $receipt->id) }}')">
                                     Delete
                                 </button>

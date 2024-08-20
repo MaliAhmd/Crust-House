@@ -5,14 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Crust-House | Login Page</title>
+    <title>Login Page</title>
     <link rel="stylesheet" href= "{{ asset('CSS/Owner/Login.css') }}">
     {{-- <link rel="shortcut icon" href="{{ asset('Images/favicon.ico')}}" type="image/x-icon"> --}}
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 
 <body>
+    @if (session('success'))
+        <div id="success" class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        <script>
+            setTimeout(() => {
+                document.getElementById('success').classList.add('alert-hide');
+            }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('success').style.display = 'none';
+            }, 2000);
+        </script>
+    @endif
+
+    @if (session('error'))
+        <div id="error" class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+        <script>
+            setTimeout(() => {
+                document.getElementById('error').classList.add('alert-hide');
+            }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('error').style.display = 'none';
+            }, 2000);
+        </script>
+    @endif
     <div class="container">
+        @error('forgot')
+            <div class="error-message">{{ session('email') }}</div>
+        @enderror
         <form action="{{ route('login') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="heading">
@@ -38,7 +70,7 @@
             </div>
 
             <div class="fgtpswd">
-                <a href="">I forgot my Password</a>
+                <a href="{{ route('viewForgotPassword') }}">I forgot my Password</a>
                 <a href="{{ route('viewRegisterPage') }}">Don't have an account</a>
             </div>
 
@@ -46,9 +78,21 @@
                 <input type="submit" value="Login">
             </div>
         </form>
-
     </div>
     <script src="{{ asset('JavaScript/index.js') }}"></script>
 </body>
+
+<script>
+    function showForgotPassword() {
+        document.getElementById('overlay').style.display = "block";
+        document.getElementById('forgotOverlay').style.display = "flex";
+    }
+
+    function closeForgotPassword() {
+        document.getElementById('overlay').style.display = "none";
+        document.getElementById('forgotOverlay').style.display = "none";
+        window.location.reload();
+    }
+</script>
 
 </html>

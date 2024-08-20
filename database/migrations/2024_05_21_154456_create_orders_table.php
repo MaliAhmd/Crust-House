@@ -26,6 +26,7 @@ return new class extends Migration
             $table->decimal('return_change', 8, 2)->nullable();
             $table->string('ordertype')->nullable()->nullable();
             $table->integer('status')->default('2')->nullable();
+            $table->string('order_cancel_by')->nullable();
             
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
             $table->foreign('salesman_id')->references('id')->on('users')->onDelete('cascade');

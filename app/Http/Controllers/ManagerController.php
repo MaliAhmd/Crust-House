@@ -37,8 +37,7 @@ class ManagerController extends Controller
         }
 
         $branch = Branch::find($branch_id);
-        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
-        session()->put('ThemeSettings', $settings);
+        $settings = ThemeSetting::where('branch_id', $branch_id)->with(['branch.users'])->first();
 
         $totalCategories = $this->totalCategories($branch_id);
         $totalProducts = $this->totalProducts($branch_id);
@@ -67,6 +66,7 @@ class ManagerController extends Controller
             'id' => $id,
             'branch_id' => $branch_id,
             'branch' => $branch,
+            'ThemeSettings' => $settings
         ]);
     }
     public function readNotification($user_id, $branch_id, $id)
@@ -120,7 +120,8 @@ class ManagerController extends Controller
             return redirect()->route('viewLoginPage');
         }
         $category = Category::where('branch_id', $branch_id)->get();
-        return view('Manager.Category')->with(['categories' => $category]);
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
+        return view('Manager.Category')->with(['categories' => $category, 'ThemeSettings' => $settings]);
     }
     public function createCategory(Request $request)
     {
@@ -223,7 +224,8 @@ class ManagerController extends Controller
         // dd($branch_id, $id);
         $categories = Category::where('branch_id', $branch_id)->get();
         $products = Product::where('branch_id', $branch_id)->orderBy('category_name')->get();
-        return view('Manager.Product')->with(['categoryData' => $categories, 'productsData' => $products]);
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
+        return view('Manager.Product')->with(['categoryData' => $categories, 'productsData' => $products, 'ThemeSettings' => $settings]);
     }
     public function createProduct(Request $request)
     {
@@ -362,7 +364,7 @@ class ManagerController extends Controller
         }
 
         $currentDate = date('Y-m-d');
-
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $deals = Deal::all();
         foreach ($deals as $deal) {
             if ($deal->dealEndDate <= $currentDate) {
@@ -383,7 +385,8 @@ class ManagerController extends Controller
 
         return view('Manager.Deal')->with([
             'dealsData' => $deals,
-            'dealProducts' => $handlersAndProducts
+            'dealProducts' => $handlersAndProducts,
+            'ThemeSettings' => $settings
         ])->with('success');
     }
     public function viewDealProductsPage($branch_id)
@@ -391,18 +394,19 @@ class ManagerController extends Controller
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
         }
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $products = Product::where('branch_id', $branch_id)->orderBy('category_id')->get();
-        return view('Manager.DealProducts')->with(['Products' => $products]);
+        return view('Manager.DealProducts')->with(['Products' => $products, 'ThemeSettings' => $settings]);
     }
     public function viewUpdateDealProductsPage($deal_id, $branch_id)
     {
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
         }
-
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $products = Product::where('branch_id', $branch_id)->orderBy('category_id')->get();
         $handler = Deal::where('branch_id', $branch_id)->with('handlers')->find($deal_id);
-        return view('Manager.UpdateDealProduct')->with(['Products' => $products, 'dealId' => $deal_id, 'dealproducts' => $handler]);
+        return view('Manager.UpdateDealProduct')->with(['Products' => $products, 'dealId' => $deal_id, 'dealproducts' => $handler, 'ThemeSettings' => $settings]);
     }
     public function createDeal(Request $request)
     {
@@ -650,7 +654,7 @@ class ManagerController extends Controller
             'piece' => 1,
             'dozen' => 12,
         ];
-
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $stocks = Stock::where('branch_id', $branch_id)->get();
         $notifications = [];
 
@@ -680,7 +684,7 @@ class ManagerController extends Controller
 
         $notify = Notification::where('is_read', false)->get();
         session(['Notifications' => $notify]);
-        return view('Manager.Stock')->with(['stockData' => $stocks, 'notification' => $notifications, 'user_id' => $id, 'branch_id' => $branch_id]);
+        return view('Manager.Stock')->with(['stockData' => $stocks, 'notification' => $notifications, 'user_id' => $id, 'branch_id' => $branch_id, 'ThemeSettings' => $settings]);
     }
     public function createStock(Request $request)
     {
@@ -771,7 +775,8 @@ class ManagerController extends Controller
     public function stockHistory($branch_id, $user_id)
     {
         $stock_history = StockHistory::where('branch_id', $branch_id)->get();
-        return view('Manager.StockHistory')->with(['stockHistory' => $stock_history, 'branch_id' => $branch_id, 'user_id' => $user_id]);
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
+        return view('Manager.StockHistory')->with(['stockHistory' => $stock_history, 'branch_id' => $branch_id, 'user_id' => $user_id, 'ThemeSettings' => $settings]);
     }
 
     /*
@@ -788,6 +793,7 @@ class ManagerController extends Controller
         $categories = Category::where('branch_id', $branch_id)->get();
         $products = Product::all();
         $categoryIdsWithProducts = $products->pluck('category_id')->unique();
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
 
         $categoriesWithProducts = $categories->filter(function ($category) use ($categoryIdsWithProducts) {
             return $categoryIdsWithProducts->contains($category->id);
@@ -796,14 +802,15 @@ class ManagerController extends Controller
         $stocks = Stock::where('branch_id', $branch_id)->get();
         $recipe = Recipe::with('product', 'stock')->get();
 
-        session(['showproductRecipe' => false]);
+        session('showproductRecipe', false);
         return view('Manager.Recipe')->with([
             'categoryProducts' => null,
             'categories' => $categoriesWithProducts,
             'stocks' => $stocks,
             'user_id' => $id,
             'branch_id' => $branch_id,
-            'recipes' => $recipe
+            'recipes' => $recipe,
+            'ThemeSettings' => $settings
         ]);
     }
     public function createRecipe(Request $request)
@@ -864,7 +871,7 @@ class ManagerController extends Controller
         }
 
         $recipes = Recipe::where('product_id', $product_id)->where('category_id', $category_id)->with('stock', 'product')->get();
-
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $products = Product::where('branch_id', $branch_id)->whereHas('category', function ($query) use ($category_id) {
             $query->where('id', $category_id);
         })->with('category')->get();
@@ -872,7 +879,7 @@ class ManagerController extends Controller
         $categories = Category::where('branch_id', $branch_id)->get();
 
         $stocks = Stock::all();
-        session(['showproductRecipe' => true]);
+        session('showproductRecipe', true);
 
         return view('Manager.Recipe')->with([
             'categoryProducts' => $products,
@@ -880,7 +887,8 @@ class ManagerController extends Controller
             'stocks' => $stocks,
             'recipes' => $recipes,
             'branch_id' => $branch_id,
-            'user_id' => $user_id
+            'user_id' => $user_id,
+            'ThemeSettings' => $settings
         ]);
     }
     public function deleteStockFromRecipe($id, $cId, $pId)
@@ -904,6 +912,7 @@ class ManagerController extends Controller
 
         $categories = Category::where('branch_id', $branch_id)->get();
         $stocks = Stock::where('branch_id', $branch_id)->get();
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
 
         $recipes = Recipe::where(function ($query) use ($branch_id) {
             $query->whereHas('product', function ($query) use ($branch_id) {
@@ -923,7 +932,7 @@ class ManagerController extends Controller
 
 
         $categoryProducts = Product::where('category_id', $category_id)->get();
-        return view('Manager.Recipe')->with(['categoryProducts' => $categoryProducts, 'categories' => $categories, 'branch_id' => $branch_id, 'user_id' => $user_id, 'stocks' => $stocks, 'recipes' => $recipes]);
+        return view('Manager.Recipe')->with(['categoryProducts' => $categoryProducts, 'categories' => $categories, 'branch_id' => $branch_id, 'user_id' => $user_id, 'stocks' => $stocks, 'recipes' => $recipes, 'ThemeSettings' => $settings]);
     }
 
     /* 
@@ -937,18 +946,16 @@ class ManagerController extends Controller
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
         }
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $orders = Order::with('salesman')->where('branch_id', $branch_id)->get();
-        return view('Manager.Order')->with(['orders' => $orders, 'orderItems' => null]);
+        return view('Manager.Order')->with(['orders' => $orders, 'orderItems' => null, 'ThemeSettings' => $settings]);
     }
-    public function viewOrderProducts($order_id)
+    public function viewOrderProducts($branch_id, $order_id)
     {
-        if (!session()->has('branchManager')) {
-            return redirect()->route('viewLoginPage');
-        }
-
         $orders = Order::with('salesman')->where('id', $order_id)->get();
         $orderItems = OrderItem::where('order_id', $order_id)->get();
-        return view('Manager.Order')->with(['orders' => $orders, 'orderItems' => $orderItems]);
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
+        return view('Manager.Order')->with(['orders' => $orders, 'orderItems' => $orderItems, 'ThemeSettings' => $settings]);
     }
     public function printRecipt($order_id)
     {
@@ -964,11 +971,12 @@ class ManagerController extends Controller
         $dompdf->render();
         $dompdf->stream($order->order_number . '.pdf');
     }
-    public function cancelOrder($order_id)
+    public function cancelOrder($order_id, $staff_id)
     {
-
-        $order = Order::with('salesman')->where('id', $order_id)->first();
+        $staff = User::find($staff_id);
+        $order = Order::where('id', $order_id)->first();
         $order->status = 3;
+        $order->order_cancel_by = $staff->name;
         $this->returnStock($order_id);
         $order->save();
 
@@ -1022,12 +1030,13 @@ class ManagerController extends Controller
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
         }
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $branches = Branch::where('id', $branch_id)->get();
         $staff = User::with('branch')
             ->where('branch_id', $branch_id)
             ->whereIn('role', ['salesman', 'chef', 'branchManager'])
             ->get();
-        return view('Manager.Staff')->with(['Staff' => $staff, 'branches' => $branches])->with('success', 'User registered successfully');
+        return view('Manager.Staff')->with(['Staff' => $staff, 'branches' => $branches, 'ThemeSettings' => $settings]);
     }
     public function updateStaff(Request $req)
     {
@@ -1035,18 +1044,29 @@ class ManagerController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
-        $existingUser = User::all();
-        foreach ($existingUser as $user) {
-            if ($user->email == $req->input('email')) {
-                return redirect()->back()->with('error', 'Email already exist');
-            }
+        $existingChef = User::where('role', 'chef')
+        ->where('id', '!=', $req->staffId)
+        ->where('branch_id', $req->branch)
+        ->get();
+
+        if (!$existingChef->isEmpty() && $req->input('role') == 'chef') {
+            return redirect()->back()->with('error', 'Chef already exists in this branch');
+        }
+
+        $existingEmail = User::where('email', $req->input('email'))
+            ->where('id', '!=', $req->input('staffId'))
+            ->first();
+        if ($existingEmail) {
+            return redirect()->back()->with('error', 'Email already exists');
         }
 
         $auth = User::find($req->input('staffId'));
+
         if ($req->hasFile('updated_profile_picture')) {
-            $imageName = null;
             $existingImagePath = public_path('Images/UsersImages') . '/' . $auth->profile_picture;
-            File::delete($existingImagePath);
+            if (File::exists($existingImagePath)) {
+                File::delete($existingImagePath);
+            }
 
             $image = $req->file('updated_profile_picture');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
@@ -1056,15 +1076,19 @@ class ManagerController extends Controller
 
         $auth->name = $req->input('name');
         $auth->email = $req->input('email');
+        $auth->role = $req->input('role');
 
         if ($req->filled('password')) {
             $auth->password = Hash::make($req->input('password'));
         }
 
-        $auth->save();
-
-        return redirect()->back();
+        if ($auth->save()) {
+            return redirect()->back()->with('success', 'Staff updated successfully');
+        } else {
+            return redirect()->back()->with('error', 'Staff not updated');
+        }
     }
+
     public function deleteStaff($id)
     {
         if (!session()->has('branchManager')) {
@@ -1142,13 +1166,58 @@ class ManagerController extends Controller
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
         }
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $branch = Branch::find($branch_id);
-        if ($branch->DiningOption === 0) {
-            return redirect()->back()->with('warning' ,'The Dine-In option for this branch is disable, kindly contact with Tachyon.');
+        if ($branch->DiningOption == 0) {
+            return redirect()->back()->with('warning', 'The Dine-In option for this branch is disable, kindly contact with Tachyon.');
         }
-
         $dineInTables = DineInTable::where('branch_id', $branch_id)->get();
-        return view('Manager.Dine-In');
+        return view('Manager.Dine-In')->with(['dineInTables' => $dineInTables, 'ThemeSettings' => $settings]);
+    }
+
+    public function createTable(Request $request)
+    {
+
+        $branch_id = $request->input('branch_id');
+
+        $newTable = new DineInTable();
+
+        $newTable->table_number = $request->input('table_number');
+        $newTable->max_sitting_capacity = $request->input('table_max_capacity');
+        $newTable->table_status = 1;          //Available = 1, occupied = 0;
+        $newTable->branch_id = $branch_id;
+
+        if ($newTable->save()) {
+            return redirect()->back()->with('success', "Table added successfully");
+        } else {
+            return redirect()->back()->with('error', "Table not added");
+        }
+    }
+    public function updateTable(Request $request)
+    {
+        $table_id = $request->input('table_id');
+
+        $existingTable = DineInTable::find($table_id);
+
+        $existingTable->table_number = $request->input('table_number');
+        $existingTable->max_sitting_capacity = $request->input('table_max_capacity');
+
+        // $existingTable->table_status = 1;          //Available = 1, occupied = 0;
+
+        if ($existingTable->save()) {
+            return redirect()->back()->with('success', "Table updated successfully");
+        } else {
+            return redirect()->back()->with('error', "Table not updated");
+        }
+    }
+    public function deleteTable($table_id)
+    {
+        $existingTable = DineInTable::find($table_id);
+        if ($existingTable->delete()) {
+            return redirect()->back()->with('success', "Table updated successfully");
+        } else {
+            return redirect()->back()->with('error', "Table not updated");
+        }
     }
 
     /*
@@ -1159,6 +1228,7 @@ class ManagerController extends Controller
 
     public function viewSettingsPage($id, $branch_id)
     {
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $taxes = Tax::where('branch_id', $branch_id)->get();
         $discounts = Discount::where('branch_id', $branch_id)->get();
         $receipts = Branch::where('id', $branch_id)->first();
@@ -1177,7 +1247,8 @@ class ManagerController extends Controller
             'discountTypes' => $discountTypes,
             'settingsData' => $settingsData,
             'profile' => $profile,
-            'branchOptions' => $branchOptions
+            'branchOptions' => $branchOptions,
+            'ThemeSettings' => $settings
         ]);
     }
     public function createTax(Request $request)
@@ -1513,6 +1584,7 @@ class ManagerController extends Controller
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
         }
+        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
         $order = Order::where('branch_id', $branch_id)
             ->with('items')
             ->get();
@@ -1521,6 +1593,7 @@ class ManagerController extends Controller
         return view('Manager/Report')->with([
             'totalOrders' => $order,
             'salesman' => $user,
+            'ThemeSettings' => $settings,
             'dailyOrders' => null
         ]);
     }
@@ -1560,10 +1633,14 @@ class ManagerController extends Controller
                 return $order;
             });
 
+        // return view('Reports.ReportTable', ['dailyOrders' => $dailyOrders]);
         $html = view('Reports.ReportTable', ['dailyOrders' => $dailyOrders])->render();
         $dompdf = new Dompdf();
+
         $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
+        $width = 250 * 2.83465;
+        $height = 297 * 2.83465;
+        $dompdf->setPaper([0, 0, $width, $height], 'portrait');
         $dompdf->render();
 
         $output = $dompdf->output();
@@ -1829,6 +1906,7 @@ class ManagerController extends Controller
             ->with('items')
             ->get();
 
+        // return view('Reports.SoldProductsReportTable', ['dailySales' => $dailySales]);
         $html = view('Reports.SoldProductsReportTable', ['dailySales' => $dailySales])->render();
         $dompdf = new Dompdf();
         $dompdf->loadHtml($html);

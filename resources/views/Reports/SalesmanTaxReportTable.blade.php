@@ -69,6 +69,7 @@
                     @foreach ($salesmanTaxReport as $value)
                         @php
                             $time = $value->created_at->format('H:i:s');
+                            $salesmanName = $value->salesman->name
                         @endphp
                         <tr>
                             <td>{{ $value->order_number }}</td>
@@ -78,6 +79,12 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr style="font-weight:bold;">
+                        <td style="padding: 10px 0; width:125px"><strong>Report By &nbsp;&nbsp;&nbsp; : </strong></td>
+                        <td style="padding: 10px 0;">{{ $salesmanName }}</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>

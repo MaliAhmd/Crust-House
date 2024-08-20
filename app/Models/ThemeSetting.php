@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ThemeSetting extends Model
-{    public function User()
+{    public function branch()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Branch::class);
     }
 }
  

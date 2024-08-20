@@ -25,7 +25,7 @@
     }
 </style>
 @section('main')
-@include('Components.Loader')
+    @include('Components.Loader')
     <main id="dashboard">
 
         <div style="margin-top:1vw;" class="stat">
@@ -117,14 +117,14 @@
                             <td>
                                 <div style="display: flex; flex-direction:column;">
                                     @foreach ($branchCity as $city)
-                                        <p class="truncate-text" title="{{$city}}" >{{ $city }}</p>
+                                        <p class="truncate-text" title="{{ $city }}">{{ $city }}</p>
                                     @endforeach
                                 </div>
                             </td>
                             <td>
                                 <div style="display: flex; flex-direction:column;">
                                     @foreach ($branchName as $name)
-                                        <p class="truncate-text" title="{{$name}}">{{ $name }}</p>
+                                        <p class="truncate-text" title="{{ $name }}">{{ $name }}</p>
                                     @endforeach
                                 </div>
                             </td>
@@ -273,15 +273,25 @@
 
                 <div class="cities">
                     <label for="brancharea">Select City</label>
-                    <select name="branch_city" id="brancharea" required onchange="BranchCode(this.value, {{json_encode($branchData)}})">
+                    <select name="branch_city" id="brancharea" required
+                        onchange="BranchCode(this.value, {{ json_encode($branchData) }})">
                     </select>
                 </div>
 
             </div>
 
-            <div class="inputdivs">
-                <label for="companyName">Company Name</label>
-                <input type="text" name="company_name" id="companyName" placeholder="CrustHouse, Yums, etc" required>
+            <div style="display: flex; width: 85%;margin: 0.4vw auto;">
+                <div class="inputdivs" style="width: 49%;margin:0; margin-right:1vw;">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" name="company_name" id="companyName" placeholder="CrustHouse, Yums, etc"
+                        required>
+                </div>
+
+                <div class="inputdivs" style="width: 49%; margin:0;">
+                    <label for="branchInitial">Branch Initial</label>
+                    <input type="text" name="branch_initial" id="branchInitial"
+                        placeholder="Crust-House CH, Tahzeeb TB, etc" required>
+                </div>
             </div>
 
             <div style="display: flex; width: 85%;margin: 0.4vw auto;">
@@ -304,7 +314,8 @@
 
             <div class="inputdivs">
                 <label for="manager_Email">Branch Manager</label>
-                <input type="email" name="manager_email" id="manager_Email" placeholder="email@gmail.com" oninput="validateEmail()" required>
+                <input type="email" name="manager_email" id="manager_Email" placeholder="email@gmail.com"
+                    oninput="validateEmail()" required>
             </div>
             <div id="email-error-message" class="error-message" style="display: none;"></div>
             <div class="inputdivs">
@@ -356,7 +367,7 @@
             |---------------------------------------------------------------|
             |================== Edit new Branch Overlay ====================|
             |---------------------------------------------------------------|
-        --}}
+        --}} 
 
         <div id="editBranchOverlay"></div>
         <form id="editBranch" action="{{ route('updateBranches') }}" method="Post" enctype="multipart/form-data">
@@ -382,16 +393,24 @@
 
                 <div class="cities">
                     <label for="editbrancharea">Select City</label>
-                    <select name="branch_city" id="editbrancharea" onchange="BranchCode(this.value, {{json_encode($branchData)}})" required>
+                    <select name="branch_city" id="editbrancharea"
+                        onchange="BranchCode(this.value, {{ json_encode($branchData) }})" required>
                         <option value="" selected></option>
                     </select>
                 </div>
             </div>
+            <div style="display: flex; width: 85%;margin: 0.4vw auto;">
+                <div class="inputdivs" style="width: 49%;margin:0; margin-right:1vw;">
+                    <label for="editCompanyName">Company Name</label>
+                    <input type="text" name="company_name" id="editCompanyName" placeholder="CrustHouse, Yums, etc"
+                        required>
+                </div>
 
-            <div class="inputdivs">
-                <label for="companyName">Company Name</label>
-                <input type="text" name="company_name" id="editCompanyName" placeholder="CrustHouse, Yums, etc"
-                    required>
+                <div class="inputdivs" style="width: 49%; margin:0;">
+                    <label for="editBranchInitial">Branch Initial</label>
+                    <input type="text" name="branch_initial" id="editBranchInitial"
+                        placeholder="Crust-House CH, Tahzeeb TB, etc" required>
+                </div>
             </div>
 
             <div style="display: flex; width: 85%;margin: 0.4vw auto;">
@@ -414,7 +433,8 @@
             <input type="hidden" id="brnachManagerId" name="branch_manager_id">
             <div class="inputdivs">
                 <label for="manager_Email">Branch Manager</label>
-                <input type="email" name="manager_email" id="editManagerEmail" placeholder="email@gmail.com" oninput="validateEditEmail()" required>
+                <input type="email" name="manager_email" id="editManagerEmail" placeholder="email@gmail.com"
+                    oninput="validateEditEmail()" required>
             </div>
             <div id="edit-email-error-message" class="error-message" style="display: none;"></div>
             <div class="inputdivs">
@@ -472,7 +492,9 @@
         <div class="confirmDeletion" id="confirmDeletion">
             <h3 id="message-text">Are you sure you want to delete this Branch</h3>
             <div class="inputdivs">
-                <label style="margin-bottom:15px;" for="formRandomString">Enter this Code: <span style="font-family:consolas; background-color:#000; padding:5px; color:#fff;border-radius:7px; font-size:18px; letter-spacing:5px;" id="rndom"></span></label>
+                <label style="margin-bottom:15px;" for="formRandomString">Enter this Code: <span
+                        style="font-family:consolas; background-color:#000; padding:5px; color:#fff;border-radius:7px; font-size:18px; letter-spacing:5px;"
+                        id="rndom"></span></label>
                 <input type="text" id="formRandomString" name="random_string" autocomplete="off" required>
             </div>
             <div class="box-btns">
@@ -484,7 +506,7 @@
                     let enteredString = this.value.trim();
                     let randomString = document.getElementById("rndom").textContent;
                     let deleteButton = document.getElementById("confirm");
-                                                        
+
                     if (enteredString === randomString) {
                         deleteButton.disabled = false;
                         deleteButton.style.background = '#b52828';
@@ -496,6 +518,53 @@
                 });
             </script>
         </div>
+
+        {{--   
+            |---------------------------------------------------------------|
+            |===================== Confirm deletion ========================|
+            |---------------------------------------------------------------|
+        --}}
+        <div id="editOwnerProfileOverlay"></div>
+        <form id="editOwnerProfile" action="{{ route('UpdateOwnerProfile')}}" method="Post" enctype="multipart/form-data">
+            @csrf
+            <h3>Edit Owner Profile</h3>
+            <hr> 
+
+            <input type="hidden" name="owner_id" id="owner_id">
+
+            <div class="inputdivs">
+                <label for="upload-file" class="choose-file-btn">
+                    <span>Choose File</span>
+                    <input type="file" id="upload-file" name="profile_picture" accept=".jpg,.jpeg,.png">
+                    <p id="filename"></p>
+                </label>
+            </div>
+
+            <div class="inputdivs">
+                <label for="full_name">Full Name</label>
+                <input type="text" name="name" id="full_name" placeholder="Full name" required>
+            </div>
+
+            <div class="inputdivs">
+                <label for="owner_email">Email Address</label>
+                <input type="email" name="owner_email" id="owner_email" placeholder="email@gmail.com"
+                    oninput="validateOwnerEmail()" required>
+            </div>
+            <div id="edit-error-message" class="error-message" style="display: none;"></div>
+            <div class="inputdivs">
+                <label for="password">Password</label>
+                <div class="passwordField">
+                    <input type="password" id="ownerPassword" name="password" oninput="validatePassword()" placeholder="Password">
+                    <i class='bx bxs-show' onclick="showAndHideOwnerPswd()"></i>
+                </div>
+            </div>
+            <div id="password-error-message" class="error-message" style="display: none;"></div>
+
+            <div class="btns">
+                <button type="button" id="editOwnerCancel" onclick="closeUpdateProfile()">Cancel</button>
+                <input type="submit" id="updateOwner-btn" value="Update Profile">
+            </div>
+        </form>
 
     </main>
 
@@ -1497,6 +1566,20 @@
             POPUP.style.display = 'none';
         }
 
+        function updateProfile(owner) {
+            document.getElementById('editOwnerProfileOverlay').style.display = 'block';
+            document.getElementById('editOwnerProfile').style.display = 'flex';
+            document.getElementById('owner_id').value = owner.id;
+            document.getElementById('full_name').value = owner.name;
+            document.getElementById('owner_email').value = owner.email;
+
+        }
+
+        function closeUpdateProfile() {
+            document.getElementById('editOwnerProfileOverlay').style.display = 'none';
+            document.getElementById('editOwnerProfile').style.display = 'none';
+        }
+
         function editBranch(Branches, branch_id) {
             const OVERLAY = document.getElementById('editBranchOverlay');
             const POPUP = document.getElementById('editBranch');
@@ -1507,6 +1590,7 @@
                     updateCityOptions('editbranchstate', 'editbrancharea');
                     document.getElementById('editbrancharea').value = Branch.branch_city;
                     document.getElementById('editCompanyName').value = Branch.company_name;
+                    document.getElementById('editBranchInitial').value = Branch.branch_initials;
                     document.getElementById('editBranchName').value = Branch.branch_name;
                     document.getElementById('editBranchCode').value = Branch.branch_code;
                     document.getElementById('editaddress').value = Branch.branch_address;
@@ -1538,10 +1622,10 @@
             confirmDeletionOverlay.style.display = 'block';
             confirmDeletionPopup.style.display = 'flex';
             let deleteButton = document.getElementById("confirm");
-             deleteButton.disabled = true;
-             deleteButton.style.background = '#ed7680';
-             
-             rndom.textContent = Math.random().toString(36).slice(2, 6).toUpperCase();
+            deleteButton.disabled = true;
+            deleteButton.style.background = '#ed7680';
+
+            rndom.textContent = Math.random().toString(36).slice(2, 6).toUpperCase();
 
             let confirmButton = document.getElementById('confirm');
             confirmButton.onclick = function() {
@@ -1558,7 +1642,7 @@
             let confirmDeletionPopup = document.getElementById('confirmDeletion');
             confirmDeletionOverlay.style.display = 'none';
             confirmDeletionPopup.style.display = 'none';
-            document.getElementById('formRandomString').value='';
+            document.getElementById('formRandomString').value = '';
         }
 
         function updateCityOptions(stateId, cityId) {
@@ -1590,8 +1674,17 @@
                 pswd.type = 'password';
             }
         }
+        
+        function showAndHideOwnerPswd() {
+            let pswd = document.getElementById('ownerPassword');
+            if (pswd.type === 'password') {
+                pswd.type = 'text';
+            } else {
+                pswd.type = 'password';
+            }
+        }
 
-         function BranchCode(value, branchData) {
+        function BranchCode(value, branchData) {
             let cityInitials;
             statesWithCitiesAndInitials.forEach(state => {
                 state.cities.forEach(city => {
@@ -1609,14 +1702,14 @@
             let branch_Code = `${cityInitials}-${codeNumber}`;
             branchData.forEach(branch => {
                 if (branch.branch_code == branch_Code) {
-                   BranchCode(value, branchData);
-                }else{
+                    BranchCode(value, branchData);
+                } else {
                     document.getElementById('branchcode').value = branch_Code;
                     document.getElementById('editBranchCode').value = branch_Code;
                 }
             })
         }
-        
+
 
         function GeneratePassword() {
             let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()~`{}[];:.,></?\|";
@@ -1636,8 +1729,8 @@
             text = document.execCommand('copy');
             alert('Password copied to clipboard!', text);
         }
-        
-        function showLoader(route){
+
+        function showLoader(route) {
             document.getElementById('loaderOverlay').style.display = 'block';
             document.getElementById('loader').style.display = 'flex';
             window.location.href = route;
@@ -1647,7 +1740,7 @@
             let email = document.getElementById("manager_Email").value.trim();
             let emailErrorMessage = document.getElementById('email-error-message');
             let submitBtn = document.getElementById('submit-btn');
-            if(email == ''){
+            if (email == '') {
                 emailErrorMessage.style.display = 'none';
                 return;
             }
@@ -1675,7 +1768,7 @@
             let email = document.getElementById("editManagerEmail").value.trim();
             let emailErrorMessage = document.getElementById('edit-email-error-message');
             let submitBtn = document.getElementById('update-btn');
-            if(email == ''){
+            if (email == '') {
                 emailErrorMessage.style.display = 'none';
                 return;
             }
@@ -1699,5 +1792,53 @@
             submitBtn.style.backgroundColor = '#008fd3';
         }
 
+        function validateOwnerEmail() {
+            let email = document.getElementById("owner_email").value.trim();
+            let emailErrorMessage = document.getElementById('edit-error-message');
+            let submitBtn = document.getElementById('updateOwner-btn');
+            if (email == '') {
+                emailErrorMessage.style.display = 'none';
+                return;
+            }
+            if (!email.endsWith(".com")) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email must end with '.com'.";
+                submitBtn.disabled = true;
+                submitBtn.style.cursor ='not-allowed';
+                return;
+            }
+            var invalidChars = /[*\/=]/;
+            if (invalidChars.test(email)) {
+                emailErrorMessage.style.display = 'block';
+                emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";
+                submitBtn.disabled = true;
+                return;
+            }
+            submitBtn.style.cursor ='pointer';
+            submitBtn.disabled = false;
+            emailErrorMessage.style.display = 'none';
+        }
+
+        function validatePassword() {
+            let password = document.getElementById('ownerPassword').value;
+            let message = document.getElementById('password-error-message');
+
+            if (password.length < 8) {
+                message.textContent = "Password must be at least 8 characters long!";
+                message.style.display = 'block';
+            }else {
+                message.textContent = "Valid Password";
+                message.style.color = '#146c43';
+                setTimeout(() => {
+                    message.style.display = 'none';
+                }, 1000);
+            }
+        }
+        const uploadFile = document.getElementById('upload-file');
+        const filenameSpanNew = document.getElementById('filename');
+        uploadFile.addEventListener('change', function(e) {
+            const fileName = this.value.split('\\').pop();
+            filenameSpanNew.textContent = fileName ? fileName : 'No file chosen';
+        });
     </script>
 @endsection

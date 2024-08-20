@@ -22,7 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 
-class SalesmanController extends Controller
+class SalesmanController extends Controller 
 {
     public function viewSalesmanDashboard($id, $branch_id)
     {
@@ -30,12 +30,14 @@ class SalesmanController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
+        $settings = ThemeSetting::where('branch_id', $branch_id)->with(['branch.users'])->first();
         $products = Product::where('branch_id', $branch_id)->get();
         $categories = Category::where('branch_id', $branch_id)->get();
         $branch = Branch::find($branch_id);
         $discounts = Discount::where('branch_id', $branch_id)->get();
         $taxes = Tax::where('branch_id', $branch_id)->get();
         $payment_methods = PaymentMethod::where('branch_id', $branch_id)->get();
+        $allOrders = Order::with(['salesman','items'])->where('branch_id', $branch_id)->where('salesman_id', $id)->get();
 
         $deals = Handler::where(function ($query) use ($branch_id) {
             $query->whereHas('product', function ($query) use ($branch_id) {
@@ -55,8 +57,12 @@ class SalesmanController extends Controller
 
         $cartproducts = Cart::where('salesman_id', $id)->get();
 
-        $filteredCategories = $categories->reject(function ($category) {
-            return $category->categoryName === 'Addons';
+        // $filteredCategories = $categories->reject(function ($category) {
+        //     return $category->categoryName === 'Addons';
+        // });
+
+        $filteredCategories = $categories->filter(function ($category) use ($products) {
+            return $products->contains('category_id', $category->id) && $category->categoryName !== 'Addons';
         });
 
         $filteredProducts = $products->reject(function ($product) {
@@ -68,13 +74,15 @@ class SalesmanController extends Controller
             'Deals' => $deals,
             'Categories' => $filteredCategories,
             'AllProducts' => $products,
-            'id' => $id,
+            'staff_id' => $id,
             'branch_id' => $branch_id,
             'cartProducts' => $cartproducts,
             'taxes' => $taxes,
             'discounts' => $discounts,
             'payment_methods' => $payment_methods,
-            'branch_data' => $branch
+            'branch_data' => $branch,
+            'orders' => $allOrders,
+            'ThemeSettings' => $settings
         ]);
     }
     public function salesmanCategoryDashboard($categoryName, $id, $branch_id)
@@ -83,6 +91,7 @@ class SalesmanController extends Controller
             return redirect()->route('viewLoginPage');
         }
 
+        $settings = ThemeSetting::where('branch_id', $branch_id)->with(['branch.users'])->first();
         $allProducts = Product::where('branch_id', $branch_id)->get();
         $categories = Category::where('branch_id', $branch_id)->get();
 
@@ -92,9 +101,14 @@ class SalesmanController extends Controller
         $discounts = Discount::where('branch_id', $branch_id)->get();
         $taxes = Tax::where('branch_id', $branch_id)->get();
         $payment_methods = PaymentMethod::where('branch_id', $branch_id)->get();
+        $allOrders = Order::with(['salesman','items'])->where('branch_id', $branch_id)->where('salesman_id', $id)->get();
 
-        $filteredCategories = $categories->reject(function ($category) {
-            return $category->categoryName === 'Addons';
+        // $filteredCategories = $categories->reject(function ($category) {
+        //     return $category->categoryName === 'Addons';
+        // });
+
+        $filteredCategories = $categories->filter(function ($category) use ($allProducts) {
+            return $allProducts->contains('category_id', $category->id) && $category->categoryName !== 'Addons';
         });
         $deals = $this->deals($branch_id);
 
@@ -106,13 +120,15 @@ class SalesmanController extends Controller
                     'Deals' => $deals,
                     'Categories' => $filteredCategories,
                     'AllProducts' => $allProducts,
-                    'id' => $id,
+                    'staff_id' => $id,
                     'branch_id' => $branch_id,
                     'cartProducts' => $cartproducts,
                     'taxes' => $taxes,
                     'discounts' => $discounts,
                     'payment_methods' => $payment_methods,
-                    'branch_data' => $branch
+                    'branch_data' => $branch,
+                    'orders' => $allOrders,
+                    'ThemeSettings' => $settings
                 ]);
             } else {
                 $products = Product::where('category_name', $categoryName)->get();
@@ -121,13 +137,15 @@ class SalesmanController extends Controller
                     'Deals' => $deals,
                     'Categories' => $filteredCategories,
                     'AllProducts' => $allProducts,
-                    'id' => $id,
+                    'staff_id' => $id,
                     'branch_id' => $branch_id,
                     'cartProducts' => $cartproducts,
                     'taxes' => $taxes,
                     'discounts' => $discounts,
                     'payment_methods' => $payment_methods,
-                    'branch_data' => $branch
+                    'branch_data' => $branch,
+                    'orders' => $allOrders,
+                    'ThemeSettings' => $settings
                 ]);
             }
         }
@@ -159,13 +177,14 @@ class SalesmanController extends Controller
             return redirect()->route('viewLoginPage');
         }
         $newOrderNumber = 0;
-
-        $lastOrder = Order::orderBy('id', 'desc')->first();
+        $user = User::with('branch')->find($salesman_id);
+        $branch_initials = $user->branch->branch_initials;
+        $lastOrder = Order::where('branch_id', $user->branch_id)->orderBy('id', 'desc')->first();
         if ($lastOrder) {
             $lastOrderNumber = intval(substr($lastOrder->order_number, 3));
-            $newOrderNumber = 'CH-' . sprintf('%03d', ($lastOrderNumber + 1));
+            $newOrderNumber = $branch_initials .'-' . sprintf('%03d', $lastOrderNumber + 1);
         } else {
-            $newOrderNumber = 'CH-100';
+            $newOrderNumber = "$branch_initials-100";
         }
 
         $order = new Order();
@@ -221,7 +240,7 @@ class SalesmanController extends Controller
                 $totalBill = $totalBill - $discount;
             }
             $totalBill += $request->input('totaltaxes');
-            $order->total_bill = 'Rs. ' . $totalBill;
+            $order->total_bill = 'Rs. ' . $totalBill; 
             $order->save();
 
             $this->deductStock($order->id);

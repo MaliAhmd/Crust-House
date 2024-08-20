@@ -1,5 +1,11 @@
 @extends('Components.Manager')
-@section('title', 'Crust - House | Manager - Deals')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let branchName = document.getElementById('branch_name').value;
+        let titleElement = document.getElementById('dynamic-title');
+        titleElement.textContent = branchName + ' | Manager - Deal';
+    });
+</script>
 @push('styles')
     <link rel="stylesheet" href="{{ asset('CSS/Manager/deal.css') }}">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
@@ -47,7 +53,7 @@
                 {{ session('error') }}
             </div>
             <script>
-              setTimeout(() => {
+                setTimeout(() => {
                     document.getElementById('error').classList.add('alert-hide');
                 }, 2000);
 
@@ -128,64 +134,70 @@
 
             <div class="inputdivs">
                 <label for="upload-file" class="choose-file-btn">
-                    <span>Choose File <br> <span style="color: #b11d1d; margin:0;padding:0;">(Max = 1MB, Ratio = 3:2)*</span></span>
+                    <span>Choose File <br> <span style="color: #b11d1d; margin:0;padding:0;">(Max = 1MB, Ratio =
+                            3:2)*</span></span>
                     <input type="file" id="upload-file" name="dealImage" accept=".jpg,.jpeg,.png" required>
                     <p id="filename"></p>
                 </label>
             </div>
             <script>
                 function getDominantColor(imageData) {
-                    const { data, width, height } = imageData;
+                    const {
+                        data,
+                        width,
+                        height
+                    } = imageData;
                     const colorCounts = {};
                     let maxCount = 0;
                     let dominantColor = '#ffffff';
-            
+
                     for (let i = 0; i < data.length; i += 4) {
                         const r = data[i];
                         const g = data[i + 1];
                         const b = data[i + 2];
                         const alpha = data[i + 3];
-                        
+
                         if (alpha === 0) continue; // Skip transparent pixels
-                        
+
                         const color = `rgb(${r},${g},${b})`;
                         colorCounts[color] = (colorCounts[color] || 0) + 1;
-                        
+
                         if (colorCounts[color] > maxCount) {
                             maxCount = colorCounts[color];
                             dominantColor = color;
                         }
                     }
-            
+
                     return dominantColor;
                 }
-            
+
                 document.getElementById('upload-file').addEventListener('change', function() {
                     const fileInput = this;
                     const maxSizeInBytes = 1 * 1024 * 1024; // 1MB
                     const targetRatio = 3 / 2;
-            
+
                     if (fileInput.files.length > 0) {
                         const file = fileInput.files[0];
-            
+
                         if (file.size > maxSizeInBytes) {
                             alert('File size exceeds the limit of 1MB. Please choose a smaller file.');
                             fileInput.value = '';
                             document.getElementById('filename').textContent = '';
                             return;
                         }
-            
+
                         const img = new Image();
                         img.src = URL.createObjectURL(file);
-            
+
                         img.onload = function() {
                             const imgWidth = img.width;
                             const imgHeight = img.height;
                             const imgRatio = imgWidth / imgHeight;
-            
+
                             let canvasWidth, canvasHeight;
-                            let offsetX = 0, offsetY = 0;
-            
+                            let offsetX = 0,
+                                offsetY = 0;
+
                             if (imgRatio > targetRatio) {
                                 // Image is wider than the target ratio, add padding to the top and bottom
                                 canvasWidth = imgWidth;
@@ -201,42 +213,44 @@
                                 canvasWidth = imgWidth;
                                 canvasHeight = imgHeight;
                             }
-            
+
                             const canvas = document.createElement('canvas');
                             const tempCanvas = document.createElement('canvas');
                             const ctx = canvas.getContext('2d');
                             const tempCtx = tempCanvas.getContext('2d');
-            
+
                             canvas.width = canvasWidth;
                             canvas.height = canvasHeight;
-            
+
                             tempCanvas.width = imgWidth;
                             tempCanvas.height = imgHeight;
-            
+
                             // Draw the image on a temporary canvas to get image data
                             tempCtx.drawImage(img, 0, 0);
                             const imageData = tempCtx.getImageData(0, 0, imgWidth, imgHeight);
                             const dominantColor = getDominantColor(imageData);
-            
+
                             // Fill the canvas with the dominant color
                             ctx.fillStyle = dominantColor;
                             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-            
+
                             // Draw the image in the center of the canvas
                             ctx.drawImage(img, offsetX, offsetY, imgWidth, imgHeight);
-            
+
                             canvas.toBlob(function(blob) {
-                                const paddedFile = new File([blob], file.name, { type: file.type });
+                                const paddedFile = new File([blob], file.name, {
+                                    type: file.type
+                                });
                                 const dataTransfer = new DataTransfer();
                                 dataTransfer.items.add(paddedFile);
-            
+
                                 // Replace the file input files with the new padded file
                                 fileInput.files = dataTransfer.files;
-            
+
                                 document.getElementById('filename').textContent = paddedFile.name;
                             }, file.type);
                         };
-            
+
                         img.onerror = function() {
                             alert('Failed to load the image. Please try another file.');
                             fileInput.value = '';
@@ -306,64 +320,70 @@
 
                 <div class="inputdivs">
                     <label for="upload-update-file" class="choose-file-btn">
-                        <span>Choose File <br><span style="color: #b11d1d; margin:0;padding:0;">(Max = 1MB, Ratio = 3:2)*</span> </span>
+                        <span>Choose File <br><span style="color: #b11d1d; margin:0;padding:0;">(Max = 1MB, Ratio =
+                                3:2)*</span> </span>
                         <input type="file" id="upload-update-file" name="dealImage" accept=".jpg,.jpeg,.png">
                         <p id="namefile"></p>
                     </label>
                 </div>
                 <script>
                     function getDominantColor(imageData) {
-                        const { data, width, height } = imageData;
+                        const {
+                            data,
+                            width,
+                            height
+                        } = imageData;
                         const colorCounts = {};
                         let maxCount = 0;
                         let dominantColor = '#ffffff';
-                
+
                         for (let i = 0; i < data.length; i += 4) {
                             const r = data[i];
                             const g = data[i + 1];
                             const b = data[i + 2];
                             const alpha = data[i + 3];
-                            
+
                             if (alpha === 0) continue; // Skip transparent pixels
-                            
+
                             const color = `rgb(${r},${g},${b})`;
                             colorCounts[color] = (colorCounts[color] || 0) + 1;
-                            
+
                             if (colorCounts[color] > maxCount) {
                                 maxCount = colorCounts[color];
                                 dominantColor = color;
                             }
                         }
-                
+
                         return dominantColor;
                     }
-                
+
                     document.getElementById('upload-update-file').addEventListener('change', function() {
                         const fileInput = this;
                         const maxSizeInBytes = 1 * 1024 * 1024; // 1MB
                         const targetRatio = 3 / 2;
-                
+
                         if (fileInput.files.length > 0) {
                             const file = fileInput.files[0];
-                
+
                             if (file.size > maxSizeInBytes) {
                                 alert('File size exceeds the limit of 1MB. Please choose a smaller file.');
                                 fileInput.value = '';
                                 document.getElementById('filename').textContent = '';
                                 return;
                             }
-                
+
                             const img = new Image();
                             img.src = URL.createObjectURL(file);
-                
+
                             img.onload = function() {
                                 const imgWidth = img.width;
                                 const imgHeight = img.height;
                                 const imgRatio = imgWidth / imgHeight;
-                
+
                                 let canvasWidth, canvasHeight;
-                                let offsetX = 0, offsetY = 0;
-                
+                                let offsetX = 0,
+                                    offsetY = 0;
+
                                 if (imgRatio > targetRatio) {
                                     // Image is wider than the target ratio, add padding to the top and bottom
                                     canvasWidth = imgWidth;
@@ -379,42 +399,44 @@
                                     canvasWidth = imgWidth;
                                     canvasHeight = imgHeight;
                                 }
-                
+
                                 const canvas = document.createElement('canvas');
                                 const tempCanvas = document.createElement('canvas');
                                 const ctx = canvas.getContext('2d');
                                 const tempCtx = tempCanvas.getContext('2d');
-                
+
                                 canvas.width = canvasWidth;
                                 canvas.height = canvasHeight;
-                
+
                                 tempCanvas.width = imgWidth;
                                 tempCanvas.height = imgHeight;
-                
+
                                 // Draw the image on a temporary canvas to get image data
                                 tempCtx.drawImage(img, 0, 0);
                                 const imageData = tempCtx.getImageData(0, 0, imgWidth, imgHeight);
                                 const dominantColor = getDominantColor(imageData);
-                
+
                                 // Fill the canvas with the dominant color
                                 ctx.fillStyle = dominantColor;
                                 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-                
+
                                 // Draw the image in the center of the canvas
                                 ctx.drawImage(img, offsetX, offsetY, imgWidth, imgHeight);
-                
+
                                 canvas.toBlob(function(blob) {
-                                    const paddedFile = new File([blob], file.name, { type: file.type });
+                                    const paddedFile = new File([blob], file.name, {
+                                        type: file.type
+                                    });
                                     const dataTransfer = new DataTransfer();
                                     dataTransfer.items.add(paddedFile);
-                
+
                                     // Replace the file input files with the new padded file
                                     fileInput.files = dataTransfer.files;
-                
+
                                     document.getElementById('filename').textContent = paddedFile.name;
                                 }, file.type);
                             };
-                
+
                             img.onerror = function() {
                                 alert('Failed to load the image. Please try another file.');
                                 fileInput.value = '';
@@ -594,7 +616,7 @@
             tbody.innerHTML = '';
             dealProducts.forEach(product => {
 
-                if (Deal.id === product.deal_id) {
+                if (Deal.id == product.deal_id) {
                     console.log(product);
                     let newRow = document.createElement('tr');
                     newRow.setAttribute('id', 'body-row');
