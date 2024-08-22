@@ -1751,7 +1751,7 @@
                 submitBtn.style.backgroundColor = '#034a6c';
                 return;
             }
-            var invalidChars = /[*\/=]/;
+            var invalidChars = /[\*\/=\-+]/;
             if (invalidChars.test(email)) {
                 emailErrorMessage.style.display = 'block';
                 emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";
@@ -1779,7 +1779,7 @@
                 submitBtn.style.backgroundColor = '#034a6c';
                 return;
             }
-            var invalidChars = /[*\/=]/;
+            var invalidChars =/[\*\/=\-+]/;
             if (invalidChars.test(email)) {
                 emailErrorMessage.style.display = 'block';
                 emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";
@@ -1807,7 +1807,7 @@
                 submitBtn.style.cursor ='not-allowed';
                 return;
             }
-            var invalidChars = /[*\/=]/;
+            var invalidChars = /[\*\/=\-+]/;
             if (invalidChars.test(email)) {
                 emailErrorMessage.style.display = 'block';
                 emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";

@@ -17,7 +17,7 @@
     .dataTables_info {
         margin: 0.5vw 6.2vw !important;
         font-size: 0.8rem !important;
-    }
+    } 
 
     #stocksTable_next,
     #stocksTable_previous,
@@ -124,13 +124,13 @@
             </div>
 
             <div class="inputdivs unitdivs">
-                <div class="stockquantity">
+                <div class="stockquantity" style="width:75%;">
                     <label for="quantity">Stock Quantity</label>
                     <input type="number" id="quantity" name="stockQuantity" min="1" placeholder="Stock Quantity"
                         step="any" required>
                 </div>
 
-                <div class="unitselection">
+                <div class="unitselection"  style="width:25%;">
                     <label for="stockunit">Unit</label>
                     <select name="unit1" id="stockunit" required>
                         <option value="" selected disabled>Select unit</option>
@@ -149,13 +149,13 @@
             </div>
 
             <div class="inputdivs unitdivs">
-                <div class="stockquantity">
+                <div class="stockquantity" style="width:75%;">
                     <label for="minquantity">Minimum Stock Quantity</label>
                     <input type="number" id="minquantity" name="minStockQuantity" min="1"
                         placeholder="Minimum Stock Quantity" step="any" required>
                 </div>
 
-                <div class="unitselection">
+                <div class="unitselection" style="width:25%;">
                     <label for="minStockUnit">Unit</label>
                     <select name="unit2" id="minStockUnit" required>
                         <option value="" selected disabled>Select unit</option>
@@ -199,13 +199,13 @@
                 <input type="text" id="iName" name="itemName" required>
             </div>
 
-            <div class="inputdivs unitdivs">
-                <div class="stockquantity">
+            <div class="inputdivs unitdivs" >
+                <div class="stockquantity" style="width:75%;">
                     <label for="iQuantity">Stock Quantity</label>
                     <input type="number" id="iQuantity" name="stockQuantity" step="any" min="1" required>
                 </div>
 
-                <div class="unitselection">
+                <div class="unitselection" style="width:25%;">
                     <label for="iQUnit">Unit</label>
                     <select name="unit1" id="iQUnit" required>
                         <option value="" selected disabled>Select unit</option>
@@ -224,13 +224,13 @@
             </div>
 
             <div class="inputdivs unitdivs">
-                <div class="stockquantity">
+                <div class="stockquantity" style="width:75%;">
                     <label for="mQuantity">Minimum Stock Quantity</label>
                     <input type="number" id="mQuantity" name="minStockQuantity" step="any" min="1"
                         required>
                 </div>
 
-                <div class="unitselection">
+                <div class="unitselection" style="width:25%;">
                     <label for="mQUnit">Unit</label>
                     <select name="unit2" id="mQUnit" required>
                         <option value="" selected disabled>Select unit</option>

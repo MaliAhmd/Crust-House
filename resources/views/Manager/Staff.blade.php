@@ -444,7 +444,7 @@
                 submitBtn.style.backgroundColor = '#c19b32';
                 return;
             }
-            var invalidChars = /[*\/=]/;
+            var invalidChars = /[\*\/=\-+]/;
             if (invalidChars.test(email)) {
                 emailErrorMessage.style.display = 'block';
                 emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";
@@ -472,7 +472,7 @@
                 submitBtn.style.backgroundColor = '#c19b32';
                 return;
             }
-            var invalidChars = /[*\/=]/;
+            var invalidChars = /[\*\/=\-+]/;
             if (invalidChars.test(email)) {
                 emailErrorMessage.style.display = 'block';
                 emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";

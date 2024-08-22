@@ -70,7 +70,7 @@
             $allProducts = $AllProducts;
             $staff_id = $staff_id;
             $branch_id = $branch_id;
-            $cartProducts = $cartProducts;
+            $cartProducts = $cartProducts; 
             $totalbill = 0;
             $taxes = $taxes;
             $discounts = $discounts;
@@ -380,10 +380,9 @@
                             <div id="TablesList" class="tablesList">
                                 <label for="tables_list">Select Table Number</label>
                                 <select name="table_number" id="tables_list">
-                                    <option value="1">1 - 4 Chairs</option>
-                                    <option value="2">2 - 4 Chairs</option>
-                                    <option value="3">3 - 6 Chairs</option>
-                                    <option value="4">4 - 8 Chairs</option>
+                                    @foreach ($dineInTables as $table)
+                                        <option value="{{$table->table_number}}">{{$table->table_number}}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

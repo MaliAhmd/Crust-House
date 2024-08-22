@@ -32,7 +32,7 @@
                 {{ session('error') }}
             </div>
             <script>
-              setTimeout(() => {
+                setTimeout(() => {
                     document.getElementById('error').classList.add('alert-hide');
                 }, 2000);
 
@@ -41,10 +41,10 @@
                 }, 3000);
             </script>
         @endif
+
         @php
             $recipes = $recipes;
             $categories = $categories;
-            $products = $categoryProducts;
             $Stocks = $stocks;
             $category_id;
             $branch_id = $branch_id;
@@ -69,7 +69,7 @@
             @endforeach
         </div>
 
-        @if ($categoryProducts)
+        @if (session('categoryProducts'))
             <div id="categoryProductOverlay" style="display: block;"></div>
             <div id="categoryProducts" style="display: flex;">
                 <div class="table">
@@ -83,7 +83,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($categoryProducts as $product)
+                            @php
+                                $category_products = session('categoryProducts');
+                            @endphp
+                            @foreach ($category_products as $product)
                                 <tr>
                                     <td>{{ $product->category_name }}</td>
                                     <td>{{ $product->productName }}</td>
@@ -95,7 +98,7 @@
                                         </a>
                                         <a
                                             href="{{ route('viewProductRecipe', [$product->category_id, $product->id, $user_id, $branch_id]) }}"><i
-                                                onclick="showProductRecipe()" class="bx bx-show"></i>
+                                                class="bx bx-show"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -107,54 +110,50 @@
                 <div class="btns">
                     <a href="{{ route('viewRecipePage', [$user_id, $branch_id]) }}"><button type="button"
                             onclick="closeProductCategory()">Close</button></a>
-                    <button id="showproductRecipebutton" onclick="showProductRecipe()"style="display: none;"
-                        type="button"></button>
                 </div>
 
             </div>
         @endif
 
-        @if (session('showproductRecipe'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    document.getElementById('showproductRecipebutton').click();
-                });
-            </script>
-        @endif
-
-        <div id="productRecipeOverlay"></div>
-        <div id="productRecipe">
-            <p id="productRecipeitems"></p>
-            <div class="table">
-                <table id="recipeTable">
-                    <thead>
-                        <tr>
-                            <th>Recipe Item</th>
-                            <th>Quantity</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($recipes as $recipe)
+        @if (session('productRecipe'))
+            <div id="productRecipeOverlay" style="display: block;"></div>
+            <div id="productRecipe" style="display: flex;">
+                <p id="productRecipeitems"></p>
+                <div class="table">
+                    <table id="recipeTable">
+                        <thead>
                             <tr>
-                                <td>{{ $recipe->stock->itemName }}</td>
-                                <td>{{ $recipe->quantity }}</td>
-                                <td>
-                                    <a
-                                        href="{{ route('deleteStockFromRecipe', [$recipe->id, $recipe->category_id, $recipe->product_id]) }}">
-                                        <i class='bx bxs-trash-alt'></i>
-                                    </a>
-                                </td>
+                                <th>Recipe Item</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @php
+                                $productRecipe = session('productRecipe');
+                            @endphp
+                            @foreach ($productRecipe as $recipe)
+                                <tr>
+                                    <td>{{ $recipe->stock->itemName }}</td>
+                                    <td>{{ $recipe->quantity }}</td>
+                                    <td>
+                                        <a
+                                            href="{{ route('deleteStockFromRecipe', [$recipe->id, $recipe->category_id, $recipe->product_id]) }}">
+                                            <i class='bx bxs-trash-alt'></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="btns">
+                    <button type="button"
+                        onclick="closeProductRecipe('{{ route('showCategoryProducts', [$productRecipe->category_id, $branch_id, $user_id]) }}')">
+                        Close</button>
+                </div>
             </div>
-            <div class="btns">
-                <button type="button" onclick="closeProductRecipe()">
-                    Close</button>
-            </div>
-        </div>
+        @endif
 
         <div id="recipeOverlay"></div>
         <div class="recipePopup" id="recipePopup">
@@ -284,20 +283,22 @@
 
         }
 
-        function showProductRecipe() {
-            const overlay = document.getElementById('productRecipeOverlay');
-            const popup = document.getElementById('productRecipe');
+        // function showProductRecipe() {
+        //     const overlay = document.getElementById('productRecipeOverlay');
+        //     const popup = document.getElementById('productRecipe');
 
-            overlay.style.display = 'block';
-            popup.style.display = 'flex';
-        }
+        //     overlay.style.display = 'block';
+        //     popup.style.display = 'flex';
+        // }
 
-        function closeProductRecipe() {
+        function closeProductRecipe(route) {
             let overlay = document.getElementById('productRecipeOverlay');
             let popup = document.getElementById('productRecipe');
 
             overlay.style.display = 'none';
             popup.style.display = 'none';
+
+            window.location.href = route;
         }
 
         function addRecipe(product, recipes, stocks) {

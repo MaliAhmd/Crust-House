@@ -51,9 +51,9 @@
                 <div id="password-error-message" class="error-message" style="display: none;"></div>
             </div>
 
-            {{-- <div class="fgtpswd">
-                <a href="{{ route('viewLoginPage') }}">Already have an account</a>
-            </div> --}}
+            <div class="fgtpswd">
+                <a href="{{ route('viewLoginPage') }}">Already have an account?</a>
+            </div>
 
             <div class="btn">
                 <input id="submit-btn" type="submit" value="Register">
@@ -74,7 +74,7 @@
                 submitBtn.style.backgroundColor = '#c19b32';
                 return;
             }
-            var invalidChars = /[*\/=]/;
+            var invalidChars = /[\*\/=\-+]/;
             if (invalidChars.test(email)) {
                 emailErrorMessage.style.display = 'block';
                 emailErrorMessage.textContent = "Email contains invalid characters like *, /, =.";

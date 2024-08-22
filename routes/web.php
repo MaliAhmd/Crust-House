@@ -3,11 +3,12 @@
 use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KitchenController;
+use App\Http\Controllers\OnlineOrdersController;
 use App\Http\Controllers\OwnerController;
 use App\Http\Controllers\SalesmanController;
 use Illuminate\Support\Facades\Route;
 
-/* 
+/*
 |---------------------------------------------------------------|
 |=======================Tachyon's Routes =======================|
 |---------------------------------------------------------------|
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('index');
 })->name('welcome');
+
+Route::get('/online', [OnlineOrdersController::class, 'viewOnlinePage'])->name('onlineOrderPage');
+
+Route::get('viewOnlineProducts/{locationData}', [OnlineOrdersController::class, 'viewOnlineProducts'])->name('viewOnlineProducts');
 
 Route::get('/login',[AuthController::class, 'loginIndex'])->name('viewLoginPage');
 Route::get('/viewRegisterPage',[AuthController::class, 'registrationIndex'])->name('viewRegisterPage');

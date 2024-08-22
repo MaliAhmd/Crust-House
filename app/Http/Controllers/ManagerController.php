@@ -125,17 +125,17 @@ class ManagerController extends Controller
     }
     public function createCategory(Request $request)
     {
-
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
         }
 
         $categories = Category::all();
         foreach ($categories as $category) {
-            if ($category->categoryName == $request->categoryName) {
-                return redirect()->back()->with('error', 'Category already exist.');
+        if (strtolower($category->categoryName) == strtolower($request->categoryName)) {
+            return redirect()->back()->with('error', 'Category already exists.');
             }
         }
+
 
         if ($request->hasFile('CategoryImage')) {
             $image = $request->file('CategoryImage');
@@ -165,7 +165,7 @@ class ManagerController extends Controller
 
         $categories = Category::all();
         foreach ($categories as $category) {
-            if ($category->categoryName == $request->categoryName) {
+            if ($category->id != $request->input('id') && strtolower($category->categoryName) == strtolower($request->categoryName)) {
                 return redirect()->back()->with('error', 'Category already exist.');
             }
         }
@@ -280,7 +280,6 @@ class ManagerController extends Controller
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
         }
-
         $products = Product::where('productName', $request->productName)->get();
 
         // Check if a file is uploaded
@@ -417,10 +416,11 @@ class ManagerController extends Controller
 
         $existingDeals = Deal::all();
         foreach ($existingDeals as $deal) {
-            if ($deal->dealTitle == $request->input('dealTitle')) {
-                return redirect()->back()->with('error', 'Deal already exist.');
+        if (strtolower($deal->dealTitle) == strtolower($request->input('dealTitle'))) {
+            return redirect()->back()->with('error', 'Deal already exists.');
             }
-        }
+        }   
+
 
         $deal = new Deal();
         $imageName = null;
@@ -485,8 +485,8 @@ class ManagerController extends Controller
 
         $existingDeals = Deal::all();
         foreach ($existingDeals as $deal) {
-            if ($deal->dealTitle == $request->input('dealTitle')) {
-                return redirect()->back()->with('error', 'Deal already exist.');
+            if ($deal->id != $request->input('dId') && strtolower($deal->dealTitle) == strtolower($request->input('dealTitle'))) {
+                return redirect()->back()->with('error', 'Deal already exists.');
             }
         }
 
@@ -515,11 +515,53 @@ class ManagerController extends Controller
         session(['id' => $deal->id]);
         return redirect()->route('viewDealPage', [$user_id, $branch_id]);
     }
+    // public function addDealProduct(Request $request)
+    // {
+    //     if (!session()->has('branchManager')) {
+    //         return redirect()->route('viewLoginPage');
+    //     }
+    //     $productDetails = [];
+    //     $index = 0;
+
+    //     $user_id = $request->user_id;
+    //     $branch_id = $request->branch_id;
+
+    //     while ($request->has("product_name_{$index}")) {
+    //         $productDetails[] = [
+    //             'product_id' => $request->input("product_id{$index}"),
+    //             'quantity' => $request->input("product_quantity_{$index}"),
+    //             'total_price' => $request->input("product_total_price_{$index}"),
+    //         ];
+    //         $index++;
+    //     }
+
+    //     $deal = Deal::find($request->id);
+
+    //     $deal->dealActualPrice = $request->input('currentDealPrice');
+    //     $deal->dealDiscountedPrice = $request->input('dealFinalPrice') . ' Pkr';
+
+    //     foreach ($productDetails as $productDetail) {
+    //         $handler = new handler();
+
+    //         $handler->deal_id = $request->id;
+    //         $handler->product_id = $productDetail['product_id'];
+    //         $handler->product_quantity = $productDetail['quantity'];
+    //         $handler->product_total_price = $productDetail['total_price'];
+
+    //         $handler->save();
+    //     }
+
+    //     $deal->save();
+
+    //     return redirect()->route('viewDealPage', [$user_id, $branch_id]);
+    // }
+
     public function addDealProduct(Request $request)
     {
         if (!session()->has('branchManager')) {
             return redirect()->route('viewLoginPage');
         }
+
         $productDetails = [];
         $index = 0;
 
@@ -541,20 +583,32 @@ class ManagerController extends Controller
         $deal->dealDiscountedPrice = $request->input('dealFinalPrice') . ' Pkr';
 
         foreach ($productDetails as $productDetail) {
-            $handler = new handler();
+            // Check if the product already exists in the deal
+            $existingHandler = handler::where('deal_id', $request->id)
+                ->where('product_id', $productDetail['product_id'])
+                ->first();
 
-            $handler->deal_id = $request->id;
-            $handler->product_id = $productDetail['product_id'];
-            $handler->product_quantity = $productDetail['quantity'];
-            $handler->product_total_price = $productDetail['total_price'];
-
-            $handler->save();
+            if ($existingHandler) {
+                // Update the existing product quantity and total price
+                $existingHandler->product_quantity += $productDetail['quantity'];
+                $existingHandler->product_total_price = $productDetail['total_price'];
+                $existingHandler->save();
+            } else {
+                // Create a new entry if the product does not exist
+                $handler = new handler();
+                $handler->deal_id = $request->id;
+                $handler->product_id = $productDetail['product_id'];
+                $handler->product_quantity = $productDetail['quantity'];
+                $handler->product_total_price = $productDetail['total_price'];
+                $handler->save();
+            }
         }
 
         $deal->save();
 
         return redirect()->route('viewDealPage', [$user_id, $branch_id]);
     }
+
     public function deleteDeal($id)
     {
         if (!session()->has('branchManager')) {
@@ -791,7 +845,7 @@ class ManagerController extends Controller
             return redirect()->route('viewLoginPage');
         }
         $categories = Category::where('branch_id', $branch_id)->get();
-        $products = Product::all();
+        $products = Product::where('branch_id', $branch_id)->get();
         $categoryIdsWithProducts = $products->pluck('category_id')->unique();
         $settings = ThemeSetting::where('branch_id', $branch_id)->first();
 
@@ -802,17 +856,95 @@ class ManagerController extends Controller
         $stocks = Stock::where('branch_id', $branch_id)->get();
         $recipe = Recipe::with('product', 'stock')->get();
 
-        session('showproductRecipe', false);
+        // session('showProductRecipe', false);
         return view('Manager.Recipe')->with([
-            'categoryProducts' => null,
             'categories' => $categoriesWithProducts,
             'stocks' => $stocks,
             'user_id' => $id,
             'branch_id' => $branch_id,
             'recipes' => $recipe,
-            'ThemeSettings' => $settings
+            'ThemeSettings' => $settings,
+            'showProductRecipe' => false
         ]);
     }
+
+    public function showCategoryProducts($category_id, $branch_id, $user_id)
+    {
+        if (!session()->has('branchManager')) {
+            return redirect()->route('viewLoginPage');
+        }
+        $products = Product::where('category_id', $category_id)->where('branch_id', $branch_id)->get();
+        return redirect()->back()->with('categoryProducts', $products);
+
+        // $categories = Category::where('branch_id', $branch_id)->get();
+        // $stocks = Stock::where('branch_id', $branch_id)->get();
+        // $settings = ThemeSetting::where('branch_id', $branch_id)->first();
+
+        // $recipes = Recipe::where(function ($query) use ($branch_id) {
+        //     $query->whereHas('product', function ($query) use ($branch_id) {
+        //         $query->where('branch_id', $branch_id);
+        //     })
+        //         ->orWhereHas('stock', function ($query) use ($branch_id) {
+        //             $query->where('branch_id', $branch_id);
+        //         });
+        // })
+        //     ->with([
+        //         'product' => function ($query) use ($branch_id) {
+        //             $query->where('branch_id', $branch_id);
+        //         }
+        //     ])
+        //     ->with('stock')
+        //     ->get();
+
+        // $products = Product::where('branch_id', $branch_id)->with('category')->get();
+
+        // $categoryProducts = Product::where('category_id', $category_id)->get();
+        // $categories = Category::where('branch_id', $branch_id)->get();
+        // $categoryIdsWithProducts = $products->pluck('category_id')->unique();
+        // $categoriesWithProducts = $categories->filter(function ($category) use ($categoryIdsWithProducts) {
+        //     return $categoryIdsWithProducts->contains($category->id);
+        // });
+        // return view('Manager.Recipe')->with(['categoryProducts' => $categoryProducts, 'categories' => $categoriesWithProducts, 'branch_id' => $branch_id, 'user_id' => $user_id, 'stocks' => $stocks, 'recipes' => $recipes, 'ThemeSettings' => $settings, 'showProductRecipe' => false]);
+    }
+
+    public function viewProductRecipe($category_id, $product_id, $user_id, $branch_id)
+    {
+        if (!session()->has('branchManager')) {
+            return redirect()->route('viewLoginPage');
+        }
+
+        $recipes = Recipe::where('product_id', $product_id)->where('category_id', $category_id)->with('stock', 'product')->get();
+
+        $recipes->category_id = $category_id;
+        $recipes->product_id = $product_id;
+        return redirect()->back()->with('productRecipe', $recipes);
+
+        // $recipes = Recipe::where('product_id', $product_id)->where('category_id', $category_id)->with('stock', 'product')->get();
+        // $settings = ThemeSetting::where('branch_id', $branch_id)->first();
+        // $products = Product::where('branch_id', $branch_id)->with('category')->get();
+
+        // $categories = Category::where('branch_id', $branch_id)->get();
+        // $categoryIdsWithProducts = $products->pluck('category_id')->unique();
+        // $categoriesWithProducts = $categories->filter(function ($category) use ($categoryIdsWithProducts) {
+        //     return $categoryIdsWithProducts->contains($category->id);
+        // });
+
+        // $stocks = Stock::all();
+        // session()->put('showProductRecipe', true);
+
+        // return redirect()->back()->with('showProductRecipe', true);
+        // return view('Manager.Recipe')->with([
+        //     'categoryProducts' => $products,
+        //     'categories' => $categoriesWithProducts,
+        //     'stocks' => $stocks,
+        //     'recipes' => $recipes,
+        //     'branch_id' => $branch_id,
+        //     'user_id' => $user_id,
+        //     'ThemeSettings' => $settings,
+        //     'showProductRecipe' => true
+        // ]);
+    }
+
     public function createRecipe(Request $request)
     {
         if (!session()->has('branchManager')) {
@@ -864,33 +996,7 @@ class ManagerController extends Controller
         // session('editproductrecipie', true);
         return redirect()->back();
     }
-    public function viewProductRecipe($category_id, $product_id, $user_id, $branch_id)
-    {
-        if (!session()->has('branchManager')) {
-            return redirect()->route('viewLoginPage');
-        }
 
-        $recipes = Recipe::where('product_id', $product_id)->where('category_id', $category_id)->with('stock', 'product')->get();
-        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
-        $products = Product::where('branch_id', $branch_id)->whereHas('category', function ($query) use ($category_id) {
-            $query->where('id', $category_id);
-        })->with('category')->get();
-
-        $categories = Category::where('branch_id', $branch_id)->get();
-
-        $stocks = Stock::all();
-        session('showproductRecipe', true);
-
-        return view('Manager.Recipe')->with([
-            'categoryProducts' => $products,
-            'categories' => $categories,
-            'stocks' => $stocks,
-            'recipes' => $recipes,
-            'branch_id' => $branch_id,
-            'user_id' => $user_id,
-            'ThemeSettings' => $settings
-        ]);
-    }
     public function deleteStockFromRecipe($id, $cId, $pId)
     {
         if (!session()->has('branchManager')) {
@@ -904,36 +1010,7 @@ class ManagerController extends Controller
 
         return redirect()->route('viewProductRecipe', ['category_id' => $cId, 'product_id' => $pId]);
     }
-    public function showCategoryProducts($category_id, $branch_id, $user_id)
-    {
-        if (!session()->has('branchManager')) {
-            return redirect()->route('viewLoginPage');
-        }
 
-        $categories = Category::where('branch_id', $branch_id)->get();
-        $stocks = Stock::where('branch_id', $branch_id)->get();
-        $settings = ThemeSetting::where('branch_id', $branch_id)->first();
-
-        $recipes = Recipe::where(function ($query) use ($branch_id) {
-            $query->whereHas('product', function ($query) use ($branch_id) {
-                $query->where('branch_id', $branch_id);
-            })
-                ->orWhereHas('stock', function ($query) use ($branch_id) {
-                    $query->where('branch_id', $branch_id);
-                });
-        })
-            ->with([
-                'product' => function ($query) use ($branch_id) {
-                    $query->where('branch_id', $branch_id);
-                }
-            ])
-            ->with('stock')
-            ->get();
-
-
-        $categoryProducts = Product::where('category_id', $category_id)->get();
-        return view('Manager.Recipe')->with(['categoryProducts' => $categoryProducts, 'categories' => $categories, 'branch_id' => $branch_id, 'user_id' => $user_id, 'stocks' => $stocks, 'recipes' => $recipes, 'ThemeSettings' => $settings]);
-    }
 
     /* 
     |---------------------------------------------------------------|
@@ -1045,9 +1122,9 @@ class ManagerController extends Controller
         }
 
         $existingChef = User::where('role', 'chef')
-        ->where('id', '!=', $req->staffId)
-        ->where('branch_id', $req->branch)
-        ->get();
+            ->where('id', '!=', $req->staffId)
+            ->where('branch_id', $req->branch)
+            ->get();
 
         if (!$existingChef->isEmpty() && $req->input('role') == 'chef') {
             return redirect()->back()->with('error', 'Chef already exists in this branch');
@@ -1088,7 +1165,6 @@ class ManagerController extends Controller
             return redirect()->back()->with('error', 'Staff not updated');
         }
     }
-
     public function deleteStaff($id)
     {
         if (!session()->has('branchManager')) {

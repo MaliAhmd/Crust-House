@@ -26,7 +26,7 @@
             <div class="left1">
                 <h1>Meet, Eat & <br><span>Enjoy The Taste</span></h1>
                 <p>Food tastes better when you share it with your family and friends.</p>
-                <a href="{{route('viewLoginPage')}}">Our Menu</a>
+                <a href="{{route('onlineOrderPage')}}">Our Menu</a>
             </div>
             <div class="right1">
                 <img src="{{ asset('Images/Web_Images/c1.jpg')}}" alt="">
@@ -183,7 +183,7 @@
                 <h1>OUR <span>MENU:</span></h1>
                 <p>Our menu features a wide variety of pizzas, from classic margarita to our signature BBQ chicken pizza. We also offer a selection of salads, appetizers, and desserts to complement your meal. All of our pizzas are available in small, medium,
                     and large sizes, so you can order the perfect amount for your group</p>
-                <a href="{{route('viewLoginPage')}}">Our Menu</a>
+                <a href="{{route('onlineOrderPage')}}">Our Menu</a>
             </div>
         </div>
         <div class="spacer"></div>

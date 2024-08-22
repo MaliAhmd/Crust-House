@@ -70,8 +70,10 @@
             </div>
 
             <div class="fgtpswd">
-                <a href="{{ route('viewForgotPassword') }}">I forgot my Password</a>
-                <a href="{{ route('viewRegisterPage') }}">Don't have an account</a>
+                <a href="{{ route('viewForgotPassword') }}">I forgot my Password.</a>
+                @if (!$users)
+                    <a href="{{ route('viewRegisterPage') }}">Don't have an account?</a>
+                @endif
             </div>
 
             <div class="btn">

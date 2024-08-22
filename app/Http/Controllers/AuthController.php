@@ -12,7 +12,8 @@ class AuthController extends Controller
 {
     public function loginIndex()
     {
-        return view('Auth.Login');
+        $users = User::where('role', 'owner')->first();
+        return view('Auth.Login')->with(['users' => $users]);
     }
 
     public function registrationIndex()

@@ -108,6 +108,7 @@ function editProduct(product, allProducts) {
     prices = [];
 
     document.getElementById("pId").value = product.id;
+    document.getElementById("cId").value = product.category_id;
     document.getElementById("pName").value = product.productName;
 
     allProducts.forEach((element) => {

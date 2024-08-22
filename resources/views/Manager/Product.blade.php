@@ -315,6 +315,7 @@
             <hr>  
 
             <input type="hidden" id="pId" name="pId">
+            <input type="hidden" id="cId" name="CId">
 
             <div class="inputdivs">
                 <label for="pName">Product Name</label>
@@ -326,7 +327,7 @@
             <div class="inputdivs">
                 <label for="upload-update-file" class="choose-file-btn">
                     <span>Choose File <br><span style="color: #b11d1d; margin:0;padding:0;">(Max = 1MB, Ratio = 3:2)*</span></span>
-                    <input type="file" id="upload-update-file" name="productImage" accept=".jpg,.jpeg,.png" required>
+                    <input type="file" id="upload-update-file" name="productImage" accept=".jpg,.jpeg,.png">
                     <p id="filename"></p>
                 </label>
             </div>
