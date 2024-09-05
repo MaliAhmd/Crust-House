@@ -1,0 +1,6 @@
+order status
+
+1 for Complete Order.
+2 for Pending Order.
+3 for Cancel Order.
+4 for Online Order Confirm by Salesman.
